@@ -12,7 +12,7 @@ class User(db.Model):
     name: Mapped[str] = mapped_column(String(80), nullable=False)
     lastname: Mapped[str] = mapped_column(String(80), nullable=False)
     password: Mapped[str] = mapped_column(String(200), nullable=False)
-    salt: Mapped[str] = mapped_column(String(80), nullable=False, default=1)
+    salt: Mapped[str] = mapped_column(String(80), nullable=False)
 
     def serialize(self):
         return {
