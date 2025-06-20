@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, RoleEnum
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from api.utils import set_password, check_password
@@ -29,6 +29,10 @@ def add_user():
     lastname = data.get('lastname', None)
     password = data.get('password', None)
     salt = b64encode(os.urandom(32)).decode('utf-8')
+    role = RoleEnum.general
+
+    if email == 'valen2004vega@gmail.com':
+        role = RoleEnum.admin
 
     if email is None or name is None or lastname is None or password is None:
         return jsonify('You need an email, a name, a lastname and a password'), 400
@@ -40,7 +44,7 @@ def add_user():
         return jsonify({"message": "Email already registered"}), 409
 
     user = User(email=email, name=name, lastname=lastname,
-                password=set_password(password, salt), salt=salt)
+                password=set_password(password, salt), salt=salt, role=role)
 
     db.session.add(user)
 
