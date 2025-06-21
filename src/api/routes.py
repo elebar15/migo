@@ -15,7 +15,6 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
-
 @api.route('/healt-check', methods=['GET'])
 def handle_hello():
     return jsonify("ok"), 200
