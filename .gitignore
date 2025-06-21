@@ -71,6 +71,7 @@ dist/*
 !.gitkeep
 !.htaccess
 !.eslintrc
+.env
 !.env.example
 .now
 
