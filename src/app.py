@@ -20,7 +20,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "8MQXzaBMHekZQ6h85MPyHHYfFrcPNdiAyjzlppothFuHmHo" 
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
 app.url_map.strict_slashes = False
