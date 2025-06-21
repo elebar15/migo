@@ -1,19 +1,37 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, Enum as SQLAEnum
 from sqlalchemy.orm import Mapped, mapped_column
+import enum
 
 db = SQLAlchemy()
 
-class User(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+class RoleEnum(enum.Enum):
+    general = 'general'
+    admin = 'admin'
+    vet = 'vet'
 
+class User(db.Model):
+    __tablename__ = 'user'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    lastname: Mapped[str] = mapped_column(String(80), nullable=False)
+    password: Mapped[str] = mapped_column(String(200), nullable=False)
+    salt: Mapped[str] = mapped_column(String(80), nullable=False)
+    role: Mapped[RoleEnum] = mapped_column(SQLAEnum(RoleEnum), nullable=False, default=RoleEnum.general)
+    country: Mapped[str] = mapped_column(String(100), nullable=True)
+    city: Mapped[str] = mapped_column(String(100), nullable=True)
+    avatar: Mapped[str] = mapped_column(String(180), nullable=True)
 
     def serialize(self):
         return {
-            "id": self.id,
-            "email": self.email,
+            'id': self.id,
+            'email': self.email,
+            'name': self.name,
+            'lastname': self.lastname,
+            'role': self.role.value,
+            'country': self.country,
+            'city': self.city
             # do not serialize the password, its a security breach
         }
