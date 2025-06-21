@@ -53,3 +53,4 @@ def add_user():
     except Exception as error:
         db.session.rollback()
         return jsonify(f'Error: {error.args}'), 500
+
