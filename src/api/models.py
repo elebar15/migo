@@ -20,9 +20,9 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(String(200), nullable=False)
     salt: Mapped[str] = mapped_column(String(80), nullable=False)
     role: Mapped[RoleEnum] = mapped_column(SQLAEnum(RoleEnum), nullable=False, default=RoleEnum.general)
-    country: Mapped[str] = mapped_column(String(100), nullable=True)
-    city: Mapped[str] = mapped_column(String(100), nullable=True)
-    avatar: Mapped[str] = mapped_column(String(180), nullable=True)
+    # country: Mapped[str] = mapped_column(String(100), nullable=True)
+    # city: Mapped[str] = mapped_column(String(100), nullable=True)
+    # avatar: Mapped[str] = mapped_column(String(180), nullable=True)
 
     def serialize(self):
         return {

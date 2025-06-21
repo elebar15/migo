@@ -14,8 +14,6 @@ from datetime import timedelta
 
 api = Blueprint('api', __name__)
 
-
-
 expires_in_minutes = 10
 expires_delta = timedelta(minutes=expires_in_minutes)
 
@@ -60,6 +58,7 @@ def add_user():
     except Exception as error:
         db.session.rollback()
         return jsonify(f'Error: {error.args}'), 500
+
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
