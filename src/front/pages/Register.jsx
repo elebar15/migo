@@ -56,11 +56,11 @@ export function Register() {
                                 className="form-control"
                                 id="nameInput"
                                 name="name"
-                                placeholder="name"
+                                placeholder="nombre"
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="nameInput">Name</label>
+                            <label htmlFor="nameInput">Nombre</label>
                         </div>
 
                         <div className="form-floating mb-3">
@@ -69,11 +69,11 @@ export function Register() {
                                 className="form-control"
                                 id="lastnameInput"
                                 name="lastname"
-                                placeholder="last name"
+                                placeholder="apellido"
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="lastnameInput">Last name</label>
+                            <label htmlFor="lastnameInput">Apellido</label>
                         </div>
 
                         <div className="form-floating mb-3">
@@ -82,7 +82,7 @@ export function Register() {
                                 className="form-control"
                                 id="emailInput"
                                 name="email"
-                                placeholder="name@example.com"
+                                placeholder="email"
                                 onChange={handleChange}
                                 required
                             />
@@ -95,7 +95,7 @@ export function Register() {
                                 className="form-control"
                                 id="passwordInput"
                                 name="password"
-                                placeholder="password"
+                                placeholder="contraseña"
                                 onChange={handleChange}
                                 required
                             />
