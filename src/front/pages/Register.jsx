@@ -103,8 +103,9 @@ export function Register() {
                         </div>
                         <button className="btn btn-outline-primary w-100">Registrarme</button>
                     </form>
-                    <div className="d-flex justify-content-center my-3 ">
+                    <div className="d-flex justify-content-center my-3 justify-content-evenly">
                         <Link to="/login">Ya tengo una cuenta</Link>
+                         <Link to="/RecoveryPassword">Olvide mi contraseña</Link>
                     </div>
                 </div>
             </div>
