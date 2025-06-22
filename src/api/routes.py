@@ -11,7 +11,6 @@ import os
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
-from werkzeug.security import generate_password_hash, check_password_hash
 
 api = Blueprint('api', __name__)
 
@@ -33,8 +32,6 @@ def add_user():
     name = data.get('name', None)
     lastname = data.get('lastname', None)
     password = data.get('password', None)
-    city = data.get('city', None)
-    country = data.get('country', None)
     salt = b64encode(os.urandom(32)).decode('utf-8')
     role = RoleEnum.general
 
@@ -51,7 +48,7 @@ def add_user():
         return jsonify({"message": "Email already registered"}), 409
 
     user = User(email=email, name=name, lastname=lastname,
-                password=set_password(password, salt), salt=salt, role=role, city=city, country=country)
+                password=set_password(password, salt), salt=salt, role=role)
 
     db.session.add(user)
 
