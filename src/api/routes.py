@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, RoleEnum
+from api.models import db, User, RoleEnum, Pet
 from api.utils import generate_sitemap, APIException, send_email
 from flask_cors import CORS
 from api.utils import set_password, check_password
@@ -11,6 +11,7 @@ import os
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
+
 
 api = Blueprint('api', __name__)
 
@@ -98,3 +99,39 @@ def reset_password():
         return jsonify("Mensaje correctamente enviado"), 200
     else:
         return jsonify("Error"), 200
+
+@api.route('/pet', methods=['POST'])
+@jwt_required()
+def add_pet():
+
+    user_id = get_jwt_identity() 
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "Dueño no encontrado"}), 404
+
+    data = request.json
+    name = data.get('name', None)
+    species = data.get('species', None)
+    breed = data.get('breed', None)
+    age = data.get('age', None)
+    wheight = data.get('wheight', None)
+
+    if name is None:
+        return jsonify('Necesita al menos el nombre de la mascota'), 400
+    
+    query = select(Pet).where(Pet.name == name)
+    existing_name = db.session.execute(query).scalar_one_or_none()
+
+    if existing_name:
+        return jsonify({"message": "Ya registraste una mascota con este nombre"}), 409
+
+    pet = Pet(name=name, species=species, breed=breed, age=age, wheight=wheight, owner_id=user_id)
+
+    db.session.add(pet)
+
+    try:
+        db.session.commit()
+        return jsonify('Mascota añadida'), 201
+    except Exception as error:
+        db.session.rollback()
+        return jsonify(f'Error: {error.args}'), 500
