@@ -105,7 +105,6 @@ export function Register() {
                     </form>
                     <div className="d-flex justify-content-center my-3 justify-content-evenly">
                         <Link to="/login">Ya tengo una cuenta</Link>
-                         <Link to="/RecoveryPassword">Olvide mi contraseña</Link>
                     </div>
                 </div>
             </div>

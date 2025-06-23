@@ -13,6 +13,7 @@ import { Register } from "./pages/Register";
 import { RecoveryPassword } from "./pages/RecoveryPassword"
 import { AddPet } from "./pages/AddPet";
 
+
 export const router = createBrowserRouter(
     createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -30,7 +31,8 @@ export const router = createBrowserRouter(
         <Route path="/demo" element={<Demo />} />
         <Route path="/register" element={<Register/>} />
         <Route path="/recovery-password" element={<RecoveryPassword />} />
-        <Route path="/add-pet" element={<AddPet />} />        
+        <Route path="/add-pet" element={<AddPet />} /> 
+     
       </Route>
     )
 );

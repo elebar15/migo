@@ -12,7 +12,6 @@ from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 
-
 api = Blueprint('api', __name__)
 
 expires_in_minutes = 10
@@ -103,35 +102,45 @@ def reset_password():
 @api.route('/pet', methods=['POST'])
 @jwt_required()
 def add_pet():
+    owner_id = get_jwt_identity()
 
-    user_id = get_jwt_identity() 
-    user = User.query.get(user_id)
+    user = User.query.get(owner_id)
     if not user:
         return jsonify({"message": "Dueño no encontrado"}), 404
 
-    data = request.json
-    name = data.get('name', None)
-    species = data.get('species', None)
-    breed = data.get('breed', None)
-    age = data.get('age', None)
-    wheight = data.get('wheight', None)
+    data = request.get_json()
 
-    if name is None:
-        return jsonify('Necesita al menos el nombre de la mascota'), 400
-    
-    query = select(Pet).where(Pet.name == name)
-    existing_name = db.session.execute(query).scalar_one_or_none()
+    name = data.get('name')
+    species = data.get('species')
+    breed = data.get('breed')
+    age = data.get('age')
+    wheight = data.get('wheight')
 
-    if existing_name:
+    if not name:
+        return jsonify({"message": "Necesita al menos el nombre de la mascota"}), 400
+
+    existing_pet = db.session.execute(
+        select(Pet).where(Pet.name == name, Pet.owner_id == owner_id)
+    ).scalar_one_or_none()
+
+    if existing_pet:
         return jsonify({"message": "Ya registraste una mascota con este nombre"}), 409
 
-    pet = Pet(name=name, species=species, breed=breed, age=age, wheight=wheight, owner_id=user_id)
-
-    db.session.add(pet)
-
     try:
+        pet = Pet(
+            name=name,
+            species=species,
+            breed=breed,
+            age=int(age) if age else None,
+            wheight=float(wheight) if wheight else None,
+            owner_id=owner_id 
+        )
+
+        db.session.add(pet)
         db.session.commit()
-        return jsonify('Mascota añadida'), 201
+
+        return jsonify({"message": "Mascota añadida"}), 201
+
     except Exception as error:
         db.session.rollback()
-        return jsonify(f'Error: {error.args}'), 500
+        return jsonify({"error": str(error)}), 500
