@@ -99,6 +99,7 @@ def reset_password():
     else:
         return jsonify("Error"), 200
 
+
 @api.route('/pet', methods=['POST'])
 @jwt_required()
 def add_pet():
@@ -144,3 +145,10 @@ def add_pet():
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+    
+
+@api.route('/pets', methods=['GET'])
+@jwt_required()
+def get_pets():
+    pets = db.session.execute(select(Pet)).scalars().all()
+    return jsonify([pet.serialize() for pet in pets]), 200
