@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Enum as SQLAEnum, Integer, Float, ForeignKey
+from sqlalchemy import String, Integer, Float, ForeignKey, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -35,7 +36,6 @@ class User(db.Model):
             'role': self.role.value,
             'country': self.country,
             'city': self.city
-            # do not serialize the password, its a security breach
         }
 
 class Pet(db.Model):
@@ -50,6 +50,7 @@ class Pet(db.Model):
     owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False) 
 
     owner: Mapped["User"] = relationship("User", back_populates="pets")
+    clin_historys: Mapped[list["ClinHistory"]] = relationship("ClinHistory", back_populates="pet")
 
     def serialize(self):
         return {
@@ -60,4 +61,28 @@ class Pet(db.Model):
             'age': self.age,
             'wheight': self.wheight,
             'owner_id': self.owner_id
+        }
+
+class ClinHistory(db.Model):
+    __tablename__ = 'clin_history'
+
+    id: Mapped[int] = mapped_column(primary_key=True)  
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)  # Date de création
+    event_date: Mapped[datetime] = mapped_column(DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())  # Date de l'événement
+    event_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    place: Mapped[str] = mapped_column(String(80), nullable=True) 
+    note: Mapped[str] = mapped_column(Text, nullable=True) 
+    pet_id: Mapped[int] = mapped_column(ForeignKey('pet.id'), nullable=False)
+
+    pet: Mapped["Pet"] = relationship("Pet", back_populates="clin_historys")
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'created_at': self.created_at,
+            'event_date': self.event_date,
+            'event_name': self.event_name,
+            'place': self.place,
+            'note': self.note,
+            'pet_id': self.pet_id
         }
