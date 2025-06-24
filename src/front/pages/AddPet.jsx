@@ -5,7 +5,7 @@ const initialStatePet = {
   name: "",
   species: "",
   breed: "",
-  age: "",
+  birthDate: "",
   wheight: "",
 };
 
@@ -28,6 +28,8 @@ export const AddPet = () => {
       [name]:
         type === "number"
           ? value === "" ? "" : Number(value)
+          : type === "date"
+          ? value === "" ? "" : new Date(value)
           : value
     }));
   }
