@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, RoleEnum, Pet
-from api.utils import generate_sitemap, APIException, send_email
+from api.utils import generate_sitemap, APIException, send_email, check_password
 from flask_cors import CORS
 from api.utils import set_password, check_password
 from werkzeug.security import check_password_hash
@@ -73,7 +73,7 @@ def login():
     if not user:
         return jsonify({"msg": "Usuario no encontrado"}), 404
 
-    if not check_password_hash(user.password, password):
+    if not check_password(user.password, password, user.salt):
         return jsonify({"msg": "Contraseña incorrecta"}), 401
 
     access_token = create_access_token(identity=str(user.id))

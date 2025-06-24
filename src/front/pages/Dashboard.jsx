@@ -7,7 +7,7 @@ const Dashboard = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
 
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/protected`, {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/protected`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
