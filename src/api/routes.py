@@ -6,7 +6,6 @@ from api.models import db, User, RoleEnum, Pet
 from api.utils import generate_sitemap, APIException, send_email
 from flask_cors import CORS
 from api.utils import set_password, check_password
-from werkzeug.security import check_password_hash
 from base64 import b64encode
 import os
 from sqlalchemy import select
@@ -73,7 +72,7 @@ def login():
     if not user:
         return jsonify({"msg": "Usuario no encontrado"}), 404
 
-    if not check_password_hash(user.password, password):
+    if not check_password(user.password, password, user.salt):
         return jsonify({"msg": "Contraseña incorrecta"}), 401
 
     access_token = create_access_token(identity=str(user.id))
@@ -175,5 +174,6 @@ def add_pet():
 @api.route('/pets', methods=['GET'])
 @jwt_required()
 def get_pets():
-    pets = db.session.execute(select(Pet)).scalars().all()
+    user_id = get_jwt_identity()
+    pets = db.session.execute(select(Pet).where(Pet.owner_id == user_id)).scalars().all()
     return jsonify([pet.serialize() for pet in pets]), 200

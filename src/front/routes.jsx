@@ -5,6 +5,9 @@ import {
     createRoutesFromElements,
     Route,
 } from "react-router-dom";
+
+import { Navigate } from "react-router-dom";
+
 import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
