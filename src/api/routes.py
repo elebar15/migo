@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, RoleEnum, Pet
+from api.models import db, User, RoleEnum, Pet, ClinHistory
 from api.utils import generate_sitemap, APIException, send_email
 from flask_cors import CORS
 from api.utils import set_password, check_password
@@ -11,7 +11,7 @@ from base64 import b64encode
 import os
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 api = Blueprint('api', __name__)
 
@@ -91,16 +91,17 @@ def reset_password():
         return '', 200 
     body = request.json 
  
-    user = User.query.filter_by(email=body).one_or_none()
+    email = body.get("email")
+    user = User.query.filter_by(email=email).one_or_none()
     
     if user is None:
         return jsonify("user not found"), 404
 
     access_token = create_access_token(
-        identity=body, expires_delta=expires_delta)
+        identity=user.id, expires_delta=expires_delta)
 
     message = f"""
-        <p>Hola,</p>
+        <p>Hola {user.name},</p>
 
         <p>Con este link, podrás <a href="{os.getenv("FRONTEND_URL")}/password-update?token={access_token}">recuperar tu contraseña</a>.</p>
 
@@ -112,7 +113,7 @@ def reset_password():
 
     data = {
         "subject": "Recuperación de contraseña",
-        "to": body,
+        "to": email,
         "message": message
     }
 
@@ -122,7 +123,8 @@ def reset_password():
     if sended_email:
         return jsonify("Mensaje correctamente enviado"), 200
     else:
-        return jsonify("Error"), 200
+        api.logger.error(f"Error al enviar el correo a {email}")
+        return jsonify("Error en el envío del correo"), 500
 
 @api.route('/pet', methods=['POST'])
 @jwt_required()
@@ -169,3 +171,39 @@ def add_pet():
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+
+@api.route('/note', methods=['POST'])   
+@jwt_required()
+def add_note():
+
+    data = request.get_json()
+
+    event_name = data.get('event_name')   
+    event_date = data.get('event_date')
+    place = data.get('place')
+    note = data.get('note')
+    pet_id = data.get('pet_id')
+
+    if not event_name:
+        return jsonify({"message": "Necesita al menos el nombre del evento"}), 400
+    
+    if not event_date:
+        event_date = datetime.now()
+
+    try:
+        new_note = ClinHistory(
+            event_name = event_name,   
+            event_date = event_date,
+            place = place,
+            note = note,
+            pet_id = pet_id
+        )
+
+        db.session.add(new_note)
+        db.session.commit()
+
+        return jsonify({"message" : "Nota añadida"}), 201
+
+    except Exception as error:
+        db.session.rollback()
+        return jsonify({"error": str(error)}), 500    

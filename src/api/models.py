@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Integer, Float, ForeignKey, DateTime, func
+from sqlalchemy import String, Enum as SQLAEnum, Integer, Float, ForeignKey, DateTime, func, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
 from datetime import datetime
@@ -67,7 +67,7 @@ class ClinHistory(db.Model):
     __tablename__ = 'clin_history'
 
     id: Mapped[int] = mapped_column(primary_key=True)  
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)  # Date de création
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow) 
     event_date: Mapped[datetime] = mapped_column(DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())  # Date de l'événement
     event_name: Mapped[str] = mapped_column(String(80), nullable=False)
     place: Mapped[str] = mapped_column(String(80), nullable=True) 
