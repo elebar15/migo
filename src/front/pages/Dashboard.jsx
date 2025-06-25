@@ -1,33 +1,52 @@
-
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { PetCard } from "../components/PetCard";
 
 const Dashboard = () => {
-    const [message, setMessage] = useState("");
+    const [pets, setPets] = useState([]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const fetchPets = async () => {
+            const token = localStorage.getItem("token");
 
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/protected`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pets`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error("No autorizado");
+
+                const data = await response.json();
+                setPets(data);
+            } catch (error) {
+                console.error("Error al obtener mascotas:", error);
+                setPets([]);
             }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("No autorizado");
-            return res.json();
-        })
-        .then(data => setMessage(data.message))
-        .catch(err => {
-            console.error(err);
-            setMessage("No autorizado. Inicia sesión nuevamente.");
-        });
+        };
+
+        fetchPets();
     }, []);
 
     return (
         <div className="container mt-5">
-            <h1>Dashboard</h1>
-            <p>{message}</p>
+            <h1 className="text-center my-4">Mis Mascotas</h1>
+            <div className="row">
+                {pets.length > 0 ? (
+                    pets.map(pet => (
+                        <div key={pet.id} className="col-md-4 mb-3">
+                            <PetCard pet={pet} />
+                        </div>
+                    ))
+                ) : (
+                    <p>No tienes mascotas registradas.</p>
+                )}
+            </div>
+            <div className="d-flex justify-content-center">
+                <Link to={'/add-pet'} className="btn btn-primary rounded-circle"><i className="fa-solid fa-plus"></i></Link>
+            </div>
         </div>
     );
 };
