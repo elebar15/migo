@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, RoleEnum, Pet
-from api.utils import generate_sitemap, APIException, send_email
+from api.utils import generate_sitemap, APIException, send_email, check_password
 from flask_cors import CORS
 from api.utils import set_password, check_password
 from base64 import b64encode
