@@ -4,6 +4,7 @@ import {
     createBrowserRouter,
     createRoutesFromElements,
     Route,
+    Navigate,
 } from "react-router-dom";
 
 import { Navigate } from "react-router-dom";
@@ -14,6 +15,7 @@ import { Demo } from "./pages/Demo";
 import { Register } from "./pages/Register";
 import { RecoveryPassword } from "./pages/RecoveryPassword"
 import { AddPet } from "./pages/AddPet";
+import { EditPet } from "./pages/EditPet"; 
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -46,6 +48,7 @@ export const router = createBrowserRouter(
         <Route path="/register" element={<Register/>} />
         <Route path="/recovery-password" element={<RecoveryPassword />} />
         <Route path="/add-pet" element={<AddPet />} /> 
+        <Route path="/edit-pet/:id" element={<EditPet />} />
         {/* <Route path="/pets" element={<ProtectedRoute><Pets/></ProtectedRoute>} /> */}
         <Route path="/login" element={<Login />} />     
 

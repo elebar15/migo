@@ -20,6 +20,7 @@ expires_delta = timedelta(minutes=expires_in_minutes)
 # Allow CORS requests to this API
 CORS(api)
 
+
 @api.route('/healt-check', methods=['GET'])
 def handle_hello():
     return jsonify("ok"), 200
@@ -59,6 +60,7 @@ def add_user():
         db.session.rollback()
         return jsonify(f'Error: {error.args}'), 500
 
+
 @api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -76,13 +78,15 @@ def login():
         return jsonify({"msg": "Contraseña incorrecta"}), 401
 
     access_token = create_access_token(identity=str(user.id))
-    return jsonify({ "token": access_token, "user_id": user.id }), 200
+    return jsonify({"token": access_token, "user_id": user.id}), 200
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user_id = get_jwt_identity()
-    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200      
+    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200
+
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
@@ -160,7 +164,7 @@ def add_pet():
             breed=breed,
             age=int(age) if age else None,
             wheight=float(wheight) if wheight else None,
-            owner_id=owner_id 
+            owner_id=owner_id
         )
 
         db.session.add(pet)
