@@ -21,6 +21,7 @@ expires_delta = timedelta(minutes=expires_in_minutes)
 # Allow CORS requests to this API
 CORS(api)
 
+
 @api.route('/healt-check', methods=['GET'])
 def handle_hello():
     return jsonify("ok"), 200
@@ -60,6 +61,7 @@ def add_user():
         db.session.rollback()
         return jsonify(f'Error: {error.args}'), 500
 
+
 @api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -77,22 +79,24 @@ def login():
         return jsonify({"msg": "Contraseña incorrecta"}), 401
 
     access_token = create_access_token(identity=str(user.id))
-    return jsonify({ "token": access_token, "user_id": user.id }), 200
+    return jsonify({"token": access_token, "user_id": user.id}), 200
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user_id = get_jwt_identity()
-    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200      
+    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200
+
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
-    if request.method == 'OPTIONS':  
-        return '', 200 
-    body = request.json 
- 
+    if request.method == 'OPTIONS':
+        return '', 200
+    body = request.json
+
     user = User.query.filter_by(email=body).one_or_none()
-    
+
     if user is None:
         return jsonify("user not found"), 404
 
@@ -123,6 +127,7 @@ def reset_password():
         return jsonify("Mensaje correctamente enviado"), 200
     else:
         return jsonify("Error"), 200
+
 
 @api.route('/pet', methods=['POST'])
 @jwt_required()
@@ -158,7 +163,7 @@ def add_pet():
             breed=breed,
             age=int(age) if age else None,
             wheight=float(wheight) if wheight else None,
-            owner_id=owner_id 
+            owner_id=owner_id
         )
 
         db.session.add(pet)
@@ -166,6 +171,44 @@ def add_pet():
 
         return jsonify({"message": "Mascota añadida"}), 201
 
+    except Exception as error:
+        db.session.rollback()
+        return jsonify({"error": str(error)}), 500
+
+
+@api.route('/pet/<int:pet_id>', methods=['GET'])
+@jwt_required()
+def get_pet(pet_id):
+    owner_id = get_jwt_identity()
+    pet = Pet.query.filter_by(id=pet_id, owner_id=owner_id).first()
+
+    if not pet:
+        return jsonify({"message": "Mascota no encontrada"}), 404
+
+    return jsonify(pet.serialize()), 200
+
+
+@api.route('/pet/<int:pet_id>', methods=['PUT'])
+@jwt_required()
+def update_pet(pet_id):
+    owner_id = get_jwt_identity()
+    pet = Pet.query.filter_by(id=pet_id, owner_id=owner_id).first()
+
+    if not pet:
+        return jsonify({"message": "Mascota no encontrada"}), 404
+
+    data = request.get_json()
+
+    pet.name = data.get('name', pet.name)
+    pet.species = data.get('species', pet.species)
+    pet.breed = data.get('breed', pet.breed)
+    pet.age = int(data['age']) if 'age' in data and data['age'] else pet.age
+    pet.wheight = float(
+        data['wheight']) if 'wheight' in data and data['wheight'] else pet.wheight
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Mascota actualizada"}), 200
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
