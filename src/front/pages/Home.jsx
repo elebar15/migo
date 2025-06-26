@@ -31,12 +31,12 @@ export const Home = () => {
     }, []);
 
     return (
-        <div className="container mt-5">
+        <div className="container justify-content-center">
             <h1 className="text-center my-4">Mis Mascotas</h1>
-            <div className="row">
+            <div className="row g4">
                 {pets.length > 0 ? (
                     pets.map(pet => (
-                        <div key={pet.id} className="col-md-4 mb-3">
+                        <div key={pet.id} className="col mb-4">
                             <PetCard pet={pet} />
                         </div>
                     ))
@@ -44,9 +44,10 @@ export const Home = () => {
                     <p>No tienes mascotas registradas.</p>
                 )}
             </div>
-            <div className="d-flex justify-content-center">
-                <Link to={'/add-pet'} className="btn btn-primary rounded-circle"><i className="fa-solid fa-plus"></i></Link>
+            <div className="d-flex justify-content-center my-3">
+                <Link to={'/add-pet'} className="btn btn-dark rounded-circle"><i className="fa-solid fa-plus fa-xl"></i></Link>
             </div>
         </div>
     );
+
 };
