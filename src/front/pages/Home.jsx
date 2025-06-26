@@ -1,52 +1,52 @@
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { PetCard } from "../components/PetCard";
 
 export const Home = () => {
+    const [pets, setPets] = useState([]);
 
-	const { store, dispatch } = useGlobalReducer()
+    useEffect(() => {
+        const fetchPets = async () => {
+            const token = localStorage.getItem("token");
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pets`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+                if (!response.ok) throw new Error("No autorizado");
 
-			const response = await fetch(backendUrl + "/api/hello")
-			const data = await response.json()
+                const data = await response.json();
+                setPets(data);
+            } catch (error) {
+                console.error("Error al obtener mascotas:", error);
+                setPets([]);
+            }
+        };
 
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
+        fetchPets();
+    }, []);
 
-			return data
-
-		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
-		}
-
-	}
-
-	useEffect(() => {
-		loadMessage()
-	}, [])
-
-	return (
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
-			</div>
-		</div>
-	);
-}; 
+    return (
+        <div className="container mt-5">
+            <h1 className="text-center my-4">Mis Mascotas</h1>
+            <div className="row">
+                {pets.length > 0 ? (
+                    pets.map(pet => (
+                        <div key={pet.id} className="col-md-4 mb-3">
+                            <PetCard pet={pet} />
+                        </div>
+                    ))
+                ) : (
+                    <p>No tienes mascotas registradas.</p>
+                )}
+            </div>
+            <div className="d-flex justify-content-center">
+                <Link to={'/add-pet'} className="btn btn-primary rounded-circle"><i className="fa-solid fa-plus"></i></Link>
+            </div>
+        </div>
+    );
+};
