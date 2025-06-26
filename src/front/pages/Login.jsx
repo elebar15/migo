@@ -23,7 +23,7 @@ const Login = () => {
             if (response.ok) {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user_id", data.user_id);
-                navigate("/dashboard");
+                navigate("/");
             } else {
                 alert(data.msg || "Error al iniciar sesión");
             }

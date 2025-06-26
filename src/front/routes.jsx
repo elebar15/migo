@@ -1,5 +1,4 @@
 // Import necessary components and functions from react-router-dom.
-
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -7,18 +6,18 @@ import {
     Navigate,
 } from "react-router-dom";
 
-import { Navigate } from "react-router-dom";
 import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { Register } from "./pages/Register";
 import { RecoveryPassword } from "./pages/RecoveryPassword"
+import { Pets } from "./pages/Pets"
 import { AddPet } from "./pages/AddPet";
-import { EditPet } from "./pages/EditPet"; 
+import { EditPet } from "./pages/EditPet";
+
 
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const isAuthenticated = () => {
@@ -46,21 +45,12 @@ export const router = createBrowserRouter(
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
         <Route path="/register" element={<Register/>} />
+         <Route path="/login" element={<Login />} />
         <Route path="/recovery-password" element={<RecoveryPassword />} />
-        <Route path="/add-pet" element={<AddPet />} /> 
+        <Route path="/add-pet" element={<ProtectedRoute><AddPet /></ProtectedRoute>} /> 
+        <Route path="/pets" element={<ProtectedRoute><Pets/></ProtectedRoute>} />
         <Route path="/edit-pet/:id" element={<EditPet />} />
-        {/* <Route path="/pets" element={<ProtectedRoute><Pets/></ProtectedRoute>} /> */}
-        <Route path="/login" element={<Login />} />     
-
-        <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-            <AddPet />
-          </ProtectedRoute>
-        }
-      />
+        
       </Route>
     )
 );

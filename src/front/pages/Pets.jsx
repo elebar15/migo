@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { PetCard } from "../components/PetCard";
 
-const Dashboard = () => {
+export const Pets = () => {
     const [pets, setPets] = useState([]);
 
     useEffect(() => {
@@ -50,5 +50,3 @@ const Dashboard = () => {
         </div>
     );
 };
-
-export default Dashboard;
