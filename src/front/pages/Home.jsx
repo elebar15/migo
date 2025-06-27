@@ -1,42 +1,31 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { PetCard } from "../components/PetCard";
+import {getAllPets} from "../services/api";
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const Home = () => {
-    const [pets, setPets] = useState([]);
+
+    const {store, dispatch} = useGlobalReducer();
+
+    async function fetchPets(){
+        const data = await getAllPets()
+        if(data) {
+            dispatch({type: 'SET_PETS', payload: data})
+        }
+    }
 
     useEffect(() => {
-        const fetchPets = async () => {
-            const token = localStorage.getItem("token");
-
-            try {
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pets`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                if (!response.ok) throw new Error("No autorizado");
-
-                const data = await response.json();
-                setPets(data);
-            } catch (error) {
-                console.error("Error al obtener mascotas:", error);
-                setPets([]);
-            }
-        };
-
-        fetchPets();
+        fetchPets()
     }, []);
 
     return (
-        <div className="container mt-5">
+        <div className="container justify-content-center">
             <h1 className="text-center my-4">Mis Mascotas</h1>
-            <div className="row">
-                {pets.length > 0 ? (
-                    pets.map(pet => (
-                        <div key={pet.id} className="col-md-4 mb-3">
+            <div className="row g-4">
+                {store.pets.length > 0 ? (
+                    store.pets.map(pet => (
+                        <div key={pet.id} className="col mb-4">
                             <PetCard pet={pet} />
                         </div>
                     ))
@@ -44,9 +33,10 @@ export const Home = () => {
                     <p>No tienes mascotas registradas.</p>
                 )}
             </div>
-            <div className="d-flex justify-content-center">
-                <Link to={'/add-pet'} className="btn btn-primary rounded-circle"><i className="fa-solid fa-plus"></i></Link>
+            <div className="d-flex justify-content-center my-3">
+                <Link to={'/add-pet'} className="btn btn-dark rounded-circle"><i className="fa-solid fa-plus fa-xl"></i></Link>
             </div>
         </div>
     );
+
 };
