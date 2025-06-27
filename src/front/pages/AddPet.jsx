@@ -20,21 +20,26 @@ export const AddPet = () => {
   }
 }, []);
 
-  function handleChange({ target }) {
-    const { name, value, type } = target;
+function handleChange({ target }) {
+  const { name, value, type } = target;
 
-    setPet((prev) => ({
-      ...prev,
-      [name]:
-        type === "number"
-          ? value === "" ? "" : Number(value)
-          : type === "date"
-          ? value === "" ? "" : new Date(value)
-          : value
-    }));
-  }
+  setPet((prev) => ({
+    ...prev,
+    [name]:
+      type === "number" && value !== "" ? Number(value) :
+      type === "date" && value !== "" ? formatDateToSpanish(value) :
+      value
+  }));
+}
 
-  async function handleSubmit(event) {
+function formatDateToSpanish(dateStr) {
+  if (!dateStr || !dateStr.includes("-")) return dateStr;
+  const [year, month, day] = dateStr.split("-");
+  return `${day}/${month}/${year}`;
+}
+
+
+async function handleSubmit(event) {
       event.preventDefault();
 
       const url = import.meta.env.VITE_BACKEND_URL;
@@ -50,7 +55,6 @@ export const AddPet = () => {
           },
           body: JSON.stringify({
           ...pet,
-          age: parseInt(pet.age),
           wheight: parseFloat(pet.wheight),
         }),
       });
@@ -66,8 +70,7 @@ export const AddPet = () => {
         alert("Error al registrar la mascota");
       }
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la mascotte:", error);
-      alert("Une erreur est survenue. Veuillez réessayer.");
+      alert("Un error occurio. Intente de nuevo.");
     }
   }
 
@@ -119,15 +122,14 @@ export const AddPet = () => {
 
               <div className="form-floating mb-3">
                 <input
-                  type="number"
+                  type="date"
                   className="form-control"
-                  id="ageInput"
-                  name="age"
-                  placeholder="Edad"
+                  id="birthDateInput"
+                  name="birthDate"
                   onChange={handleChange}
-                  value={pet.age} 
+                  value={pet.birthDate} 
                 />
-                <label htmlFor="ageInput">Edad</label>
+                <label htmlFor="birthDateInput">Fecha de nacimiento</label>
               </div>
 
               <div className="form-floating mb-3">

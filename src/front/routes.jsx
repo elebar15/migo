@@ -12,10 +12,10 @@ import { Demo } from "./pages/Demo";
 import { Register } from "./pages/Register";
 import { RecoveryPassword } from "./pages/RecoveryPassword"
 import { AddPet } from "./pages/AddPet";
-
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import { AddNote } from "./pages/AddNote";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
@@ -44,6 +44,7 @@ export const router = createBrowserRouter(
         <Route path="/register" element={<Register/>} />
         <Route path="/recovery-password" element={<RecoveryPassword />} />
         <Route path="/add-pet" element={<AddPet />} /> 
+        <Route path="/add-note" element={<AddNote />} />
         <Route path="/login" element={<Login />} />     
 
         <Route
@@ -51,7 +52,6 @@ export const router = createBrowserRouter(
         element={
           <ProtectedRoute>
             <Dashboard />
-            <AddPet />
           </ProtectedRoute>
         }
       />
