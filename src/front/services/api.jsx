@@ -19,4 +19,28 @@ async function getAllPets() {
     }
 };
 
-export default getAllPets;
+// async function getPetById(id) {
+//     const token = localStorage.getItem("token");
+
+//     try {
+//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pets/${id}`, {
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: `Bearer ${token}`,
+//             }
+//         });
+
+//         if (!response.ok) throw new Error("No autorizado");
+//         const data = await response.json();
+//         return data;
+
+//     } catch (error) {
+//         console.error("Error al obtener la mascota:", error);
+//         return null;
+//     }
+// }
+
+export {
+    getAllPets,
+    // getPetById
+}

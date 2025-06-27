@@ -1,16 +1,36 @@
 import { useParams } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import { Link } from "react-router-dom";
+// import { getPetById } from "../services/api";
+import { useState, useEffect } from "react";
 
 export function PetDetail() {
     const { store } = useGlobalReducer();
-    const { theId } = useParams()
+    const { theId } = useParams();
+    const [pet, setPet] = useState(null);
 
-    const pet = store.pets.find(item => item.id === theId);
+    useEffect(() => {
+        async function getPet(){
+            const foundPet = store.pets.find(item => item.id === parseInt(theId))
 
-    if (!pet) {
-        return <div className="container mt-5"><p>Mascota no encontrada.</p></div>;
-    }
+            if(foundPet){
+                setPet(foundPet)
+
+            } 
+            // else {
+
+            //     const petFromApi = await getPetById(theId)
+
+            //     if(petFromApi){
+            //         setPet(petFromApi)
+            //     }
+            // }
+        }
+
+        getPet()
+
+    },[theId, store.pets])
+
+    if (!pet) return <p>Cargando mascota...</p>;
 
     return (
         <div className="container">

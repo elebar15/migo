@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { PetCard } from "../components/PetCard";
-import getAllPets from "../services/api";
+import {getAllPets} from "../services/api";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const Home = () => {
