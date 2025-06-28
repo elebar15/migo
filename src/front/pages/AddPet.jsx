@@ -142,7 +142,7 @@ async function handleSubmit(event) {
               <button className="btn btn-outline-primary w-100">Añadir</button>
             </form>
             <div className="d-flex justify-content-center my-3 justify-content-evenly">
-              <Link to="/">Regresar</Link>
+              <Link to="/home">Regresar</Link>
             </div>
           </div>
         </div>

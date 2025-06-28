@@ -35,7 +35,7 @@ export function Register() {
         if (response.status === 201){
             setUser(initialStateUser)
             setTimeout(() => {
-                navigate('/login')
+                navigate('/')
             }, 1000)
         } else if (response.status === 400){
             alert('El usuario ya existe')
@@ -104,7 +104,7 @@ export function Register() {
                         <button className="btn btn-outline-primary w-100">Registrarme</button>
                     </form>
                     <div className="d-flex justify-content-center my-3 justify-content-evenly">
-                        <Link to="/login">Ya tengo una cuenta</Link>
+                        <Link to="/">Ya tengo una cuenta</Link>
                     </div>
                 </div>
             </div>

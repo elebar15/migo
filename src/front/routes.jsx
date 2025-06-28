@@ -11,12 +11,11 @@ import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { Register } from "./pages/Register";
+import Login from "./pages/Login";
 import { RecoveryPassword } from "./pages/RecoveryPassword"
 import { AddPet } from "./pages/AddPet";
+import { PetDetail } from "./pages/PetDetail";
 import { EditPet } from "./pages/EditPet";
-
-
-import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { AddNote } from "./pages/AddNote";
 
@@ -41,13 +40,15 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Layout />} errorElement={<NotFound/>} >
 
         {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-        <Route path= "/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
         <Route path="/register" element={<Register/>} />
-         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/recovery-password" element={<RecoveryPassword />} />
+        <Route path= "/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/add-pet" element={<ProtectedRoute><AddPet /></ProtectedRoute>} /> 
+        <Route path= "/pet-detail/:theId" element={<ProtectedRoute><PetDetail/></ProtectedRoute>}/>
         <Route path="/edit-pet/:id" element={<EditPet />} />
         <Route path="/add-note" element={<AddNote />} />
       </Route>
