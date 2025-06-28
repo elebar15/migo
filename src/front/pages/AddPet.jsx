@@ -5,7 +5,7 @@ const initialStatePet = {
   name: "",
   species: "",
   breed: "",
-  age: "",
+  birthDate: "",
   wheight: "",
 };
 
@@ -16,27 +16,36 @@ export const AddPet = () => {
   useEffect(() => {
   const token = localStorage.getItem("token");
   if (!token) {
-    navigate("/login");
+    navigate("/");
   }
 }, []);
 
-  function handleChange({ target }) {
-    const { name, value, type } = target;
+function handleChange({ target }) {
+  const { name, value, type } = target;
 
-    setPet((prev) => ({
-      ...prev,
-      [name]:
-        type === "number"
-          ? value === "" ? "" : Number(value)
-          : value
-    }));
-  }
+  setPet((prev) => ({
+    ...prev,
+    [name]:
+      type === "number" && value !== "" ? Number(value) :
+      value,
+  }));
+}
 
-  async function handleSubmit(event) {
+const isValidDateFormat = (dateStr) => {
+      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4}$/;
+      return regex.test(dateStr);
+      };
+
+async function handleSubmit(event) {
       event.preventDefault();
 
       const url = import.meta.env.VITE_BACKEND_URL;
       const token = localStorage.getItem("token")
+
+      if (!isValidDateFormat(pet.birthDate)) {
+        alert("El formato de la fecha debe ser dd/mm/aaaa");
+        return;
+      }
 
       try {
 
@@ -48,8 +57,8 @@ export const AddPet = () => {
           },
           body: JSON.stringify({
           ...pet,
-          age: parseInt(pet.age),
           wheight: parseFloat(pet.wheight),
+          birthDate: pet.birthDate,
         }),
       });
 
@@ -64,8 +73,7 @@ export const AddPet = () => {
         alert("Error al registrar la mascota");
       }
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la mascotte:", error);
-      alert("Une erreur est survenue. Veuillez réessayer.");
+      alert("Un error occurio. Intente de nuevo.");
     }
   }
 
@@ -117,15 +125,15 @@ export const AddPet = () => {
 
               <div className="form-floating mb-3">
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
-                  id="ageInput"
-                  name="age"
-                  placeholder="Edad"
+                  id="birthDateInput"
+                  placeholder="dd/mm/aaaa"
+                  name="birthDate"
                   onChange={handleChange}
-                  value={pet.age} 
+                  value={pet.birthDate} 
                 />
-                <label htmlFor="ageInput">Edad</label>
+                <label htmlFor="birthDateInput">Fecha de nacimiento (dd/mm/aaaa)</label>
               </div>
 
               <div className="form-floating mb-3">

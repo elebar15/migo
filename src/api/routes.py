@@ -144,7 +144,7 @@ def add_pet():
     name = data.get('name')
     species = data.get('species')
     breed = data.get('breed')
-    age = data.get('age')
+    birthDate = data.get('birthDate')
     wheight = data.get('wheight')
 
     if not name:
@@ -162,10 +162,11 @@ def add_pet():
             name=name,
             species=species,
             breed=breed,
-            age=int(age) if age else None,
             wheight=float(wheight) if wheight else None,
-            owner_id=owner_id
-        )
+            owner_id=owner_id,
+            birthDate=datetime.strptime(birthDate, "%d/%m/%Y").date() if birthDate else datetime.today().date()
+            )
+        
 
         db.session.add(pet)
         db.session.commit()
@@ -197,11 +198,16 @@ def add_note():
     note = data.get('note')
     pet_id = data.get('pet_id')
 
-    if not event_name:
-        return jsonify({"message": "Necesita al menos el nombre del evento"}), 400
+    if not event_name or not pet_id:
+        return jsonify({"message": "Necesita al menos el nombre del evento y el pet id"}), 400
     
     if not event_date:
         event_date = datetime.now()
+    elif isinstance(event_date, str):
+        try:
+            event_date = datetime.strptime(event_date, "%d/%m/%Y")
+        except ValueError:
+            return jsonify({"error": "Formato de fecha inválido. Use dd/mm/aaaa"}), 400
 
     try:
         new_note = ClinHistory(
