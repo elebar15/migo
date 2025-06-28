@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getPetById } from "../services/api";
 import { useState, useEffect } from "react";
+import { PetMedicalRecord } from "../components/PetMedicalRecord";
 
 export function PetDetail() {
     const { store } = useGlobalReducer();
@@ -36,7 +37,7 @@ export function PetDetail() {
 
             <div className="row align-items-center mb-3">
                 <div className="col-10">
-                    <h2 className="mb-0">{pet.name}</h2>
+                    <h2 className="mb-0 fs-1 ">{pet.name}</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end gap-2">
                     <button className="btn btn-outline-dark btn-sm">
@@ -58,12 +59,13 @@ export function PetDetail() {
                     />
                 </div>
                 <div className="col-md-8">
-                    <ul className="list-group list-group-flush">
+                    <ul className="list-group list-group-flush mb-3">
                         <li className="list-group-item fs-5"><strong>Especie</strong> {pet.species}</li>
                         <li className="list-group-item fs-5"><strong>Raza</strong> {pet.breed}</li>
                         <li className="list-group-item fs-5"><strong>Edad</strong> {pet.age}</li>
                         <li className="list-group-item fs-5"><strong>Peso</strong> {pet.weight}</li>
                     </ul>
+                    <PetMedicalRecord/>
                 </div>
             </div>
         </div>

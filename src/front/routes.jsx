@@ -49,6 +49,7 @@ export const router = createBrowserRouter(
         <Route path="/add-pet" element={<ProtectedRoute><AddPet /></ProtectedRoute>} /> 
         <Route path= "/pet-detail/:theId" element={<ProtectedRoute><PetDetail/></ProtectedRoute>}/>
         <Route path="/edit-pet/:id" element={<EditPet />} />
+
         
       </Route>
     )
