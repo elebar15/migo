@@ -6,7 +6,6 @@ from api.models import db, User, RoleEnum, Pet, ClinHistory
 from api.utils import generate_sitemap, APIException, send_email, check_password
 from flask_cors import CORS
 from api.utils import set_password, check_password
-from werkzeug.security import check_password_hash
 from base64 import b64encode
 import os
 from sqlalchemy import select
@@ -20,6 +19,7 @@ expires_delta = timedelta(minutes=expires_in_minutes)
 
 # Allow CORS requests to this API
 CORS(api)
+
 
 @api.route('/healt-check', methods=['GET'])
 def handle_hello():
@@ -60,6 +60,7 @@ def add_user():
         db.session.rollback()
         return jsonify(f'Error: {error.args}'), 500
 
+
 @api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -77,13 +78,15 @@ def login():
         return jsonify({"msg": "Contraseña incorrecta"}), 401
 
     access_token = create_access_token(identity=str(user.id))
-    return jsonify({ "token": access_token, "user_id": user.id }), 200
+    return jsonify({"token": access_token, "user_id": user.id}), 200
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user_id = get_jwt_identity()
-    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200      
+    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200
+
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
@@ -126,6 +129,7 @@ def reset_password():
         api.logger.error(f"Error al enviar el correo a {email}")
         return jsonify("Error en el envío del correo"), 500
 
+
 @api.route('/pet', methods=['POST'])
 @jwt_required()
 def add_pet():
@@ -160,7 +164,7 @@ def add_pet():
             breed=breed,
             age=int(age) if age else None,
             wheight=float(wheight) if wheight else None,
-            owner_id=owner_id 
+            owner_id=owner_id
         )
 
         db.session.add(pet)
@@ -171,6 +175,15 @@ def add_pet():
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+
+
+@api.route('/pets', methods=['GET'])
+@jwt_required()
+def get_pets():
+    user_id = get_jwt_identity()
+    pets = db.session.execute(select(Pet).where(Pet.owner_id == user_id)).scalars().all()
+    return jsonify([pet.serialize() for pet in pets]), 200
+
 
 @api.route('/note', methods=['POST'])   
 @jwt_required()
