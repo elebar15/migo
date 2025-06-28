@@ -2,13 +2,21 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom"
 
 const initialStateNote = {
-  event_date: "",
+  event_date: getTodayDate(),
   event_name: "",
   place: "",
   note: "",
   pet_id: "",
 };
 
+
+function getTodayDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const year = today.getFullYear();
+  return `${day}/${month}/${year}`;
+}
 
 export const AddNote = () => {
   const [note, setNote] = useState(initialStateNote);
@@ -19,7 +27,7 @@ export const AddNote = () => {
   useEffect(() => {
   const token = localStorage.getItem("token");
   if (!token) {
-    navigate("/login");
+    navigate("/");
   }
 
     async function fetchPets() {
@@ -57,11 +65,22 @@ function handleChange({ target }) {
   }));
 }
 
+const isValidDateFormat = (dateStr) => {
+      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4}$/;
+      return regex.test(dateStr);
+      };
+
+
 async function handleSubmit(event) {
     event.preventDefault();
 
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token")
+
+    if (!isValidDateFormat(note.event_date)) {
+      alert("El formato de la fecha debe ser dd/mm/aaaa");
+      return;
+    }
 
     try {
 
@@ -80,7 +99,7 @@ async function handleSubmit(event) {
     if (response.status === 201) {
       setNote(initialStateNote);
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, 1000);
     
     } else {
@@ -138,7 +157,7 @@ return (
                 <label htmlFor="petSelect">Mascota</label>
               </div>
             ) : (
-              <p className="text-center">ninguna mascota</p>
+              <p className="text-center">...</p>
             )}
 
             <div className="form-floating mb-3">
@@ -163,7 +182,6 @@ return (
                 name="place"
                 placeholder="Lugar"
                 onChange={handleChange}
-                required
                 value={note.place} 
               />
               <label htmlFor="placeInput">Lugar del evento</label>
@@ -193,7 +211,6 @@ return (
                 rows="10"
                 style={{ resize: "none" }} 
                 onInput={handleResize} 
-                required
               />
               <label htmlFor="noteInput">Notas</label>
             </div>

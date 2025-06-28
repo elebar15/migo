@@ -16,7 +16,7 @@ export const AddPet = () => {
   useEffect(() => {
   const token = localStorage.getItem("token");
   if (!token) {
-    navigate("/login");
+    navigate("/");
   }
 }, []);
 
@@ -31,11 +31,21 @@ function handleChange({ target }) {
   }));
 }
 
+const isValidDateFormat = (dateStr) => {
+      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4}$/;
+      return regex.test(dateStr);
+      };
+
 async function handleSubmit(event) {
       event.preventDefault();
 
       const url = import.meta.env.VITE_BACKEND_URL;
       const token = localStorage.getItem("token")
+
+      if (!isValidDateFormat(pet.birthDate)) {
+        alert("El formato de la fecha debe ser dd/mm/aaaa");
+        return;
+      }
 
       try {
 
