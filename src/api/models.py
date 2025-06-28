@@ -45,7 +45,7 @@ class Pet(db.Model):
     name: Mapped[str] = mapped_column(String(80), nullable=False)
     species: Mapped[str] = mapped_column(String(80), nullable=True)   
     breed: Mapped[str] = mapped_column(String(80), nullable=True)
-    birthDate: Mapped[datetime] = mapped_column(DateTime, nullable=True)  
+    birthDate: Mapped[str] = mapped_column(DateTime, nullable=True)  
     wheight: Mapped[float] = mapped_column(Float(2), nullable=True) 
     owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False) 
 
@@ -68,7 +68,7 @@ class ClinHistory(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)  
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow) 
-    event_date: Mapped[str] = mapped_column(DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())  # Date de l'événement
+    event_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     event_name: Mapped[str] = mapped_column(String, nullable=False)
     place: Mapped[str] = mapped_column(String(80), nullable=True) 
     note: Mapped[str] = mapped_column(Text, nullable=True) 

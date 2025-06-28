@@ -27,17 +27,9 @@ function handleChange({ target }) {
     ...prev,
     [name]:
       type === "number" && value !== "" ? Number(value) :
-      type === "date" && value !== "" ? formatDateToSpanish(value) :
-      value
+      value,
   }));
 }
-
-function formatDateToSpanish(dateStr) {
-  if (!dateStr || !dateStr.includes("-")) return dateStr;
-  const [year, month, day] = dateStr.split("-");
-  return `${day}/${month}/${year}`;
-}
-
 
 async function handleSubmit(event) {
       event.preventDefault();
@@ -56,6 +48,7 @@ async function handleSubmit(event) {
           body: JSON.stringify({
           ...pet,
           wheight: parseFloat(pet.wheight),
+          birthDate: pet.birthDate,
         }),
       });
 
@@ -122,14 +115,15 @@ async function handleSubmit(event) {
 
               <div className="form-floating mb-3">
                 <input
-                  type="date"
+                  type="text"
                   className="form-control"
                   id="birthDateInput"
+                  placeholder="dd/mm/aaaa"
                   name="birthDate"
                   onChange={handleChange}
                   value={pet.birthDate} 
                 />
-                <label htmlFor="birthDateInput">Fecha de nacimiento</label>
+                <label htmlFor="birthDateInput">Fecha de nacimiento (dd/mm/aaaa)</label>
               </div>
 
               <div className="form-floating mb-3">

@@ -57,12 +57,6 @@ function handleChange({ target }) {
   }));
 }
 
-function formatDateToSpanish(dateStr) {
-  if (!dateStr || !dateStr.includes("-")) return dateStr;
-  const [year, month, day] = dateStr.split("-");
-  return `${day}/${month}/${year}`;
-}
-
 async function handleSubmit(event) {
     event.preventDefault();
 
@@ -79,7 +73,7 @@ async function handleSubmit(event) {
         },
         body: JSON.stringify({
         ...note,
-        event_date: formatDateToSpanish(note.event_date),
+        event_date: note.event_date,
       }),
     });
 
@@ -133,7 +127,6 @@ return (
                   className="form-control"
                   onChange={handleChange}
                   value={note.pet_id}
-                  required
                 >
                   <option value="">quien ?</option>
                   {pets.map((pet) => (
@@ -178,15 +171,15 @@ return (
 
             <div className="form-floating mb-3">
                 <input
-                  type="date"
+                  type="text"
                   className="form-control"
                   id="event_dateInput"
                   name="event_date"
+                  placeholder="dd/mm/aaaa"
                   onChange={handleChange}
                   value={note.event_date}
-                  required
                 />
-                <label htmlFor="event_dateInput">Fecha</label>
+                <label htmlFor="event_dateInput">Fecha (dd/mm/aaaa)</label>
               </div>
 
             <div className="form-floating mb-3">
@@ -194,7 +187,7 @@ return (
                 className="form-control"
                 id="noteInput"
                 name="note"
-                placeholder=""
+                placeholder="dd/mm/aaaa"
                 onChange={handleChange}
                 value={note.note}
                 rows="10"
