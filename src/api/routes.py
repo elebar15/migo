@@ -229,3 +229,43 @@ def get_notes():
     
     notes = db.session.execute(select(ClinHistory).where(ClinHistory.pet_id == pet.id)).scalars().all()
     return jsonify([note.serialize() for note in notes]), 200
+
+
+@api.route('/pets/<int:pet_id>/clin-history', methods=['GET'])
+@jwt_required()
+def get_clin_history_by_pet(pet_id):
+    user_id = get_jwt_identity()
+    pet = db.session.get(Pet, pet_id)
+
+    if not pet:
+        return jsonify({"error": "Mascota no encontrada"}), 404
+
+    if pet.owner_id != user_id:
+        return jsonify({"error": "No tienes acceso a esta mascota"}), 403
+
+    records = db.session.execute(
+        select(ClinHistory).where(ClinHistory.pet_id == pet_id)
+    ).scalars().all()
+
+    return jsonify([record.serialize() for record in records]), 200
+
+
+@api.route('/clin-history/<int:note_id>', methods=['DELETE'])
+@jwt_required()
+def delete_clin_history(note_id):
+    user_id = get_jwt_identity()
+
+    note = db.session.get(ClinHistory, note_id)
+    if not note:
+        return jsonify({"error": "Registro clínico no encontrado"}), 404
+
+    if note.pet.owner_id != user_id:
+        return jsonify({"error": "No tienes permiso para eliminar este registro"}), 403
+
+    try:
+        db.session.delete(note)
+        db.session.commit()
+        return jsonify({"message": "Registro clínico eliminado exitosamente"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Error al eliminar el registro"}), 500
