@@ -17,7 +17,6 @@ import { AddPet } from "./pages/AddPet";
 import { PetDetail } from "./pages/PetDetail";
 import { EditPet } from "./pages/EditPet";
 import NotFound from "./pages/NotFound";
-import { AddNote } from "./pages/AddNote";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
@@ -50,7 +49,7 @@ export const router = createBrowserRouter(
         <Route path="/add-pet" element={<ProtectedRoute><AddPet /></ProtectedRoute>} /> 
         <Route path= "/pet-detail/:theId" element={<ProtectedRoute><PetDetail/></ProtectedRoute>}/>
         <Route path="/edit-pet/:id" element={<EditPet />} />
-        <Route path="/add-note" element={<ProtectedRoute><AddNote /></ProtectedRoute>} /> 
+        
       </Route>
     )
 );
