@@ -45,7 +45,7 @@ class Pet(db.Model):
     name: Mapped[str] = mapped_column(String(80), nullable=False)
     species: Mapped[str] = mapped_column(String(80), nullable=True)   
     breed: Mapped[str] = mapped_column(String(80), nullable=True)
-    birthDate: Mapped[str] = mapped_column(DateTime, nullable=True)  
+    age: Mapped[str] = mapped_column(String, nullable=True)  
     wheight: Mapped[float] = mapped_column(Float(2), nullable=True) 
     owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False) 
 
@@ -58,7 +58,7 @@ class Pet(db.Model):
             'name': self.name,
             'species': self.species,
             'breed': self.breed,
-            'birthDate': self.birthDate,
+            'age': self.age,
             'wheight': self.wheight,
             'owner_id': self.owner_id
         }

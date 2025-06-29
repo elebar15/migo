@@ -144,7 +144,7 @@ def add_pet():
     name = data.get('name')
     species = data.get('species')
     breed = data.get('breed')
-    birthDate = data.get('birthDate')
+    age = data.get('age')
     wheight = data.get('wheight')
 
     if not name:
@@ -164,7 +164,7 @@ def add_pet():
             breed=breed,
             wheight=float(wheight) if wheight else None,
             owner_id=owner_id,
-            birthDate=datetime.strptime(birthDate, "%d/%m/%Y").date() if birthDate else datetime.today().date()
+            age=age
             )
         
 
@@ -226,3 +226,11 @@ def add_note():
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500    
+
+@api.route('/notes', methods=['GET'])
+@jwt_required()
+def get_notes():
+    user_id = get_jwt_identity()
+    
+    notes = db.session.execute(select(ClinHistory).where(ClinHistory.pet_id == pet.id)).scalars().all()
+    return jsonify([note.serialize() for note in notes]), 200

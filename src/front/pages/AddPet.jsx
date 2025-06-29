@@ -5,7 +5,7 @@ const initialStatePet = {
   name: "",
   species: "",
   breed: "",
-  birthDate: "",
+  age: "",
   wheight: "",
 };
 
@@ -31,10 +31,6 @@ function handleChange({ target }) {
   }));
 }
 
-const isValidDateFormat = (dateStr) => {
-      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4}$/;
-      return regex.test(dateStr);
-      };
 
 async function handleSubmit(event) {
       event.preventDefault();
@@ -42,10 +38,6 @@ async function handleSubmit(event) {
       const url = import.meta.env.VITE_BACKEND_URL;
       const token = localStorage.getItem("token")
 
-      if (!isValidDateFormat(pet.birthDate)) {
-        alert("El formato de la fecha debe ser dd/mm/aaaa");
-        return;
-      }
 
       try {
 
@@ -58,14 +50,13 @@ async function handleSubmit(event) {
           body: JSON.stringify({
           ...pet,
           wheight: parseFloat(pet.wheight),
-          birthDate: pet.birthDate,
         }),
       });
 
       if (response.status === 201) {
         setPet(initialStatePet);
         setTimeout(() => {
-          navigate("/");
+          navigate("/home");
         }, 1000);
       } else if (response.status === 400) {
         alert("La mascota ya existe");
@@ -127,13 +118,13 @@ async function handleSubmit(event) {
                 <input
                   type="text"
                   className="form-control"
-                  id="birthDateInput"
+                  id="ageInput"
                   placeholder="dd/mm/aaaa"
-                  name="birthDate"
+                  name="age"
                   onChange={handleChange}
-                  value={pet.birthDate} 
+                  value={pet.age} 
                 />
-                <label htmlFor="birthDateInput">Fecha de nacimiento (dd/mm/aaaa)</label>
+                <label htmlFor="ageInput">Edad</label>
               </div>
 
               <div className="form-floating mb-3">
