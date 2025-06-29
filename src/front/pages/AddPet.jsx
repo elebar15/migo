@@ -38,6 +38,7 @@ export const AddPet = () => {
       const url = import.meta.env.VITE_BACKEND_URL;
       const token = localStorage.getItem("token")
 
+
       try {
 
         const response = await fetch(`${url}/pet`, {
@@ -56,7 +57,7 @@ export const AddPet = () => {
       if (response.status === 201) {
         setPet(initialStatePet);
         setTimeout(() => {
-          navigate("/");
+          navigate("/home");
         }, 1000);
       } else if (response.status === 400) {
         alert("La mascota ya existe");
