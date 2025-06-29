@@ -165,7 +165,6 @@ def add_pet():
             age=int(age) if age else None,
             wheight=float(wheight) if wheight else None,
             owner_id=owner_id,
-            age=age
             )
         
 
