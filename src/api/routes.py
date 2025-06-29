@@ -164,8 +164,9 @@ def add_pet():
             breed=breed,
             age=int(age) if age else None,
             wheight=float(wheight) if wheight else None,
-            owner_id=owner_id
-        )
+            owner_id=owner_id,
+            )
+        
 
         db.session.add(pet)
         db.session.commit()
@@ -220,3 +221,11 @@ def add_note():
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500    
+
+@api.route('/notes', methods=['GET'])
+@jwt_required()
+def get_notes():
+    user_id = get_jwt_identity()
+    
+    notes = db.session.execute(select(ClinHistory).where(ClinHistory.pet_id == pet.id)).scalars().all()
+    return jsonify([note.serialize() for note in notes]), 200
