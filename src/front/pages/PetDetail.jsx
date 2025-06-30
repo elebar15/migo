@@ -65,7 +65,7 @@ export function PetDetail() {
                         <li className="list-group-item fs-5"><strong>Edad</strong> {pet.age}</li>
                         <li className="list-group-item fs-5"><strong>Peso</strong> {pet.weight}</li>
                     </ul>
-                    <PetMedicalRecord/>
+                    <PetMedicalRecord petId={theId}/>
                 </div>
             </div>
         </div>
