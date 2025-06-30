@@ -185,38 +185,52 @@ def get_pets():
     pets = db.session.execute(select(Pet).where(Pet.owner_id == user_id)).scalars().all()
     return jsonify([pet.serialize() for pet in pets]), 200
 
-
-@api.route('/note', methods=['POST'])   
+@api.route('/note', methods=['POST'])
 @jwt_required()
 def add_note():
-
     data = request.get_json()
 
-    event_name = data.get('event_name')   
+    event_name = data.get('event_name')
     event_date = data.get('event_date')
     place = data.get('place')
     note = data.get('note')
     pet_id = data.get('pet_id')
 
     if not event_name:
-        return jsonify({"message": "Necesita al menos el nombre del evento"}), 400
-    
+        return jsonify({"message": "El nombre del evento es obligatorio"}), 400
+
+    if not pet_id:
+        return jsonify({"message": "El ID de la mascota es obligatorio"}), 400
+
+    pet = Pet.query.get(pet_id)
+    if not pet:
+        return jsonify({"message": "Mascota no encontrada"}), 400
+
     if not event_date:
-        event_date = datetime.now()
+        event_date = datetime.utcnow()  
+
+    else:
+        try:
+            event_date = datetime.strptime(event_date, "%d/%m/%Y")
+        except ValueError:
+            try:
+                event_date = datetime.fromisoformat(event_date)
+            except ValueError:
+                return jsonify({"message": "Formato de fecha inválido"}), 400
 
     try:
         new_note = ClinHistory(
-            event_name = event_name,   
-            event_date = event_date,
-            place = place,
-            note = note,
-            pet_id = pet_id
+            event_name=event_name,
+            event_date=event_date,
+            place=place,
+            note=note,
+            pet_id=pet_id
         )
 
         db.session.add(new_note)
         db.session.commit()
 
-        return jsonify({"message" : "Nota añadida"}), 201
+        return jsonify({"message": "Nota añadida"}), 201
 
     except Exception as error:
         db.session.rollback()
@@ -292,3 +306,4 @@ def delete_pet(pet_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
