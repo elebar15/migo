@@ -46,13 +46,13 @@ export function PetDetail() {
                 </div>
                 <div className="col-2 d-flex justify-content-end gap-2">
                     <button className="btn btn-outline-dark btn-sm">
-                        <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                        <i className="fa-solid fa-pen me-1"></i>
                     </button>
                     <button
-                        className="btn btn-outline-danger btn-sm"
+                        className="btn btn-outline-dark btn-sm"
                         onClick={() => setShowModal(true)}
                     >
-                        <i className="fa-solid fa-trash me-1"></i> Borrar
+                        <i className="fa-solid fa-trash me-1"></i>
                     </button>
                 </div>
             </div>
