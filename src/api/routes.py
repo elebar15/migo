@@ -186,12 +186,10 @@ def get_pets():
     return jsonify([pet.serialize() for pet in pets]), 200
 
 @api.route('/note', methods=['POST'])
-@api.route('/note', methods=['POST'])
 @jwt_required()
 def add_note():
     data = request.get_json()
 
-    event_name = data.get('event_name')
     event_name = data.get('event_name')
     event_date = data.get('event_date')
     place = data.get('place')
@@ -208,17 +206,9 @@ def add_note():
     if not pet:
         return jsonify({"message": "Mascota no encontrada"}), 400
 
-        return jsonify({"message": "El nombre del evento es obligatorio"}), 400
-
-    if not pet_id:
-        return jsonify({"message": "El ID de la mascota es obligatorio"}), 400
-
-    pet = Pet.query.get(pet_id)
-    if not pet:
-        return jsonify({"message": "Mascota no encontrada"}), 400
-
     if not event_date:
-        event_date = datetime.utcnow()
+        event_date = datetime.utcnow()  
+
     else:
         try:
             event_date = datetime.strptime(event_date, "%d/%m/%Y")
@@ -235,21 +225,13 @@ def add_note():
             place=place,
             note=note,
             pet_id=pet_id
-            event_name=event_name,
-            event_date=event_date,
-            place=place,
-            note=note,
-            pet_id=pet_id
         )
 
         db.session.add(new_note)
         db.session.commit()
 
         return jsonify({"message": "Nota añadida"}), 201
-        return jsonify({"message": "Nota añadida"}), 201
 
     except Exception as error:
         db.session.rollback()
-        return jsonify({"error": str(error)}), 500
-
         return jsonify({"error": str(error)}), 500
