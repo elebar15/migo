@@ -307,3 +307,44 @@ def delete_pet(pet_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+@api.route('/note/<int:id>', methods=['GET'])
+@jwt_required()
+def get_note(id):
+    note = ClinHistory.query.get(id)
+
+    if not note:
+        return jsonify({"message": "Note non trouvée"}), 404
+
+    return jsonify({
+        "id": note.id,
+        "event_name": note.event_name,
+        "event_date": note.event_date,
+        "place": note.place,
+        "note": note.note,
+        "pet_id": note.pet_id,
+        "pet_name": note.pet.name 
+    })
+
+
+
+@api.route('/note/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_note(id):
+    data = request.get_json()
+
+    note = ClinHistory.query.get(id)
+    if not note:
+        return jsonify({"message": "Nota sin encontrar"}), 404
+
+    note.event_name = data.get('event_name', note.event_name)
+    note.event_date = data.get('event_date', note.event_date)
+    note.place = data.get('place', note.place)
+    note.note = data.get('note', note.note)
+    note.pet_id = data.get('pet_id', note.pet_id)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Nota actualizada"}), 200
+    except Exception as error:
+        db.session.rollback()
+        return jsonify({"error": str(error)}), 500
