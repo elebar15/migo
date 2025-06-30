@@ -222,15 +222,6 @@ def add_note():
         db.session.rollback()
         return jsonify({"error": str(error)}), 500    
 
-@api.route('/notes', methods=['GET'])
-@jwt_required()
-def get_notes():
-    user_id = get_jwt_identity()
-    
-    notes = db.session.execute(select(ClinHistory).where(ClinHistory.pet_id == pet.id)).scalars().all()
-    return jsonify([note.serialize() for note in notes]), 200
-
-
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
 @jwt_required()
 def delete_pet(pet_id):
@@ -254,16 +245,22 @@ def delete_pet(pet_id):
 
 @api.route('/note/<int:id>', methods=['GET'])
 @jwt_required()
-def get_note_by_id(id):
-    try:
-        note = ClinHistory.query.get(id)
-        if not note:
-            return jsonify({"message": "Nota no encontrada"}), 404
+def get_note(id):
+    note = ClinHistory.query.get(id)
 
-        return jsonify(note.serialize()), 200
+    if not note:
+        return jsonify({"message": "Note non trouvée"}), 404
 
-    except Exception as error:
-        return jsonify({"error": str(error)}), 500
+    return jsonify({
+        "id": note.id,
+        "event_name": note.event_name,
+        "event_date": note.event_date,
+        "place": note.place,
+        "note": note.note,
+        "pet_id": note.pet_id,
+        "pet_name": note.pet.name 
+    })
+
 
 
 @api.route('/note/<int:id>', methods=['PUT'])
