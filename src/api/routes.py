@@ -229,3 +229,25 @@ def get_notes():
     
     notes = db.session.execute(select(ClinHistory).where(ClinHistory.pet_id == pet.id)).scalars().all()
     return jsonify([note.serialize() for note in notes]), 200
+
+
+@api.route('/pet/<int:pet_id>', methods=['DELETE'])
+@jwt_required()
+def delete_pet(pet_id):
+    user_id = int(get_jwt_identity())
+    pet = Pet.query.get(pet_id)
+
+    if not pet:
+        return jsonify({"message": "Mascota no encontrada"}), 404
+
+    if pet.owner_id != user_id:
+        return jsonify({"message": "No autorizado"}), 403
+
+    try:
+        db.session.delete(pet)
+        db.session.commit()
+        return jsonify({"message": "Mascota eliminada correctamente"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
