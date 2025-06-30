@@ -3,6 +3,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getPetById, deletePetById } from "../services/api";
 import { useState, useEffect } from "react";
 import { PetMedicalRecord } from "../components/PetMedicalRecord";
+import { Link } from "react-router-dom";
 
 export function PetDetail() {
     const { store } = useGlobalReducer();
@@ -45,9 +46,9 @@ export function PetDetail() {
                     <h2 className="mb-0 fs-1 ">{pet.name}</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end gap-2">
-                    <button className="btn btn-outline-dark btn-sm">
+                    <Link to={`/edit-pet/${theId}`} className="btn btn-outline-dark btn-sm">
                         <i className="fa-solid fa-pen me-1"></i>
-                    </button>
+                    </Link>
                     <button
                         className="btn btn-outline-dark btn-sm"
                         onClick={() => setShowModal(true)}
