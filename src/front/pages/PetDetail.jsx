@@ -1,7 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import { getPetById } from "../services/api";
+import { getPetById, deletePetById } from "../services/api";
 import { useState, useEffect } from "react";
+import { PetMedicalRecord } from "../components/PetMedicalRecord";
+import { Link } from "react-router-dom";
 
 export function PetDetail() {
     const { store } = useGlobalReducer();
@@ -26,27 +28,12 @@ export function PetDetail() {
     }, [theId, store.pets]);
 
     const handleDelete = async () => {
-        const url = import.meta.env.VITE_BACKEND_URL;
-        const token = localStorage.getItem("token");
-
         try {
-            const response = await fetch(`${url}/pet/${theId}`, { 
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-
-            if (response.ok) {
-                alert("Mascota eliminada con éxito");
-                navigate("/home");
-            } else {
-                const errorData = await response.json();
-                alert(`Error al eliminar la mascota: ${errorData.message || "Error desconocido"}`);
-            }
+            await deletePetById(theId);
+            alert("Mascota eliminada con éxito");
+            navigate("/home");
         } catch (error) {
-            console.error(error);
-            alert("Hubo un problema al intentar eliminar la mascota.");
+            alert(`Error al eliminar la mascota: ${error.message}`);
         }
     };
 
@@ -56,17 +43,17 @@ export function PetDetail() {
         <div className="container mt-4">
             <div className="row align-items-center mb-3">
                 <div className="col-10">
-                    <h2 className="mb-0">{pet.name}</h2>
+                    <h2 className="mb-0 fs-1 ">{pet.name}</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end gap-2">
-                    <button className="btn btn-outline-dark btn-sm">
-                        <i className="fa-solid fa-pen-to-square me-1"></i> Editar
-                    </button>
+                    <Link to={`/edit-pet/${theId}`} className="btn btn-outline-dark btn-sm">
+                        <i className="fa-solid fa-pen me-1"></i>
+                    </Link>
                     <button
-                        className="btn btn-outline-danger btn-sm"
+                        className="btn btn-outline-dark btn-sm"
                         onClick={() => setShowModal(true)}
                     >
-                        <i className="fa-solid fa-trash me-1"></i> Borrar
+                        <i className="fa-solid fa-trash me-1"></i>
                     </button>
                 </div>
             </div>
@@ -80,12 +67,13 @@ export function PetDetail() {
                     />
                 </div>
                 <div className="col-md-8">
-                    <ul className="list-group list-group-flush">
+                    <ul className="list-group list-group-flush mb-3">
                         <li className="list-group-item fs-5"><strong>Especie</strong> {pet.species}</li>
                         <li className="list-group-item fs-5"><strong>Raza</strong> {pet.breed}</li>
                         <li className="list-group-item fs-5"><strong>Edad</strong> {pet.age}</li>
-                        <li className="list-group-item fs-5"><strong>Peso</strong> {pet.weight}</li>
+                        <li className="list-group-item fs-5"><strong>Peso</strong> {pet.wheight}</li>
                     </ul>
+                    <PetMedicalRecord petId={theId} />
                 </div>
             </div>
 
