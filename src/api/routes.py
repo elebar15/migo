@@ -254,9 +254,6 @@ def get_clin_history_by_pet(pet_id):
     if not pet:
         return jsonify({"error": "Mascota no encontrada"}), 404
 
-    # if pet.owner_id != user_id:
-    #     return jsonify({"error": "No tienes acceso a esta mascota"}), 403
-
     records = db.session.execute(
         select(ClinHistory).where(ClinHistory.pet_id == pet_id)
     ).scalars().all()
@@ -273,9 +270,6 @@ def delete_clin_history(note_id):
     if not note:
         return jsonify({"error": "Registro clínico no encontrado"}), 404
 
-    if note.pet.owner_id != user_id:
-        return jsonify({"error": "No tienes permiso para eliminar este registro"}), 403
-
     try:
         db.session.delete(note)
         db.session.commit()
@@ -283,7 +277,6 @@ def delete_clin_history(note_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Error al eliminar el registro"}), 500
-
 
 
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
@@ -307,6 +300,7 @@ def delete_pet(pet_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+
 @api.route('/note/<int:id>', methods=['GET'])
 @jwt_required()
 def get_note(id):
@@ -324,7 +318,6 @@ def get_note(id):
         "pet_id": note.pet_id,
         "pet_name": note.pet.name 
     })
-
 
 
 @api.route('/note/<int:id>', methods=['PUT'])
