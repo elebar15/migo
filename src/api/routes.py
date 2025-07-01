@@ -11,6 +11,8 @@ import os
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta, datetime
+import openai
+from openai import OpenAI
 
 api = Blueprint('api', __name__)
 
@@ -284,3 +286,33 @@ def update_note(id):
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+
+@api.route('/ask-vet', methods=['POST'])
+def ask_vet():
+    client = OpenAI(
+            api_key = os.getenv("OPENAI_API_KEY"),
+    )
+    data = request.get_json()
+    question = data.get("question", "")
+    print("Pregunta recibida:", question)
+
+    if not isinstance(question, str):
+        return jsonify({"error": f"Tipo invalido : {type(question)}"}), 400
+
+    if not question.strip():
+        return jsonify({"error": "Pregunta vacia"}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Eres un veterinario experto. Das consejos confiables y claros a dueños de mascotas."},
+                {"role": "user", "content": question}
+            ],
+            temperature=0.7,
+            max_tokens=500
+        )
+        reply = response.choices[0].message['content']
+        return jsonify({"response": reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

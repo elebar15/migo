@@ -19,6 +19,7 @@ import { EditPet } from "./pages/EditPet";
 import NotFound from "./pages/NotFound";
 import { AddNote } from "./pages/AddNote";
 import { EditNote } from "./pages/EditNote"
+import { Chatbot } from "./pages/Chatbot";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
@@ -53,6 +54,7 @@ export const router = createBrowserRouter(
         <Route path="/edit-pet/:id" element={<EditPet />} />
         <Route path="/add-note" element={<ProtectedRoute><AddNote /></ProtectedRoute>} /> 
         <Route path="/edit-note/:id" element={<ProtectedRoute><EditNote /></ProtectedRoute>} /> 
+        <Route path="/consejos" element={<Chatbot />} />
       </Route>
     )
 );
