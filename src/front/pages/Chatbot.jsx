@@ -38,10 +38,16 @@ export const Chatbot = () => {
     <div className="text-center">
       <h1 className="mt-5">Asistante veterinario</h1>
       <textarea
-        rows={4}
+        rows={3}
         placeholder="Pregunta consejos a nuestro experto en mascotas"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            askVet();
+          }
+        }}
         className="mt-3"
       />
       <br />
@@ -49,7 +55,7 @@ export const Chatbot = () => {
         {loading ? 'Cargando...' : 'Preguntar'}
       </button>
       <div >
-        <p className="mt-3">{response}</p>
+        <p className="text-start p-5">{response}</p>
       </div>
     </div>
   );

@@ -11,8 +11,8 @@ import os
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta, datetime
-import openai
-from openai import OpenAI
+from clarifai.client.model import Model
+import asyncio
 
 api = Blueprint('api', __name__)
 
@@ -238,15 +238,6 @@ def add_note():
         db.session.rollback()
         return jsonify({"error": str(error)}), 500    
 
-@api.route('/notes', methods=['GET'])
-@jwt_required()
-def get_notes():
-    user_id = get_jwt_identity()
-    
-    notes = db.session.execute(select(ClinHistory).where(ClinHistory.pet_id == pet.id)).scalars().all()
-    return jsonify([note.serialize() for note in notes]), 200
-
-
 @api.route('/pets/<int:pet_id>/clin-history', methods=['GET'])
 @jwt_required()
 def get_clin_history_by_pet(pet_id):
@@ -346,12 +337,10 @@ def update_note(id):
 
 @api.route('/ask-vet', methods=['POST'])
 def ask_vet():
-    client = OpenAI(
-            api_key = os.getenv("OPENAI_API_KEY"),
-    )
     data = request.get_json()
     question = data.get("question", "")
-    print("Pregunta recibida:", question)
+
+    apikey = os.getenv("Clarifai_API_KEY")
 
     if not isinstance(question, str):
         return jsonify({"error": f"Tipo invalido : {type(question)}"}), 400
@@ -360,16 +349,24 @@ def ask_vet():
         return jsonify({"error": "Pregunta vacia"}), 400
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Eres un veterinario experto. Das consejos confiables y claros a dueños de mascotas."},
-                {"role": "user", "content": question}
-            ],
-            temperature=0.7,
-            max_tokens=500
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        prompt = (
+            "Eres un veterinario experto. Tu tarea es responder con consejos fiables "
+            "y claros en menos de 50 palabras.\n\n"
+            f"Pregunta del usuario: \"{question}\"\n"
+            "Respuesta:"
         )
-        reply = response.choices[0].message['content']
+        model_url = "https://clarifai.com/microsoft/text-generation/models/phi-4"
+
+        model = Model(url=model_url, pat=apikey)
+        model_prediction = model.predict_by_bytes(prompt.encode())
+
+        reply = model_prediction.outputs[0].data.text.raw
         return jsonify({"response": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
