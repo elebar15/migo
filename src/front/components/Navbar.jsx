@@ -13,20 +13,22 @@ export const Navbar = () => {
         <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm px-4">
             <div className="container-fluid">
 
-                <span className="navbar-brand fw-bold fs-4 text-secondary">Migo</span>
+                <Link to="/home" className="navbar-brand fw-bold fs-4 text-secondary">
+                    Migo
+                </Link>
 
                 <div className="ms-auto d-flex align-items-center gap-4">
                     <Link to="/home" className="text-secondary text-decoration-none">
                         <i className="fa fa-home fs-5"></i>
                     </Link>
                     {/* <Link to="/profile" className="text-secondary text-decoration-none"> */}
-                        <i className="fas fa-user fs-5 text-secondary"></i>
+                    <i className="fas fa-user fs-5 text-secondary"></i>
                     {/* </Link> */}
                     {/* <Link to="/chat" className="text-secondary text-decoration-none"> */}
-                        <i className="fas fa-comments fs-5 text-secondary"></i>
+                    <i className="fas fa-comments fs-5 text-secondary"></i>
                     {/* </Link> */}
                     <button className="text-secondary text-decoration-none border-0" onClick={handleLogout}>
-                        <i className="fas fa-sign-out-alt fs-5"></i>      
+                        <i className="fas fa-sign-out-alt fs-5"></i>
                     </button>
                 </div>
             </div>
