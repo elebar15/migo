@@ -7,6 +7,8 @@ import os
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta, datetime
+from clarifai.client.model import Model
+import asyncio
 
 api = Blueprint('api', __name__)
 CORS(api)
@@ -77,29 +79,44 @@ def protected():
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
-    if request.method == 'OPTIONS':
-        return '', 200
-    body = request.json
+    if request.method == 'OPTIONS':  
+        return '', 200 
+    body = request.json 
+ 
     email = body.get("email")
-    user = User.query.filter_by(email=email).first()
-
-    if not user:
+    user = User.query.filter_by(email=email).one_or_none()
+    
+    if user is None:
         return jsonify("user not found"), 404
 
-    token = create_access_token(identity=user.id, expires_delta=expires_delta)
+    access_token = create_access_token(
+        identity=user.id, expires_delta=expires_delta)
+
     message = f"""
         <p>Hola {user.name},</p>
-        <p>Con este link, podrás <a href="{os.getenv("FRONTEND_URL")}/password-update?token={token}">recuperar tu contraseña</a>.</p>
-        <p>Un saludo<br>El equipo Migo</p>
+
+        <p>Con este link, podrás <a href="{os.getenv("FRONTEND_URL")}/password-update?token={access_token}">recuperar tu contraseña</a>.</p>
+
+        <p>Un saludo</p>
+
+        <p>El equipo Migo</p>
         <p><a href="{os.getenv("FRONTEND_URL")}">Migo.com</a></p>
     """
 
-    if send_email("Recuperación de contraseña", email, message):
+    data = {
+        "subject": "Recuperación de contraseña",
+        "to": email,
+        "message": message
+    }
+
+    sended_email = send_email(
+        data.get("subject"), data.get("to"), data.get("message"))
+
+    if sended_email:
         return jsonify("Mensaje correctamente enviado"), 200
     else:
         api.logger.error(f"Error al enviar el correo a {email}")
         return jsonify("Error en el envío del correo"), 500
-
 
 @api.route('/pet', methods=['POST'])
 @jwt_required()
@@ -235,15 +252,6 @@ def add_note():
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
 
-
-@api.route('/notes', methods=['GET'])
-@jwt_required()
-def get_notes():
-    user_id = get_jwt_identity()
-    notes = db.session.execute(select(ClinHistory).join(Pet).where(Pet.owner_id == user_id)).scalars().all()
-    return jsonify([note.serialize() for note in notes]), 200
-
-
 @api.route('/pets/<int:pet_id>/clin-history', methods=['GET'])
 @jwt_required()
 def get_clin_history_by_pet(pet_id):
@@ -312,3 +320,39 @@ def update_note(id):
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+
+@api.route('/ask-vet', methods=['POST'])
+def ask_vet():
+    data = request.get_json()
+    question = data.get("question", "")
+
+    apikey = os.getenv("Clarifai_API_KEY")
+
+    if not isinstance(question, str):
+        return jsonify({"error": f"Tipo invalido : {type(question)}"}), 400
+
+    if not question.strip():
+        return jsonify({"error": "Pregunta vacia"}), 400
+
+    try:
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        prompt = (
+            "Eres un veterinario experto. Tu tarea es responder con consejos fiables "
+            "y claros en menos de 50 palabras.\n\n"
+            f"Pregunta del usuario: \"{question}\"\n"
+            "Respuesta:"
+        )
+        model_url = "https://clarifai.com/microsoft/text-generation/models/phi-4"
+
+        model = Model(url=model_url, pat=apikey)
+        model_prediction = model.predict_by_bytes(prompt.encode())
+
+        reply = model_prediction.outputs[0].data.text.raw
+        return jsonify({"response": reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

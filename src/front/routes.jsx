@@ -19,6 +19,7 @@ import { EditPet } from "./pages/EditPet";
 import NotFound from "./pages/NotFound";
 import { AddNote } from "./pages/AddNote";
 import { EditNote } from "./pages/EditNote"
+import { Chatbot } from "./pages/Chatbot";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
@@ -30,23 +31,23 @@ const ProtectedRoute = ({ children }) => {
 };
 
 export const router = createBrowserRouter(
-  createRoutesFromElements(
+    createRoutesFromElements(
     <>
       {/* Rutas públicas que NO usan Layout ni Navbar */}
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/recovery-password" element={<RecoveryPassword />} />
 
-      {/* Rutas con Layout */}
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/recovery-password" element={<RecoveryPassword />} />
+
+        {/* Rutas con Layout */}
       <Route path="/" element={<Layout />} errorElement={<NotFound />}>
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/single/:theId" element={<ProtectedRoute><Single /></ProtectedRoute>} />
-        <Route path="/demo" element={<ProtectedRoute><Demo /></ProtectedRoute>} />
-        <Route path="/add-pet" element={<ProtectedRoute><AddPet /></ProtectedRoute>} />
-        <Route path="/pet-detail/:theId" element={<ProtectedRoute><PetDetail /></ProtectedRoute>} />
-        <Route path="/edit-pet/:id" element={<ProtectedRoute><EditPet /></ProtectedRoute>} />
-        <Route path="/add-note" element={<ProtectedRoute><AddNote /></ProtectedRoute>} />
-        <Route path="/edit-note/:id" element={<ProtectedRoute><EditNote /></ProtectedRoute>} />
+        <Route path= "/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/add-pet" element={<ProtectedRoute><AddPet /></ProtectedRoute>} /> 
+        <Route path= "/pet-detail/:theId" element={<ProtectedRoute><PetDetail/></ProtectedRoute>}/>
+        <Route path="/edit-pet/:id" element={<EditPet />} />
+        <Route path="/add-note" element={<ProtectedRoute><AddNote /></ProtectedRoute>} /> 
+        <Route path="/edit-note/:id" element={<ProtectedRoute><EditNote /></ProtectedRoute>} /> 
+        <Route path="/consejos" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
       </Route>
     </>
   )
