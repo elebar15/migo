@@ -20,22 +20,23 @@ export const Home = () => {
     }, [location.key]);
 
     return (
-        <div className="container justify-content-center">
+        <div className="container">
             <h1 className="text-center my-4">Mis Mascotas</h1>
-            <div className="row g-4">
+
+
+            <div className="d-flex flex-wrap justify-content-center gap-4">
                 {store.pets.length > 0 ? (
                     store.pets.map(pet => (
-                        <div key={pet.id} className="col mb-4">
-                            <PetCard pet={pet} />
-                        </div>
+                        <PetCard key={pet.id} pet={pet} />
                     ))
                 ) : (
                     <p>No tienes mascotas registradas.</p>
                 )}
             </div>
-            <div className="d-flex justify-content-center my-3">
-                <Link to={'/add-pet'} className="btn btn-dark rounded-circle">
-                    <i className="fa-solid fa-plus fa-xl"></i>
+
+            <div className="d-flex justify-content-center my-4">
+                <Link to="/add-pet" className="btn btn-dark add-pet-btn">
+                    <i className="fa-solid fa-plus"></i>
                 </Link>
             </div>
         </div>
