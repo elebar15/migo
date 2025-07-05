@@ -118,6 +118,78 @@ def reset_password():
         api.logger.error(f"Error al enviar el correo a {email}")
         return jsonify("Error en el envío del correo"), 500
 
+
+@api.route('/user', methods=['GET'])
+@jwt_required()
+def get_user():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    if not user:
+        return jsonify({"message": "Usuario no encontrado"}), 404
+
+    return jsonify({
+        "name": user.name,
+        "lastname": user.lastname,
+        "email": user.email,
+        "country": user.country,
+        "city": user.city
+    }), 200        
+
+@api.route('/user', methods=['PUT'])
+@jwt_required()
+def update_user():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    if not user:
+        return jsonify({"message": "Usuario no encontrado"}), 404
+
+    data = request.get_json()
+    user.name = data.get("name", user.name)
+    user.lastname = data.get("lastname", user.lastname)
+    user.country = data.get("country", user.country)
+    user.city = data.get("city", user.city)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Usuario actualizado correctamente"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import jsonify
+from api.models import db, User, Pet, ClinHistory
+
+@api.route('/user', methods=['DELETE'])
+@jwt_required()
+def delete_user():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"message": "Usuario no encontrado"}), 404
+
+    # Obtener mascotas del usuario
+    pets = Pet.query.filter_by(owner_id=user_id).all()
+
+    # Eliminar notas clínicas asociadas a cada mascota
+    for pet in pets:
+        ClinHistory.query.filter_by(pet_id=pet.id).delete()
+
+    # Eliminar mascotas del usuario
+    Pet.query.filter_by(owner_id=user_id).delete()
+
+    # Eliminar el usuario
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"message": "Usuario y todos sus datos fueron eliminados con éxito"}), 200
+
+
+
 @api.route('/pet', methods=['POST'])
 @jwt_required()
 def add_pet():
