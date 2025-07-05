@@ -1,5 +1,4 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getPetById, deletePetById } from "../services/api";
 import { useState, useEffect } from "react";
 import { PetMedicalRecord } from "../components/PetMedicalRecord";
@@ -85,7 +84,7 @@ export function PetDetail() {
                                 : "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg"
                         }
                         alt={pet.name}
-                        className="img-fluid rounded shadow object-fit-cover"
+                        className="img-fluid rounded-4 shadow object-fit-cover"
                         style={{ width: "100%", aspectRatio: "1 / 1" }}
                     />
                 </div>
