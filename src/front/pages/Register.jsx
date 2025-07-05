@@ -54,8 +54,8 @@ export function Register() {
 
 
             <div className="d-flex justify-content-center">
-                <div className="p-4 bg-yellow rounded shadow back-login">
-                    <h2 className="text-center mb-4">Regístrate</h2>
+                <div className="p-4 bg-yellow rounded shadow aut-form">
+                    <h3 className="text-center mb-4">Regístrate</h3>
 
                     <form onSubmit={handleSubmit}>
                         <div className="form-floating mb-3">
