@@ -1,7 +1,54 @@
-.my-card{
-    width: 18rem;
+body {
+  background-color: #fcf8e3;
+  font-family: "Poppins", sans-serif;
 }
 
-.my-record{
-    background-color:'#cfe2ff';
+.my-card {
+  width: 18rem;
+}
+
+/* .my-record {
+  background-color: "#cfe2ff";
+} */
+
+.green-light{
+   background-color: #BFF0E7;
+}
+
+.my-navbar {
+  background-color: #00A39B;
+}
+
+.nav-icon {
+  color: #fcf8e3;
+}
+
+.login-body {
+  background-color: #00A39B;
+  min-height: 100vh;
+}
+
+.back-login{
+  width: 100%;
+  max-width: 400px;
+}
+
+.my-logo{
+    height: 90px;
+}
+
+.yellow{
+    color: #fcf8e3;
+}
+
+.green{
+    color: #00A39B ;
+}
+
+.bg-green{
+    background-color: #00A39B;
+}
+
+.bg-yellow{
+    background-color:  #fcf8e3;
 }

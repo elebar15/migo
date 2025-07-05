@@ -20,24 +20,26 @@ export const Home = () => {
     }, [location.key]);
 
     return (
-        <div className="container justify-content-center">
-            <h1 className="text-center my-4">Mis Mascotas</h1>
-            <div className="row g-4">
-                {store.pets.length > 0 ? (
-                    store.pets.map(pet => (
-                        <div key={pet.id} className="col mb-4">
-                            <PetCard pet={pet} />
-                        </div>
-                    ))
-                ) : (
-                    <p>No tienes mascotas registradas.</p>
-                )}
+        <div className="container justify-content-center home">
+            <div className="my-4">
+                <div className="row g-4">
+                    {store.pets.length > 0 ? (
+                        store.pets.map(pet => (
+                            <div key={pet.id} className="col mb-4">
+                                <PetCard pet={pet} />
+                            </div>
+                        ))
+                    ) : (
+                        <p>No tienes mascotas registradas.</p>
+                    )}
+                </div>
+                <div className="d-flex justify-content-center my-3">
+                    <Link to={'/add-pet'} className="btn btn-secondary rounded-circle">
+                        <i className="fa-solid fa-plus"></i>
+                    </Link>
+                </div>
             </div>
-            <div className="d-flex justify-content-center my-3">
-                <Link to={'/add-pet'} className="btn btn-dark rounded-circle">
-                    <i className="fa-solid fa-plus fa-xl"></i>
-                </Link>
-            </div>
+
         </div>
     );
 };

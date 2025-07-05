@@ -18,11 +18,11 @@ export function SingleRecord({ record }) {
     };
 
     return (
-        <li className="list-group-item border-0">
+        <li className="list-group-item border-0 bg-yellow">
             <div className="card shadow-sm">
-                <div className="card-body">
+                <div className="card-body green-light text-dark">
                     <div className="d-flex justify-content-between mb-2">
-                        <h5 className="card-title mb-0">{record.event_name}</h5>
+                        <h5 className="card-title mb-0 fw-bold">{record.event_name}</h5>
                         <div className="d-flex gap-2">
                             <Link to={`/edit-note/${record.id}`} className="btn btn-sm"><i className="fas fa-pen" role="button" title="Editar"></i></Link>
                             <button

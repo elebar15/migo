@@ -45,7 +45,7 @@ export const EditNote = () => {
           const data = await response.json();
           setNote({
             ...data,
-            event_date: convertDateToDDMMYYYY(data.event_date), 
+            event_date: convertDateToDDMMYYYY(data.event_date),
           });
         } else {
           alert("Error al cargar la nota");
@@ -67,20 +67,20 @@ export const EditNote = () => {
     }));
   }
 
-const convertDateToISO = (dateStr) => {
+  const convertDateToISO = (dateStr) => {
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month}-${day}`;
   };
 
-const convertDateToDDMMYYYY = (dateStr) => {
-  const date = new Date(dateStr);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+  const convertDateToDDMMYYYY = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
-async function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const url = import.meta.env.VITE_BACKEND_URL;
@@ -113,84 +113,83 @@ async function handleSubmit(event) {
   }
 
   return (
-    <div className="container">
-      <div className="row justify-content-center">
-        <div className="col-12 col-ms-6">
-          <form className="border rounded m-2 p-4" onSubmit={handleSubmit}>
-            <h3 className="text-center mt-3">Actualizar nota</h3>
+    <div className="d-flex justify-content-center align-items-center py-5">
+      <div className="green-light rounded shadow p-4 back-login w-100">
+        <h3 className="text-center mb-4">Actualizar nota</h3>
 
-            <div className="mb-3">
-              <label className="form-label">Mascota</label>
-              <input
-                type="text"
-                className="form-control"
-                value={note.pet_name || "Nombre no disponible"}
-                readOnly
-              />
-              <input
-                type="hidden"
-                name="pet_id"
-                value={note.pet_id}
-              />
-            </div>
-
-            <div className="form-floating mb-3">
-              <input
-                type="text"
-                className="form-control"
-                id="event_nameInput"
-                name="event_name"
-                placeholder="Nombre del evento"
-                onChange={handleChange}
-                value={note.event_name}
-              />
-              <label htmlFor="event_nameInput">Nombre del evento</label>
-            </div>
-
-            <div className="form-floating mb-3">
-              <input
-                type="text"
-                className="form-control"
-                id="placeInput"
-                name="place"
-                placeholder="Lugar"
-                onChange={handleChange}
-                value={note.place}
-              />
-              <label htmlFor="placeInput">Lugar del evento</label>
-            </div>
-
-            <div className="form-floating mb-3">
-              <input
-                type="text"
-                className="form-control"
-                id="event_dateInput"
-                name="event_date"
-                placeholder="dd/mm/aaaa"
-                onChange={handleChange}
-                value={note.event_date}
-              />
-              <label htmlFor="event_dateInput">Fecha</label>
-            </div>
-
-            <div className="form-floating mb-3">
-              <textarea
-                className="form-control"
-                id="noteInput"
-                name="note"
-                placeholder="Notas"
-                onChange={handleChange}
-                value={note.note}
-                rows="10"
-              />
-              <label htmlFor="noteInput">Notas</label>
-            </div>
-
-            <button className="btn btn-outline-primary w-100">Actualizar</button>
-          </form>
-          <div className="d-flex justify-content-center my-3 justify-content-evenly">
-            <Link to="/home">Regresar</Link>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Mascota</label>
+            <input
+              type="text"
+              className="form-control"
+              value={note.pet_name || "Nombre no disponible"}
+              readOnly
+            />
+            <input type="hidden" name="pet_id" value={note.pet_id} />
           </div>
+
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="event_nameInput"
+              name="event_name"
+              placeholder="Nombre del evento"
+              onChange={handleChange}
+              value={note.event_name}
+            />
+            <label htmlFor="event_nameInput">Nombre del evento</label>
+          </div>
+
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="placeInput"
+              name="place"
+              placeholder="Lugar"
+              onChange={handleChange}
+              value={note.place}
+            />
+            <label htmlFor="placeInput">Lugar del evento</label>
+          </div>
+
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="event_dateInput"
+              name="event_date"
+              placeholder="dd/mm/aaaa"
+              onChange={handleChange}
+              value={note.event_date}
+            />
+            <label htmlFor="event_dateInput">Fecha</label>
+          </div>
+
+          <div className="form-floating mb-3">
+            <textarea
+              className="form-control"
+              id="noteInput"
+              name="note"
+              placeholder="Notas"
+              onChange={handleChange}
+              value={note.note}
+              style={{ height: '150px' }} // opcional para que se vea más alta
+            />
+            <label htmlFor="noteInput">Notas</label>
+          </div>
+
+          <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
+            Actualizar
+          </button>
+        </form>
+
+        <div className="d-flex justify-content-center mt-3 small">
+          <Link to="/home" className="text-dark text-decoration-none">
+            Regresar
+          </Link>
         </div>
       </div>
     </div>
