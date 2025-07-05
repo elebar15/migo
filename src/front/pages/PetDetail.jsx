@@ -10,6 +10,7 @@ export function PetDetail() {
     const [pet, setPet] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [message, setMessage] = useState(null);
 
     useEffect(() => {
         async function fetchPet() {
@@ -26,22 +27,38 @@ export function PetDetail() {
         fetchPet();
     }, [theId]);
 
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => {
+                setMessage(null);
+                navigate("/home");
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
+
     const handleDelete = async () => {
         try {
             await deletePetById(theId);
-            alert("Mascota eliminada con éxito");
-            navigate("/home");
+            setShowModal(false);
+            setMessage({ type: "success", text: "Mascota eliminada con éxito" });
         } catch (error) {
-            alert(`Error al eliminar la mascota: ${error.message}`);
+            setShowModal(false);
+            setMessage({ type: "danger", text: "Error al eliminar la mascota" });
         }
     };
 
     if (isLoading) return null;
-
     if (!pet) return <p>Mascota no encontrada</p>;
 
     return (
         <div className="container mt-4">
+            {message && (
+                <div className={`alert alert-${message.type}`} role="alert">
+                    {message.text}
+                </div>
+            )}
+
             <div className="row align-items-center mb-3">
                 <div className="col-10">
                     <h2 className="mb-0 fs-1 ">{pet.name}</h2>

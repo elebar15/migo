@@ -12,6 +12,7 @@ const initialStatePet = {
 export const AddPet = () => {
   const [pet, setPet] = useState(initialStatePet);
   const [imageFile, setImageFile] = useState(null);
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +21,13 @@ export const AddPet = () => {
       navigate("/login");
     }
   }, []);
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   function handleChange({ target }) {
     const { name, value, type } = target;
@@ -36,7 +44,6 @@ export const AddPet = () => {
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token");
 
-
     let imageUrl = "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg";
 
     if (imageFile) {
@@ -52,10 +59,8 @@ export const AddPet = () => {
 
         const data = await res.json();
         imageUrl = data.secure_url;
-        console.log("Imagen subida:", imageUrl);
-      } catch (err) {
-        alert("Error al subir imagen");
-        console.error(err);
+      } catch {
+        setMessage({ type: "danger", text: "Error al subir imagen" });
         return;
       }
     }
@@ -78,17 +83,17 @@ export const AddPet = () => {
       if (response.status === 201) {
         setPet(initialStatePet);
         setImageFile(null);
+        setMessage({ type: "success", text: "Mascota registrada correctamente" });
         setTimeout(() => {
           navigate("/home");
-        }, 1000);
+        }, 1500);
       } else if (response.status === 400) {
-        alert("La mascota ya existe");
+        setMessage({ type: "danger", text: "La mascota ya existe" });
       } else {
-        alert("Error al registrar la mascota");
+        setMessage({ type: "danger", text: "Error al registrar la mascota" });
       }
-    } catch (error) {
-      console.error("Error al crear la mascota:", error);
-      alert("Ha ocurrido un error");
+    } catch {
+      setMessage({ type: "danger", text: "Ha ocurrido un error al registrar la mascota" });
     }
   }
 
@@ -97,6 +102,11 @@ export const AddPet = () => {
       <div className="row justify-content-center">
         <h2 className="text-center my-3">Añadir una mascota</h2>
         <div className="col-12 col-md-6">
+          {message && (
+            <div className={`alert alert-${message.type}`} role="alert">
+              {message.text}
+            </div>
+          )}
           <form className="border rounded m-2 p-4" onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
               <input
