@@ -1,5 +1,4 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getPetById, deletePetById } from "../services/api";
 import { useState, useEffect } from "react";
 import { PetMedicalRecord } from "../components/PetMedicalRecord";

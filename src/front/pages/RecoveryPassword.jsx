@@ -1,4 +1,6 @@
 import { useState } from "react";
+import logo from '../assets/img/logo-migo-claro.png';
+import { Link } from "react-router-dom";
 
 export const RecoveryPassword = () => {
   const [email, setEmail] = useState("");
@@ -42,13 +44,17 @@ export const RecoveryPassword = () => {
   };
 
   return (
-    <div className="container">
-      <div className="row justify-content-center">
-        <h2 className="text-center my-3">Recuperar contraseña</h2>
-        <div className="col-12 col-md-6">
-          <form className="border m-2 p-3" onSubmit={handleSubmit}>
-            <div className="form-group mb-3">
-              <label htmlFor="btnEmail">Correo electrónico: </label>
+    <div className="login-body">
+      <div className="py-5 text-center">
+        <img src={logo} alt="Migo logo" className="my-logo" />
+      </div>
+
+      <div className="d-flex justify-content-center">
+        <div className="p-4 bg-yellow rounded shadow back-login">
+          <h2 className="text-center mb-4">Recuperar contraseña</h2>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-floating mb-3">
               <input
                 type="email"
                 placeholder="Tu correo electrónico"
@@ -57,18 +63,27 @@ export const RecoveryPassword = () => {
                 name="email"
                 onChange={(event) => setEmail(event.target.value)}
                 value={email}
+                required
               />
+              <label htmlFor="btnEmail">Correo electrónico</label>
             </div>
 
             <button
-              className="btn btn-outline-primary w-100"
+              className="btn w-100 text-white fw-bold bg-secondary"
               disabled={loading}
             >
               {loading ? "Enviando..." : "Enviar link de recuperación"}
             </button>
           </form>
+
+          <div className="d-flex justify-content-center mt-3 small">
+            <Link to="/" className="text-dark text-decoration-none">
+              Volver al inicio
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
+
 };
