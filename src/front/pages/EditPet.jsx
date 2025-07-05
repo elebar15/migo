@@ -134,128 +134,104 @@ export function EditPet() {
                         {message.text}
                     </div>
                 )}
-
-                {/* <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label>Nombre</label>
-                        <input type="text" className="form-control" value={name} onChange={e => setName(e.target.value)} />
+                <form onSubmit={handleSubmit}>
+                    <div className="form-floating mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="nameEdit"
+                            placeholder="Nombre"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <label htmlFor="nameEdit">Nombre</label>
                     </div>
-                    <div className="mb-3">
-                        <label>Especie</label>
-                        <input type="text" className="form-control" value={species} onChange={e => setSpecies(e.target.value)} />
+
+                    <div className="form-floating mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="speciesEdit"
+                            placeholder="Especie"
+                            value={species}
+                            onChange={(e) => setSpecies(e.target.value)}
+                        />
+                        <label htmlFor="speciesEdit">Especie</label>
                     </div>
-                    <div className="mb-3">
-                        <label>Raza</label>
-                        <input type="text" className="form-control" value={breed} onChange={e => setBreed(e.target.value)} />
+
+                    <div className="form-floating mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="breedEdit"
+                            placeholder="Raza"
+                            value={breed}
+                            onChange={(e) => setBreed(e.target.value)}
+                        />
+                        <label htmlFor="breedEdit">Raza</label>
                     </div>
-                    <div className="mb-3">
-                        <label>Edad</label>
-                        <input type="number" className="form-control" value={age} onChange={e => setAge(e.target.value)} />
+
+                    <div className="form-floating mb-3">
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="ageEdit"
+                            placeholder="Edad"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value)}
+                        />
+                        <label htmlFor="ageEdit">Edad</label>
                     </div>
-                    <div className="mb-3">
-                        <label>Peso (kg)</label>
-                        <input type="number" step="0.1" className="form-control" value={wheight} onChange={e => setWheight(e.target.value)} />
-                    </div> */}
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-floating mb-3">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="nameEdit"
-                                placeholder="Nombre"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <label htmlFor="nameEdit">Nombre</label>
-                        </div>
+                    <div className="form-floating mb-3">
+                        <input
+                            type="number"
+                            step="0.1"
+                            className="form-control"
+                            id="wheightEdit"
+                            placeholder="Peso"
+                            value={wheight}
+                            onChange={(e) => setWheight(e.target.value)}
+                        />
+                        <label htmlFor="wheightEdit">Peso (kg)</label>
+                    </div>
 
-                        <div className="form-floating mb-3">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="speciesEdit"
-                                placeholder="Especie"
-                                value={species}
-                                onChange={(e) => setSpecies(e.target.value)}
-                            />
-                            <label htmlFor="speciesEdit">Especie</label>
-                        </div>
-
-                        <div className="form-floating mb-3">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="breedEdit"
-                                placeholder="Raza"
-                                value={breed}
-                                onChange={(e) => setBreed(e.target.value)}
-                            />
-                            <label htmlFor="breedEdit">Raza</label>
-                        </div>
-
-                        <div className="form-floating mb-3">
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="ageEdit"
-                                placeholder="Edad"
-                                value={age}
-                                onChange={(e) => setAge(e.target.value)}
-                            />
-                            <label htmlFor="ageEdit">Edad</label>
-                        </div>
-
-                        <div className="form-floating mb-3">
-                            <input
-                                type="number"
-                                step="0.1"
-                                className="form-control"
-                                id="wheightEdit"
-                                placeholder="Peso"
-                                value={wheight}
-                                onChange={(e) => setWheight(e.target.value)}
-                            />
-                            <label htmlFor="wheightEdit">Peso (kg)</label>
-                        </div>
-
-                        {currentImage && (
-                            <div className="mb-3 text-center">
-                                <label className="form-label">Foto actual</label>
-                                <div>
-                                    <img
-                                        src={currentImage}
-                                        alt="Foto actual"
-                                        className="img-fluid rounded"
-                                        style={{ maxWidth: "150px" }}
-                                    />
-                                </div>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-danger mt-2"
-                                    onClick={handleDeleteImage}
-                                >
-                                    Eliminar foto actual
-                                </button>
+                    {currentImage && (
+                        <div className="mb-3 text-center">
+                            <label className="form-label">Foto actual</label>
+                            <div>
+                                <img
+                                    src={currentImage}
+                                    alt="Foto actual"
+                                    className="img-fluid rounded"
+                                    style={{ maxWidth: "150px" }}
+                                />
                             </div>
-                        )}
-
-                        <div className="mb-3">
-                            <label className="form-label">Cambiar foto actual (opcional)</label>
-                            <input
-                                type="file"
-                                className="form-control"
-                                accept="image/*"
-                                onChange={(e) => setImageFile(e.target.files[0])}
-                            />
+                            <button
+                                type="button"
+                                className="btn btn-outline-danger mt-2"
+                                onClick={handleDeleteImage}
+                            >
+                                Eliminar foto actual
+                            </button>
                         </div>
+                    )}
 
-                        <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-                            Guardar Cambios
-                        </button>
-                    </form>
+                    <div className="mb-3">
+                        <label className="form-label">Cambiar foto actual (opcional)</label>
+                        <input
+                            type="file"
+                            className="form-control"
+                            accept="image/*"
+                            onChange={(e) => setImageFile(e.target.files[0])}
+                        />
+                    </div>
+
+                    <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
+                        Guardar Cambios
+                    </button>
+                </form>
             </div>
         </div>
-
     );
 }
