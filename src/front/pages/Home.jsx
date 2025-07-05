@@ -36,7 +36,7 @@ export const Home = () => {
                     </div>
                 )}
 
-                <div className="d-flex justify-content-center my-3">
+                <div className="d-flex justify-content-center my-5">
                     <Link to={'/add-pet'} className="btn btn-secondary rounded-circle">
                         <i className="fa-solid fa-plus"></i>
                     </Link>

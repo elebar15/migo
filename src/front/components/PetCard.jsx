@@ -6,19 +6,11 @@ export function PetCard({ pet }) {
     return (
         <div className="card my-card h-100 shadow">
             <Link to={`/pet-detail/${pet.id}`} className="text-decoration-none text-dark">
-                <div className="position-relative" style={{ width: "100%", paddingTop: "100%", overflow: "hidden" }}>
+                <div className="position-relative img-container">
                     <img
                         src={pet.image || defaultImage}
                         alt={pet.name || "Mascota"}
-                        style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center"
-                        }}
+                        className="rounded-top-4 card-image"
                     />
                 </div>
                 <div className="card-body text-center">
