@@ -52,7 +52,7 @@ export function PetDetail() {
     if (!pet) return <p>Mascota no encontrada</p>;
 
     return (
-        <div className="container mt-4">
+        <div className="container padding-top">
             {message && (
                 <div className={`alert alert-${message.type}`} role="alert">
                     {message.text}
@@ -91,10 +91,10 @@ export function PetDetail() {
                 </div>
                 <div className="col-md-8">
                     <ul className="list-group list-group-flush mb-3">
-                        <li className="list-group-item fs-5"><strong>Especie</strong> {pet.species}</li>
-                        <li className="list-group-item fs-5"><strong>Raza</strong> {pet.breed}</li>
-                        <li className="list-group-item fs-5"><strong>Edad</strong> {pet.age}</li>
-                        <li className="list-group-item fs-5"><strong>Peso</strong> {pet.wheight}</li>
+                        <li className="list-group-item fs-5 bg-yellow"><strong>Especie</strong> {pet.species}</li>
+                        <li className="list-group-item fs-5 bg-yellow"><strong>Raza</strong> {pet.breed}</li>
+                        <li className="list-group-item fs-5 bg-yellow"><strong>Edad</strong> {pet.age}</li>
+                        <li className="list-group-item fs-5 bg-yellow"><strong>Peso</strong> {pet.wheight}</li>
                     </ul>
                     <PetMedicalRecord petId={theId} />
                 </div>

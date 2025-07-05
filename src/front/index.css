@@ -1,3 +1,59 @@
+body {
+  background-color: #fcf8e3;
+  font-family: "Poppins", sans-serif;
+}
+
+.padding-top{
+    padding-top: 40px;
+}
+
+.my-card {
+  width: 18rem;
+}
+
+.green-light{
+   background-color: #BFF0E7;
+}
+
+.my-navbar {
+  background-color: #00A39B;
+}
+
+.nav-icon {
+  color: #fcf8e3;
+}
+
+.login-body {
+  background-color: #00A39B;
+  min-height: 100vh;
+  padding-top: 25px;
+}
+
+.back-login{
+  width: 100%;
+  max-width: 400px;
+}
+
+.my-logo{
+    height: 90px;
+}
+
+.yellow{
+    color: #fcf8e3;
+}
+
+.green{
+    color: #00A39B ;
+}
+
+.bg-green{
+    background-color: #00A39B;
+}
+
+.bg-yellow{
+    background-color:  #fcf8e3;
+}
+
 .my-card {
   width: 18rem;
   border-radius: 1rem;
@@ -27,7 +83,4 @@
   background-color: #e95566;
   transform: scale(1.08);
   color: white;
-
-.my-record {
-  background-color: #cfe2ff;
 }

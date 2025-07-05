@@ -26,13 +26,13 @@ export function PetMedicalRecord({ petId }) {
     }, [message]);
 
     return (
-        <div className="container border border-success-subtle p-3 rounded">
+        <div className="container p-3 border rounded mb-4">
             <div className="row d-flex justify-content-between pb-3">
                 <div className="col-4">
-                    <h3 className="text-success">Historial médico</h3>
+                    <h3 className="green">Historial medico</h3>
                 </div>
                 <div className="col-1">
-                    <Link to={'/add-note'} className="btn btn-success rounded-circle"><i className="fa-solid fa-plus"></i></Link>
+                    <Link to={'/add-note'} className="btn bg-green text-light rounded-circle"><i className="fa-solid fa-plus"></i></Link>
                 </div>
             </div>
 

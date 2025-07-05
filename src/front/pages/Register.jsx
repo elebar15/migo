@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import logo from '../assets/img/logo-migo-claro.png';
 
 const initialStateUser = {
     name: "",
@@ -12,18 +13,18 @@ export function Register() {
     const [user, setUser] = useState(initialStateUser)
     const navigate = useNavigate()
 
-    function handleChange({target}){
+    function handleChange({ target }) {
         setUser({
             ...user,
             [target.name]: target.value
         })
     }
 
-    async function handleSubmit(event){
+    async function handleSubmit(event) {
         event.preventDefault()
 
         const url = import.meta.env.VITE_BACKEND_URL;
-        
+
         const response = await fetch(`${url}/register`, {
             method: 'POST',
             headers: {
@@ -32,12 +33,12 @@ export function Register() {
             body: JSON.stringify(user)
         })
 
-        if (response.status === 201){
+        if (response.status === 201) {
             setUser(initialStateUser)
             setTimeout(() => {
                 navigate('/')
             }, 1000)
-        } else if (response.status === 400){
+        } else if (response.status === 400) {
             alert('El usuario ya existe')
         } else {
             alert('Error al registrar el usuario')
@@ -45,18 +46,26 @@ export function Register() {
     }
 
     return (
-        <div className="container">
-            <div className="row justify-content-center">
-                <h2 className="text-center my-3">Registrate</h2>
-                <div className="col-12 col-md-6">
-                    <form className="border rounded m-2 p-4" onSubmit={handleSubmit} >
+        <div className="login-body">
+
+            <div className="py-5 text-center">
+                <img src={logo} alt="Migo logo" className="my-logo" />
+            </div>
+
+
+            <div className="d-flex justify-content-center">
+                <div className="p-4 bg-yellow rounded shadow back-login">
+                    <h2 className="text-center mb-4">Regístrate</h2>
+
+                    <form onSubmit={handleSubmit}>
                         <div className="form-floating mb-3">
                             <input
                                 type="text"
                                 className="form-control"
                                 id="nameInput"
                                 name="name"
-                                placeholder="nombre"
+                                placeholder="Nombre"
+                                value={user.name}
                                 onChange={handleChange}
                                 required
                             />
@@ -69,7 +78,8 @@ export function Register() {
                                 className="form-control"
                                 id="lastnameInput"
                                 name="lastname"
-                                placeholder="apellido"
+                                placeholder="Apellido"
+                                value={user.lastname}
                                 onChange={handleChange}
                                 required
                             />
@@ -82,11 +92,12 @@ export function Register() {
                                 className="form-control"
                                 id="emailInput"
                                 name="email"
-                                placeholder="email"
+                                placeholder="Correo"
+                                value={user.email}
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="emailInput">Email</label>
+                            <label htmlFor="emailInput">Correo electrónico</label>
                         </div>
 
                         <div className="form-floating mb-3">
@@ -95,19 +106,26 @@ export function Register() {
                                 className="form-control"
                                 id="passwordInput"
                                 name="password"
-                                placeholder="contraseña"
+                                placeholder="Contraseña"
+                                value={user.password}
                                 onChange={handleChange}
                                 required
                             />
                             <label htmlFor="passwordInput">Contraseña</label>
                         </div>
-                        <button className="btn btn-outline-primary w-100">Registrarme</button>
+
+                        <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
+                            Registrarme
+                        </button>
                     </form>
-                    <div className="d-flex justify-content-center my-3 justify-content-evenly">
-                        <Link to="/">Ya tengo una cuenta</Link>
+
+                    <div className="d-flex justify-content-center mt-3 small">
+                        <Link to="/" className="text-dark text-decoration-none">
+                            Ya tengo una cuenta
+                        </Link>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }

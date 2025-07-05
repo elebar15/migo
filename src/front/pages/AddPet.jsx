@@ -98,15 +98,16 @@ export const AddPet = () => {
   }
 
   return (
-    <div className="container">
-      <div className="row justify-content-center">
-        <h2 className="text-center my-3">Añadir una mascota</h2>
+    <div className="d-flex justify-content-center align-items-center py-5">
+      <div className="green-light rounded shadow p-4 back-login w-100">
+        <h2 className="text-center mb-4">Añadir una mascota</h2>
         <div className="col-12 col-md-6">
           {message && (
             <div className={`alert alert-${message.type}`} role="alert">
               {message.text}
             </div>
           )}
+
           <form className="border rounded m-2 p-4" onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
               <input
@@ -184,14 +185,19 @@ export const AddPet = () => {
               />
             </div>
 
-            <button className="btn btn-outline-primary w-100">Añadir</button>
+            <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
+              Añadir
+            </button>
           </form>
 
-          <div className="d-flex justify-content-center my-3 justify-content-evenly">
-            <Link to="/home">Regresar</Link>
+          <div className="d-flex justify-content-center mt-3 small">
+            <Link to="/home" className="text-dark text-decoration-none">
+              Regresar
+            </Link>
           </div>
         </div>
       </div>
     </div>
   );
+
 };
