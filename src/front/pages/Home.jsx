@@ -20,7 +20,7 @@ export const Home = () => {
     }, [location.key]);
 
     return (
-        <div className="container justify-content-center home">
+        <div className="container justify-content-center padding-top">
             <div className="my-4">
                 <div className="row g-4">
                     {store.pets.length > 0 ? (

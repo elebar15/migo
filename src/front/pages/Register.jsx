@@ -47,13 +47,13 @@ export function Register() {
 
     return (
         <div className="login-body">
-            {/* Logo */}
+
             <div className="py-5 text-center">
                 <img src={logo} alt="Migo logo" className="my-logo" />
             </div>
 
-            {/* Caja del formulario */}
-            <div className="d-flex justify-content-center mt-4">
+
+            <div className="d-flex justify-content-center">
                 <div className="p-4 bg-yellow rounded shadow back-login">
                     <h2 className="text-center mb-4">Regístrate</h2>
 

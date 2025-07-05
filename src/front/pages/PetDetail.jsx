@@ -41,7 +41,7 @@ export function PetDetail() {
     if (!pet) return <p>Mascota no encontrada</p>;
 
     return (
-        <div className="container mt-4">
+        <div className="container padding-top">
             <div className="row align-items-center mb-3">
                 <div className="col-10">
                     <h2 className="mb-0 fs-1 ">{pet.name}</h2>

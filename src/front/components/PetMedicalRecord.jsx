@@ -18,7 +18,7 @@ export function PetMedicalRecord({ petId }) {
     }, [petId]);
 
     return (
-        <div className="container p-3 border rounded">
+        <div className="container p-3 border rounded mb-4">
             <div className="row d-flex justify-content-between pb-3">
                 <div className="col-4">
                     <h3 className="green">Historial medico</h3>

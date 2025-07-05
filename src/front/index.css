@@ -3,13 +3,13 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+.padding-top{
+    padding-top: 40px;
+}
+
 .my-card {
   width: 18rem;
 }
-
-/* .my-record {
-  background-color: "#cfe2ff";
-} */
 
 .green-light{
    background-color: #BFF0E7;
@@ -26,6 +26,7 @@ body {
 .login-body {
   background-color: #00A39B;
   min-height: 100vh;
+  padding-top: 25px;
 }
 
 .back-login{
