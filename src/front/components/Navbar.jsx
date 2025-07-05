@@ -14,11 +14,11 @@ export const Navbar = () => {
                     <Link to="/home" className="nav-icon text-decoration-none">
                         <i className="fa fa-home fs-5"></i>
                     </Link>
-                    <Link to="/profile" className="text-secondary text-decoration-none">
-                        <i className="fas fa-user fs-5 nav-icon"></i>
-                    </Link>
                     <Link to="/consejos" className="nav-icon text-decoration-none">
                         <i className="fas fa-comments fs-5"></i>
+                    </Link>                    
+                    <Link to="/profile" className="text-secondary text-decoration-none">
+                        <i className="fas fa-user fs-5 nav-icon"></i>
                     </Link>
                 </div>
             </div>
