@@ -53,3 +53,34 @@ body {
 .bg-yellow{
     background-color:  #fcf8e3;
 }
+
+.my-card {
+  width: 18rem;
+  border-radius: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.my-card:hover {
+  transform: scale(1.03);
+}
+
+.add-pet-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50% !important;
+  background-color: #fb6376;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.add-pet-btn:hover {
+  background-color: #e95566;
+  transform: scale(1.08);
+  color: white;
+}
