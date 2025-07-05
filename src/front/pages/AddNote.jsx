@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const initialStateNote = {
   event_date: getTodayDate(),
@@ -22,6 +22,7 @@ export const AddNote = () => {
   const [pets, setPets] = useState([]);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,7 +35,6 @@ export const AddNote = () => {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
-
         if (response.ok) {
           const data = await response.json();
           setPets(data);
@@ -123,14 +123,24 @@ export const AddNote = () => {
     textarea.style.height = "auto";
   }
 
+  const handleGoBack = () => {
+    if (note.pet_id) {
+      navigate(`/pet-detail/${note.pet_id}`);
+    } else {
+      navigate("/home");
+    }
+  };
+
+  const petName = pets.find(p => p.id === Number(note.pet_id))?.name;
+
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100">
-
         <div className="col-12 col-ms-6">
-          <form className=" rounded m-2 p-4" onSubmit={handleSubmit}>
-            <h3 className="text-center">Añadir una nota</h3>
-            <p className="text-center">para</p>
+          <form className="rounded m-2 p-4" onSubmit={handleSubmit}>
+            <h3 className="text-center mb-1">Añadir una nota</h3>
+            <h4 className="text-center text-secondary fw-semibold mb-4">{petName}</h4>
+
 
             {message && (
               <div className={`alert alert-${message.type}`} role="alert">
@@ -138,58 +148,40 @@ export const AddNote = () => {
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-              {pets.length === 1 ? (
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="pet_name"
-                    placeholder="Mascota"
-                    value={pets[0].name}
-                    readOnly
-                  />
-                  <label htmlFor="pet_name">Mascota</label>
-                  <input type="hidden" name="pet_id" value={pets[0].id} />
-                </div>
-              ) : pets.length > 1 ? (
-                <div className="form-floating mb-3">
-                  <select
-                    id="petSelect"
-                    name="pet_id"
-                    className="form-control"
-                    onChange={handleChange}
-                    value={note.pet_id}
-                    required
-                  >
-                    <option value="">quien ?</option>
-                    {pets.map((pet) => (
-                      <option key={pet.id} value={pet.id}>
-                        {pet.name}
-                      </option>
-                    ))}
-                  </select>
-                  <label htmlFor="petSelect">Mascota</label>
-                </div>
-              ) : (
-                <p className="text-center">...</p>
-              )}
-
+            {pets.length > 1 && (
               <div className="form-floating mb-3">
-                <input
-                  type="text"
+                <select
+                  id="petSelect"
+                  name="pet_id"
                   className="form-control"
-                  id="event_nameInput"
-                  name="event_name"
-                  placeholder="Nombre del evento"
                   onChange={handleChange}
+                  value={note.pet_id}
                   required
-                  value={note.event_name}
-                />
-                <label htmlFor="event_nameInput">Nombre del evento</label>
-
+                >
+                  <option value="">¿Para quién?</option>
+                  {pets.map((pet) => (
+                    <option key={pet.id} value={pet.id}>
+                      {pet.name}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor="petSelect">Mascota</label>
               </div>
-            </form>
+            )}
+
+            <div className="form-floating mb-3">
+              <input
+                type="text"
+                className="form-control"
+                id="event_nameInput"
+                name="event_name"
+                placeholder="Nombre del evento"
+                onChange={handleChange}
+                required
+                value={note.event_name}
+              />
+              <label htmlFor="event_nameInput">Nombre del evento</label>
+            </div>
 
             <div className="form-floating mb-3">
               <input
@@ -236,11 +228,12 @@ export const AddNote = () => {
           </form>
 
           <div className="d-flex justify-content-center mt-3 small">
-            <Link to="/home" className="text-dark text-decoration-none">Regresar</Link>
+            <button className="btn btn-link text-dark text-decoration-none" onClick={handleGoBack}>
+              Regresar
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
-
-}
+};
