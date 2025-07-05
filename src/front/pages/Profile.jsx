@@ -14,7 +14,7 @@ export const Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   const handleNavigate = (path) => {
