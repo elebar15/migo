@@ -20,34 +20,27 @@ function getTodayDate() {
 export const AddNote = () => {
   const [note, setNote] = useState(initialStateNote);
   const [pets, setPets] = useState([]);
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-    }
+    if (!token) navigate("/");
 
     async function fetchPets() {
       const url = import.meta.env.VITE_BACKEND_URL;
-      const token = localStorage.getItem("token");
-
       try {
         const response = await fetch(`${url}/pets`, {
           method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
           const data = await response.json();
           setPets(data);
-        } else {
-          console.error("Error");
         }
-      } catch (error) {
-        console.error("Error:", error);
+      } catch {
+        setMessage({ type: "danger", text: "Error al cargar mascotas" });
       }
     }
 
@@ -63,9 +56,15 @@ export const AddNote = () => {
     }
   }, [pets]);
 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   function handleChange({ target }) {
     const { name, value, type } = target;
-
     setNote((prev) => ({
       ...prev,
       [name]: type === "number" && value !== "" ? Number(value) : value,
@@ -84,12 +83,11 @@ export const AddNote = () => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token");
 
     if (!isValidDateFormat(note.event_date)) {
-      alert("El formato de la fecha debe ser dd/mm/aaaa");
+      setMessage({ type: "danger", text: "El formato de la fecha debe ser dd/mm/aaaa" });
       return;
     }
 
@@ -98,32 +96,31 @@ export const AddNote = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           ...note,
-          event_date: convertDateToISO(note.event_date), 
+          event_date: convertDateToISO(note.event_date),
           pet_id: note.pet_id
         }),
       });
 
       if (response.status === 201) {
-        setNote(initialStateNote); 
+        setMessage({ type: "success", text: "Nota añadida correctamente" });
         setTimeout(() => {
-          navigate("/home");
-        }, 1000);
-    
+          navigate(`/pet-detail/${note.pet_id}`);
+        }, 1500);
       } else {
-        alert("Error al registrar la nota");
+        setMessage({ type: "danger", text: "Error al registrar la nota" });
       }
-    } catch (error) {
-      alert("Occurió un error al registrar la nota.");
+    } catch {
+      setMessage({ type: "danger", text: "Ocurrió un error al registrar la nota" });
     }
   }
 
   function handleResize(event) {
     const textarea = event.target;
-    textarea.style.height = "auto"; 
+    textarea.style.height = "auto";
   }
 
   return (
@@ -131,21 +128,20 @@ export const AddNote = () => {
       <div className="row justify-content-center">
         <div className="col-12 col-ms-6">
           <form className="border rounded m-2 p-4" onSubmit={handleSubmit}>
-            <h3 className="text-center mt-3">Añadir una nota</h3><p className="text-center">para</p>
+            <h3 className="text-center mt-3">Añadir una nota</h3>
+            <p className="text-center">para</p>
+
+            {message && (
+              <div className={`alert alert-${message.type}`} role="alert">
+                {message.text}
+              </div>
+            )}
+
             {pets.length === 1 ? (
               <div className="mb-3">
                 <label className="form-label">Mascota</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={pets[0].name}
-                  readOnly
-                />
-                <input
-                  type="hidden"
-                  name="pet_id"
-                  value={pets[0].id}
-                />
+                <input type="text" className="form-control" value={pets[0].name} readOnly />
+                <input type="hidden" name="pet_id" value={pets[0].id} />
               </div>
             ) : pets.length > 1 ? (
               <div className="form-floating">
@@ -158,9 +154,7 @@ export const AddNote = () => {
                 >
                   <option value="">quien ?</option>
                   {pets.map((pet) => (
-                    <option key={pet.id} value={pet.id}>
-                      {pet.name}
-                    </option>
+                    <option key={pet.id} value={pet.id}>{pet.name}</option>
                   ))}
                 </select>
                 <label htmlFor="petSelect">Mascota</label>
@@ -178,7 +172,7 @@ export const AddNote = () => {
                 placeholder="Nombre del evento"
                 onChange={handleChange}
                 required
-                value={note.event_name} 
+                value={note.event_name}
               />
               <label htmlFor="event_nameInput">Nombre del evento</label>
             </div>
@@ -191,7 +185,7 @@ export const AddNote = () => {
                 name="place"
                 placeholder="Lugar"
                 onChange={handleChange}
-                value={note.place} 
+                value={note.place}
               />
               <label htmlFor="placeInput">Lugar del evento</label>
             </div>
@@ -214,18 +208,19 @@ export const AddNote = () => {
                 className="form-control"
                 id="noteInput"
                 name="note"
-                placeholder="dd/mm/aaaa"
+                placeholder="Notas"
                 onChange={handleChange}
                 value={note.note}
                 rows="10"
-                style={{ resize: "none" }} 
-                onInput={handleResize} 
+                style={{ resize: "none" }}
+                onInput={handleResize}
               />
               <label htmlFor="noteInput">Notas</label>
             </div>
 
             <button className="btn btn-outline-primary w-100">Añadir</button>
           </form>
+
           <div className="d-flex justify-content-center my-3 justify-content-evenly">
             <Link to="/home">Regresar</Link>
           </div>
@@ -233,4 +228,4 @@ export const AddNote = () => {
       </div>
     </div>
   );
-}
+};

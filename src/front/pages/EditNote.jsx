@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 const initialStateNote = {
   event_date: getTodayDate(),
@@ -20,69 +19,70 @@ function getTodayDate() {
 
 export const EditNote = () => {
   const [note, setNote] = useState(initialStateNote);
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-    }
+    if (!token) navigate("/");
 
     async function fetchNote() {
       const url = import.meta.env.VITE_BACKEND_URL;
-      const token = localStorage.getItem("token");
 
       try {
         const response = await fetch(`${url}/note/${id}`, {
           method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
           const data = await response.json();
           setNote({
             ...data,
-            event_date: convertDateToDDMMYYYY(data.event_date), 
+            event_date: convertDateToDDMMYYYY(data.event_date),
           });
         } else {
-          alert("Error al cargar la nota");
+          setMessage({ type: "danger", text: "Error al cargar la nota" });
         }
-      } catch (error) {
-        alert("Error al cargar la nota");
+      } catch {
+        setMessage({ type: "danger", text: "Error al cargar la nota" });
       }
     }
 
     fetchNote();
   }, [navigate, id]);
 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   function handleChange({ target }) {
     const { name, value, type } = target;
-
     setNote((prev) => ({
       ...prev,
       [name]: type === "number" && value !== "" ? Number(value) : value,
     }));
   }
 
-const convertDateToISO = (dateStr) => {
+  const convertDateToISO = (dateStr) => {
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month}-${day}`;
   };
 
-const convertDateToDDMMYYYY = (dateStr) => {
-  const date = new Date(dateStr);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+  const convertDateToDDMMYYYY = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
-async function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token");
 
@@ -91,7 +91,7 @@ async function handleSubmit(event) {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...note,
@@ -100,15 +100,19 @@ async function handleSubmit(event) {
       });
 
       if (response.status === 200) {
-        alert("Nota actualizada exitosamente");
+        setMessage({ type: "success", text: "Nota actualizada exitosamente" });
         setTimeout(() => {
-          navigate("/home");
-        }, 1000);
+          if (note.pet_id) {
+            navigate(`/pet-detail/${note.pet_id}`);
+          } else {
+            navigate("/home");
+          }
+        }, 1500);
       } else {
-        alert("Error al actualizar la nota");
+        setMessage({ type: "danger", text: "Error al actualizar la nota" });
       }
-    } catch (error) {
-      alert("Error al actualizar la nota");
+    } catch {
+      setMessage({ type: "danger", text: "Error al actualizar la nota" });
     }
   }
 
@@ -119,6 +123,12 @@ async function handleSubmit(event) {
           <form className="border rounded m-2 p-4" onSubmit={handleSubmit}>
             <h3 className="text-center mt-3">Actualizar nota</h3>
 
+            {message && (
+              <div className={`alert alert-${message.type}`} role="alert">
+                {message.text}
+              </div>
+            )}
+
             <div className="mb-3">
               <label className="form-label">Mascota</label>
               <input
@@ -127,11 +137,7 @@ async function handleSubmit(event) {
                 value={note.pet_name || "Nombre no disponible"}
                 readOnly
               />
-              <input
-                type="hidden"
-                name="pet_id"
-                value={note.pet_id}
-              />
+              <input type="hidden" name="pet_id" value={note.pet_id} />
             </div>
 
             <div className="form-floating mb-3">
@@ -182,12 +188,14 @@ async function handleSubmit(event) {
                 onChange={handleChange}
                 value={note.note}
                 rows="10"
+                style={{ resize: "none" }}
               />
               <label htmlFor="noteInput">Notas</label>
             </div>
 
             <button className="btn btn-outline-primary w-100">Actualizar</button>
           </form>
+
           <div className="d-flex justify-content-center my-3 justify-content-evenly">
             <Link to="/home">Regresar</Link>
           </div>

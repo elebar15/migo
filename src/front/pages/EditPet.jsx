@@ -13,6 +13,7 @@ export function EditPet() {
     const [wheight, setWheight] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [currentImage, setCurrentImage] = useState("");
+    const [message, setMessage] = useState(null);
 
     const DEFAULT_IMAGE = "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg";
 
@@ -41,16 +42,22 @@ export function EditPet() {
                     setWheight(data.wheight || "");
                     setCurrentImage(data.image || "");
                 } else {
-                    alert("No se pudo cargar la mascota");
+                    setMessage({ type: "danger", text: "No se pudo cargar la mascota" });
                 }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("Ocurrió un error al cargar la mascota");
+            } catch {
+                setMessage({ type: "danger", text: "Ocurrió un error al cargar la mascota" });
             }
         };
 
         fetchPet();
     }, [id]);
+
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => setMessage(null), 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -70,14 +77,12 @@ export function EditPet() {
                 });
                 const data = await res.json();
                 imageUrl = data.secure_url;
-            } catch (err) {
-                alert("Error al subir imagen");
-                console.error(err);
+            } catch {
+                setMessage({ type: "danger", text: "Error al subir imagen" });
                 return;
             }
         }
 
- 
         if (!imageUrl || imageUrl.trim() === "") {
             imageUrl = DEFAULT_IMAGE;
         }
@@ -103,16 +108,14 @@ export function EditPet() {
 
             if (!response.ok) {
                 const responseBody = await response.text();
-                console.error("Error completo:", responseBody);
-                alert("Error: No se pudo actualizar la mascota\n" + responseBody);
+                setMessage({ type: "danger", text: "No se pudo actualizar la mascota" });
                 return;
             }
 
-            alert("Mascota actualizada correctamente");
-            navigate(`/pet-detail/${id}`);
-        } catch (error) {
-            console.error("Error de red:", error);
-            alert("Error de red al actualizar la mascota");
+            setMessage({ type: "success", text: "Mascota actualizada correctamente" });
+            setTimeout(() => navigate(`/pet-detail/${id}`), 1500);
+        } catch {
+            setMessage({ type: "danger", text: "Error de red al actualizar la mascota" });
         }
     };
 
@@ -124,6 +127,13 @@ export function EditPet() {
     return (
         <div className="container mt-5">
             <h2>Editar Mascota</h2>
+
+            {message && (
+                <div className={`alert alert-${message.type}`} role="alert">
+                    {message.text}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label>Nombre</label>
