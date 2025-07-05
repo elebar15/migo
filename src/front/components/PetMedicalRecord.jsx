@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import { SingleRecord } from "../components/SingleRecord";
 import { useEffect, useState } from "react";
 import { getMedicalRecords } from "../services/api";
@@ -6,16 +6,24 @@ import { getMedicalRecords } from "../services/api";
 export function PetMedicalRecord({ petId }) {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [message, setMessage] = useState(null);
+
+    async function fetchRecords() {
+        const data = await getMedicalRecords(petId);
+        setRecords(data);
+        setLoading(false);
+    }
 
     useEffect(() => {
-        async function fetchRecords() {
-            const data = await getMedicalRecords(petId);
-            setRecords(data);
-            setLoading(false);
-        }
-
         fetchRecords();
     }, [petId]);
+
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => setMessage(null), 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
 
     return (
         <div className="container p-3 border rounded mb-4">
@@ -27,6 +35,13 @@ export function PetMedicalRecord({ petId }) {
                     <Link to={'/add-note'} className="btn bg-green text-light rounded-circle"><i className="fa-solid fa-plus"></i></Link>
                 </div>
             </div>
+
+            {message && (
+                <div className={`alert alert-${message.type}`} role="alert">
+                    {message.text}
+                </div>
+            )}
+
             {loading ? (
                 <p>Cargando registros médicos...</p>
             ) : records.length === 0 ? (
@@ -34,10 +49,20 @@ export function PetMedicalRecord({ petId }) {
             ) : (
                 <ul className="list-group">
                     {records.map(record => (
-                        <SingleRecord key={record.id} record={record} />
+                        <SingleRecord
+                            key={record.id}
+                            record={record}
+                            onDeleteSuccess={() => {
+                                setMessage({ type: "success", text: "Nota eliminada correctamente" });
+                                fetchRecords();
+                            }}
+                            onDeleteError={() => {
+                                setMessage({ type: "danger", text: "Error al eliminar la nota" });
+                            }}
+                        />
                     ))}
                 </ul>
             )}
         </div>
-    )
+    );
 }

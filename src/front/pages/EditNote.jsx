@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 const initialStateNote = {
   event_date: getTodayDate(),
@@ -20,25 +19,21 @@ function getTodayDate() {
 
 export const EditNote = () => {
   const [note, setNote] = useState(initialStateNote);
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-    }
+    if (!token) navigate("/");
 
     async function fetchNote() {
       const url = import.meta.env.VITE_BACKEND_URL;
-      const token = localStorage.getItem("token");
 
       try {
         const response = await fetch(`${url}/note/${id}`, {
           method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
@@ -48,19 +43,25 @@ export const EditNote = () => {
             event_date: convertDateToDDMMYYYY(data.event_date),
           });
         } else {
-          alert("Error al cargar la nota");
+          setMessage({ type: "danger", text: "Error al cargar la nota" });
         }
-      } catch (error) {
-        alert("Error al cargar la nota");
+      } catch {
+        setMessage({ type: "danger", text: "Error al cargar la nota" });
       }
     }
 
     fetchNote();
   }, [navigate, id]);
 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   function handleChange({ target }) {
     const { name, value, type } = target;
-
     setNote((prev) => ({
       ...prev,
       [name]: type === "number" && value !== "" ? Number(value) : value,
@@ -82,7 +83,6 @@ export const EditNote = () => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token");
 
@@ -91,7 +91,7 @@ export const EditNote = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...note,
@@ -100,15 +100,19 @@ export const EditNote = () => {
       });
 
       if (response.status === 200) {
-        alert("Nota actualizada exitosamente");
+        setMessage({ type: "success", text: "Nota actualizada exitosamente" });
         setTimeout(() => {
-          navigate("/home");
-        }, 1000);
+          if (note.pet_id) {
+            navigate(`/pet-detail/${note.pet_id}`);
+          } else {
+            navigate("/home");
+          }
+        }, 1500);
       } else {
-        alert("Error al actualizar la nota");
+        setMessage({ type: "danger", text: "Error al actualizar la nota" });
       }
-    } catch (error) {
-      alert("Error al actualizar la nota");
+    } catch {
+      setMessage({ type: "danger", text: "Error al actualizar la nota" });
     }
   }
 
@@ -117,7 +121,14 @@ export const EditNote = () => {
       <div className="green-light rounded shadow p-4 back-login w-100">
         <h3 className="text-center mb-4">Actualizar nota</h3>
 
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
+
+          {message && (
+            <div className={`alert alert-${message.type}`} role="alert">
+              {message.text}
+            </div>
+          )}
+
           <div className="mb-3">
             <label className="form-label">Mascota</label>
             <input
@@ -176,22 +187,87 @@ export const EditNote = () => {
               placeholder="Notas"
               onChange={handleChange}
               value={note.note}
-              style={{ height: '150px' }} // opcional para que se vea más alta
+              rows="10"
+              style={{ resize: "none" }}
             />
             <label htmlFor="noteInput">Notas</label>
           </div>
 
+          <button className="btn btn-outline-primary w-100">Actualizar</button>
+        </form> */}
+
+        {/* <div className="d-flex justify-content-center my-3 justify-content-evenly">
+          <Link to="/home">Regresar</Link>
+        </div> */}
+        <form onSubmit={handleSubmit}>
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="event_nameInput"
+              name="event_name"
+              placeholder="Nombre del evento"
+              onChange={handleChange}
+              value={note.event_name}
+            />
+            <label htmlFor="event_nameInput">Nombre del evento</label>
+          </div>
+
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="placeInput"
+              name="place"
+              placeholder="Lugar"
+              onChange={handleChange}
+              value={note.place}
+            />
+            <label htmlFor="placeInput">Lugar del evento</label>
+          </div>
+
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="event_dateInput"
+              name="event_date"
+              placeholder="dd/mm/aaaa"
+              onChange={handleChange}
+              value={note.event_date}
+            />
+            <label htmlFor="event_dateInput">Fecha</label>
+          </div>
+
+          <div className="form-floating mb-3">
+            <textarea
+              className="form-control"
+              id="noteInput"
+              name="note"
+              placeholder="Notas"
+              onChange={handleChange}
+              value={note.note}
+            />
+            <label htmlFor="noteInput">Notas</label>
+          </div>
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
             Actualizar
           </button>
         </form>
-
-        <div className="d-flex justify-content-center mt-3 small">
-          <Link to="/home" className="text-dark text-decoration-none">
-            Regresar
-          </Link>
+        <div className="d-flex justify-content-center my-3 justify-content-evenly">
+          <Link to="/home" className="text-dark text-decoration-none">Regresar</Link>
         </div>
+
+
+
       </div>
+
+      {/* <div className="d-flex justify-content-center mt-3 small">
+        <Link to="/home" className="text-dark text-decoration-none">
+          Regresar
+        </Link>
+      </div> */}
     </div>
+
   );
 };

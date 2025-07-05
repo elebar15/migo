@@ -1,19 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { deleteMedicalRecord } from "../services/api";
 
-export function SingleRecord({ record }) {
-
+export function SingleRecord({ record, onDeleteSuccess, onDeleteError }) {
     const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
 
     const handleDelete = async () => {
         try {
             await deleteMedicalRecord(record.id);
-            alert("Registro eliminado con éxito");
-            navigate("/home");
+            onDeleteSuccess();
         } catch (error) {
-            alert(`Error al eliminar el registro: ${error.message}`);
+            onDeleteError();
         }
     };
 
@@ -24,11 +21,10 @@ export function SingleRecord({ record }) {
                     <div className="d-flex justify-content-between mb-2">
                         <h5 className="card-title mb-0 fw-bold">{record.event_name}</h5>
                         <div className="d-flex gap-2">
-                            <Link to={`/edit-note/${record.id}`} className="btn btn-sm"><i className="fas fa-pen" role="button" title="Editar"></i></Link>
-                            <button
-                                className="btn btn-sm"
-                                onClick={() => setShowModal(true)}
-                            >
+                            <Link to={`/edit-note/${record.id}`} className="btn btn-sm">
+                                <i className="fas fa-pen" role="button" title="Editar"></i>
+                            </Link>
+                            <button className="btn btn-sm" onClick={() => setShowModal(true)}>
                                 <i className="fa-solid fa-trash me-1"></i>
                             </button>
                         </div>
@@ -54,7 +50,10 @@ export function SingleRecord({ record }) {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-                                    <button type="button" className="btn btn-danger" onClick={handleDelete}>Eliminar</button>
+                                    <button type="button" className="btn btn-danger" onClick={() => {
+                                        setShowModal(false);
+                                        handleDelete();
+                                    }}>Eliminar</button>
                                 </div>
                             </div>
                         </div>
