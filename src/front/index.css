@@ -7,6 +7,10 @@ body {
     padding-top: 30px;
 }
 
+.padding-top-d{
+  padding-top: 45px;
+}
+
 .my-card {
   width: 18rem;
 }
