@@ -4,13 +4,13 @@ export function PetCard({ pet }) {
     const defaultImage = "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg";
 
     return (
-        <div className="card my-card h-100 shadow">
+        <div className="card my-card h-100 shadow overflow-hidden" style={{ border: "none" }}>
             <Link to={`/pet-detail/${pet.id}`} className="text-decoration-none text-dark">
-                <div className="position-relative img-container">
+                <div className="img-container">
                     <img
                         src={pet.image || defaultImage}
                         alt={pet.name || "Mascota"}
-                        className="rounded-top-4 card-image"
+                        className="card-image"
                     />
                 </div>
                 <div className="card-body text-center">

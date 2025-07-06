@@ -172,17 +172,17 @@ def delete_user():
     if not user:
         return jsonify({"message": "Usuario no encontrado"}), 404
 
-    # Obtener mascotas del usuario
+
     pets = Pet.query.filter_by(owner_id=user_id).all()
 
-    # Eliminar notas clínicas asociadas a cada mascota
+
     for pet in pets:
         ClinHistory.query.filter_by(pet_id=pet.id).delete()
 
-    # Eliminar mascotas del usuario
+
     Pet.query.filter_by(owner_id=user_id).delete()
 
-    # Eliminar el usuario
+
     db.session.delete(user)
     db.session.commit()
 
@@ -297,20 +297,19 @@ def update_pet(pet_id):
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
 @jwt_required()
 def delete_pet(pet_id):
-    user_id = int(get_jwt_identity())
     pet = Pet.query.get(pet_id)
-    if not pet:
-        return jsonify({"message": "Mascota no encontrada"}), 404
-    if pet.owner_id != user_id:
-        return jsonify({"message": "No autorizado"}), 403
+    if pet is None:
+        return jsonify({"error": "Mascota no encontrada"}), 404
 
     try:
         db.session.delete(pet)
         db.session.commit()
-        return jsonify({"message": "Mascota eliminada correctamente"}), 200
+        return jsonify({"message": "Mascota eliminada"}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        print(f"Error al eliminar mascota: {e}")
+        return jsonify({"error": "Error interno al eliminar la mascota"}), 500
+
 
 
 @api.route('/pets', methods=['GET'])

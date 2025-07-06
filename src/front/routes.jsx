@@ -50,6 +50,7 @@ export const router = createBrowserRouter(
         <Route path="/pet-detail/:theId" element={<ProtectedRoute><PetDetail /></ProtectedRoute>} />
         <Route path="/edit-pet/:id" element={<ProtectedRoute><EditPet /></ProtectedRoute>} />
         <Route path="/add-note" element={<ProtectedRoute><AddNote /></ProtectedRoute>} />
+        <Route path="/add-note/:petId" element={<ProtectedRoute><AddNote /></ProtectedRoute>} />
         <Route path="/edit-note/:id" element={<ProtectedRoute><EditNote /></ProtectedRoute>} />
         <Route path="/consejos" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
