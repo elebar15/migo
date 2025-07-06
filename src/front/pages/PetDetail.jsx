@@ -51,32 +51,15 @@ export function PetDetail() {
     if (!pet) return <p>Mascota no encontrada</p>;
 
     return (
-        <div className="container padding-top">
+        <div className="container padding-top-d">
             {message && (
                 <div className={`alert alert-${message.type}`} role="alert">
                     {message.text}
                 </div>
             )}
 
-            <div className="row align-items-center mb-3">
-                <div className="col-10">
-                    <h2 className="mb-0 fs-1 ">{pet.name}</h2>
-                </div>
-                <div className="col-2 d-flex justify-content-end gap-2">
-                    <Link to={`/edit-pet/${theId}`} className="btn btn-outline-dark btn-sm">
-                        <i className="fa-solid fa-pen me-1"></i>
-                    </Link>
-                    <button
-                        className="btn btn-outline-dark btn-sm"
-                        onClick={() => setShowModal(true)}
-                    >
-                        <i className="fa-solid fa-trash me-1"></i>
-                    </button>
-                </div>
-            </div>
-
             <div className="row">
-                <div className="col-md-4 mb-3">
+                <div className="col-md-4 mb-3 mr-3">
                     <img
                         src={
                             pet.image?.trim()
@@ -84,10 +67,28 @@ export function PetDetail() {
                                 : "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg"
                         }
                         alt={pet.name}
-                        className="img-fluid rounded-4 shadow object-fit-cover"
+                        className="img-fluid rounded-4 shadow object-fit-cover mb-3"
                         style={{ width: "100%", aspectRatio: "1 / 1" }}
                     />
+
+                    <div className="row align-items-center mb-3">
+                        <div className="col-10">
+                            <h2 className="mb-0 fs-1 fw-bold">{pet.name}</h2>
+                        </div>
+                        <div className="col-2 d-flex justify-content-end">
+                            <Link to={`/edit-pet/${theId}`} className="btn btn-sm">
+                                <i className="fa-solid fa-pen me-1"></i>
+                            </Link>
+                            <button
+                                className="btn btn-sm"
+                                onClick={() => setShowModal(true)}
+                            >
+                                <i className="fa-solid fa-trash me-1"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
                 <div className="col-md-8">
                     <ul className="list-group list-group-flush mb-3">
                         <li className="list-group-item fs-5 bg-yellow"><strong>Especie</strong> {pet.species}</li>

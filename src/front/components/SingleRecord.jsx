@@ -16,11 +16,11 @@ export function SingleRecord({ record, onDeleteSuccess, onDeleteError }) {
 
     return (
         <li className="list-group-item border-0 bg-yellow">
-            <div className="card shadow-sm">
-                <div className="card-body green-light text-dark">
+            <div className="card border-0 shadow-sm">
+                <div className="card-body rounded-3 green-light text-dark">
                     <div className="d-flex justify-content-between mb-2">
                         <h5 className="card-title mb-0 fw-bold">{record.event_name}</h5>
-                        <div className="d-flex gap-2">
+                        <div className="d-flex">
                             <Link to={`/edit-note/${record.id}`} className="btn btn-sm">
                                 <i className="fas fa-pen" role="button" title="Editar"></i>
                             </Link>
