@@ -3,6 +3,10 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+.dynapuff {
+  font-family: 'DynaPuff', cursive;
+}
+
 .padding-top{
     padding-top: 30px;
 }

@@ -14,7 +14,7 @@ export function PetCard({ pet }) {
                     />
                 </div>
                 <div className="card-body text-center">
-                    <h3 className="card-title">{pet.name}</h3>
+                    <h3 className="card-title fw-bold">{pet.name}</h3>
                 </div>
             </Link>
         </div>

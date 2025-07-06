@@ -73,7 +73,7 @@ export function PetDetail() {
 
                     <div className="row align-items-center mb-3">
                         <div className="col-10">
-                            <h2 className="mb-0 fs-1 ">{pet.name}</h2>
+                            <h2 className="mb-0 fs-1 fw-bold">{pet.name}</h2>
                         </div>
                         <div className="col-2 d-flex justify-content-end">
                             <Link to={`/edit-pet/${theId}`} className="btn btn-sm">
