@@ -27,12 +27,35 @@ export function PetMedicalRecord({ petId }) {
 
     return (
         <div className="container p-3 border rounded mb-4">
-            <div className="row d-flex justify-content-between pb-3">
-                <div className="col-4">
-                    <h3 className="green">Historial medico</h3>
+            <div className="row d-flex justify-content-between align-items-center pb-3">
+                <div className="col">
+                    <h3
+                        className="fw-bold"
+                        style={{ fontSize: "1.8rem", color: "#1E7A4F" }}
+                    >
+                        Historial médico
+                    </h3>
                 </div>
-                <div className="col-1">
-                    <Link to={'/add-note'} className="btn bg-green text-light rounded-circle"><i className="fa-solid fa-plus"></i></Link>
+                <div className="col-auto">
+                    <Link
+                        to={`/add-note/${petId}`}
+                        className="btn"
+                        style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                            backgroundColor: "#1E7A4F",
+                            color: "white",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "1rem",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            border: "none",
+                        }}
+                    >
+                        <i className="fa-solid fa-plus"></i>
+                    </Link>
                 </div>
             </div>
 

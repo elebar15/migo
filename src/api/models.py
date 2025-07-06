@@ -6,10 +6,12 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 class RoleEnum(enum.Enum):
     general = 'general'
     admin = 'admin'
     vet = 'vet'
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -23,7 +25,8 @@ class User(db.Model):
     country: Mapped[str] = mapped_column(String(100), nullable=True)
     city: Mapped[str] = mapped_column(String(100), nullable=True)
     avatar: Mapped[str] = mapped_column(String(180), nullable=True)
-    role: Mapped[RoleEnum] = mapped_column(SQLAEnum(RoleEnum), nullable=False, default=RoleEnum.general)
+    role: Mapped[RoleEnum] = mapped_column(
+        SQLAEnum(RoleEnum), nullable=False, default=RoleEnum.general)
 
     pets: Mapped[list["Pet"]] = relationship("Pet", back_populates="owner")
 
@@ -38,6 +41,7 @@ class User(db.Model):
             'city': self.city
         }
 
+
 class Pet(db.Model):
     __tablename__ = 'pet'
 
@@ -48,10 +52,15 @@ class Pet(db.Model):
     age: Mapped[int] = mapped_column(Integer, nullable=True)
     wheight: Mapped[float] = mapped_column(Float(2), nullable=True)
     image: Mapped[str] = mapped_column(String(255), nullable=True)
-    owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
+    owner_id: Mapped[int] = mapped_column(
+        ForeignKey('user.id'), nullable=False)
 
     owner: Mapped["User"] = relationship("User", back_populates="pets")
-    clin_historys: Mapped[list["ClinHistory"]] = relationship("ClinHistory", back_populates="pet")
+    clin_historys: Mapped[list["ClinHistory"]] = relationship(
+        "ClinHistory",
+        back_populates="pet",
+        cascade="all, delete-orphan"
+    )
 
     def serialize(self):
         return {
@@ -65,12 +74,15 @@ class Pet(db.Model):
             'owner_id': self.owner_id
         }
 
+
 class ClinHistory(db.Model):
     __tablename__ = 'clin_history'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    event_date: Mapped[datetime] = mapped_column(DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow)
+    event_date: Mapped[datetime] = mapped_column(
+        DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())
     event_name: Mapped[str] = mapped_column(String(80), nullable=False)
     place: Mapped[str] = mapped_column(String(80), nullable=True)
     note: Mapped[str] = mapped_column(Text, nullable=True)

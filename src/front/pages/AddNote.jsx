@@ -22,7 +22,8 @@ export const AddNote = () => {
   const [pets, setPets] = useState([]);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { petId } = useParams();
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -55,6 +56,15 @@ export const AddNote = () => {
       }));
     }
   }, [pets]);
+
+  useEffect(() => {
+    if (petId) {
+      setNote((prev) => ({
+        ...prev,
+        pet_id: petId
+      }));
+    }
+  }, [petId]);
 
   useEffect(() => {
     if (message) {
