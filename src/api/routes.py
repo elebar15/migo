@@ -338,10 +338,7 @@ def add_note():
 
     try:
         if event_date:
-            try:
-                event_date = datetime.strptime(event_date, "%d/%m/%Y")
-            except ValueError:
-                event_date = datetime.fromisoformat(event_date)
+            event_date = datetime.fromisoformat(event_date)
         else:
             event_date = datetime.utcnow()
 
@@ -394,7 +391,7 @@ def get_note(id):
     return jsonify({
         "id": note.id,
         "event_name": note.event_name,
-        "event_date": note.event_date,
+        "event_date": note.event_date.date().isoformat() if note.event_date else None,
         "place": note.place,
         "note": note.note,
         "pet_id": note.pet_id,
@@ -410,8 +407,15 @@ def update_note(id):
         return jsonify({"message": "Nota no encontrada"}), 404
 
     data = request.get_json()
+
+    event_date_str = data.get('event_date')
+    if event_date_str:
+        try:
+            note.event_date = datetime.fromisoformat(event_date_str)
+        except ValueError:
+            return jsonify({"message": "Formato de fecha inválido. Se espera YYYY-MM-DD"}), 400
+
     note.event_name = data.get('event_name', note.event_name)
-    note.event_date = data.get('event_date', note.event_date)
     note.place = data.get('place', note.place)
     note.note = data.get('note', note.note)
     note.pet_id = data.get('pet_id', note.pet_id)
@@ -422,6 +426,7 @@ def update_note(id):
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+
 
 @api.route('/ask-vet', methods=['POST'])
 def ask_vet():

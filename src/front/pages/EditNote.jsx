@@ -17,6 +17,15 @@ function getTodayDate() {
   return `${day}/${month}/${year}`;
 }
 
+const convertDateToDDMMYYYY = (isoDateStr) => {
+  if (!isoDateStr || typeof isoDateStr !== 'string') return '';
+  const [datePart] = isoDateStr.split('T');
+  const parts = datePart.split('-');
+  if (parts.length !== 3) return '';
+  const [year, month, day] = parts;
+  return `${day}/${month}/${year}`;
+};
+
 export const EditNote = () => {
   const [note, setNote] = useState(initialStateNote);
   const [message, setMessage] = useState(null);
@@ -64,21 +73,13 @@ export const EditNote = () => {
     const { name, value, type } = target;
     setNote((prev) => ({
       ...prev,
-      [name]: type === "number" && value !== "" ? Number(value) : value,
+      [name]: type === "number" && value !== "" ? Number(value) : value || "",
     }));
   }
 
   const convertDateToISO = (dateStr) => {
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month}-${day}`;
-  };
-
-  const convertDateToDDMMYYYY = (dateStr) => {
-    const date = new Date(dateStr);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   async function handleSubmit(event) {

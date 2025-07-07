@@ -14,6 +14,12 @@ export function SingleRecord({ record, onDeleteSuccess, onDeleteError }) {
         }
     };
 
+const formatDateDDMMYYYY = (isoDate) => {
+  if (!isoDate) return '';
+  const [year, month, day] = isoDate.split('T')[0].split('-');
+  return `${day}/${month}/${year}`;
+};
+
     return (
         <li className="list-group-item border-0 bg-yellow">
             <div className="card border-0 shadow-sm">
@@ -31,7 +37,7 @@ export function SingleRecord({ record, onDeleteSuccess, onDeleteError }) {
                     </div>
 
                     <p className="card-text mb-1"><strong>Lugar</strong> {record.place}</p>
-                    <p className="card-text mb-1"><strong>Fecha</strong> {new Date(record.event_date).toLocaleDateString()}</p>
+                    <p className="card-text mb-1"><strong>Fecha</strong> {formatDateDDMMYYYY(record.event_date)}</p>
                     <p className="card-text mb-1"><strong>Nota</strong> {record.note}</p>
                 </div>
 
