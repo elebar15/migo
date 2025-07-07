@@ -1,5 +1,5 @@
 body {
-  background-color: #fcf8e3;
+  background-color: #fcf8e3 !important;
   font-family: "Poppins", sans-serif;
 }
 
@@ -64,7 +64,7 @@ body {
 }
 
 .bg-yellow{
-    background-color:  #fcf8e3;
+    background-color:  #fcf8e3 !important;
 }
 
 .my-card {
