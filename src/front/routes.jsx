@@ -24,6 +24,7 @@ import UserProfileForm from "./pages/UserProfileForm";
 import { SiempreConmigo } from "./pages/SiempreConmigo";
 import { Faqs } from "./pages/Faqs";
 import { DeleteAccount } from "./pages/DeleteAccount";
+import { PasswordUpdate } from "./pages/PasswordUpdate"
 
 
 const isAuthenticated = () => {
@@ -42,6 +43,7 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/recovery-password" element={<RecoveryPassword />} />
+      <Route path="/password-update" element={<PasswordUpdate />} />
 
       {/* Rutas protegidas con Layout */}
       <Route path="/" element={<Layout />} errorElement={<NotFound />}>

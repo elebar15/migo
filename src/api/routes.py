@@ -9,6 +9,8 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from datetime import timedelta, datetime
 from clarifai.client.model import Model
 import asyncio
+from werkzeug.security import generate_password_hash
+from flask import current_app
 
 api = Blueprint('api', __name__)
 CORS(api)
@@ -85,22 +87,23 @@ def reset_password():
  
     email = body.get("email")
     user = User.query.filter_by(email=email).one_or_none()
+    migo_url = os.getenv("VITE_FRONTEND_URL")
     
     if user is None:
         return jsonify("user not found"), 404
 
     access_token = create_access_token(
-        identity=user.id, expires_delta=expires_delta)
+        identity=user.email, expires_delta=expires_delta)
 
     message = f"""
         <p>Hola {user.name},</p>
 
-        <p>Con este link, podrás <a href="{os.getenv("FRONTEND_URL")}/password-update?token={access_token}">recuperar tu contraseña</a>.</p>
+        <p>Con este link, podrás <a href="{migo_url}/password-update?token={access_token}">recuperar tu contraseña</a>.</p>
 
         <p>Un saludo</p>
 
         <p>El equipo Migo</p>
-        <p><a href="{os.getenv("FRONTEND_URL")}">Migo.com</a></p>
+        <p><a href="{migo_url}">Migo.com</a></p>
     """
 
     data = {
@@ -115,7 +118,7 @@ def reset_password():
     if sended_email:
         return jsonify("Mensaje correctamente enviado"), 200
     else:
-        api.logger.error(f"Error al enviar el correo a {email}")
+        current_app.logger.error(f"Error al enviar el correo a {email}")
         return jsonify("Error en el envío del correo"), 500
 
 
@@ -158,10 +161,6 @@ def update_user():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import jsonify
-from api.models import db, User, Pet, ClinHistory
 
 @api.route('/user', methods=['DELETE'])
 @jwt_required()
@@ -446,11 +445,11 @@ def ask_vet():
 
         prompt = (
             "Eres un veterinario experto. Tu tarea es responder con consejos fiables "
-            "y claros en menos de 50 palabras.\n\n"
+            "y claros en menos de 50 palabras. No quiero tu pensamiento, solo la respuesta.\n\n"
             f"Pregunta del usuario: \"{question}\"\n"
             "Respuesta:"
         )
-        model_url = "https://clarifai.com/microsoft/text-generation/models/phi-4"
+        model_url = "https://clarifai.com/deepseek-ai/deepseek-chat/models/DeepSeek-R1-0528-Qwen3-8B"
 
         model = Model(url=model_url, pat=apikey)
         model_prediction = model.predict_by_bytes(prompt.encode())
@@ -459,3 +458,34 @@ def ask_vet():
         return jsonify({"response": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@api.route("/update-password", methods=["PUT"])
+@jwt_required()
+def update_password():
+    try:
+        user_token_email = get_jwt_identity()
+        
+        new_password = request.json.get("password")
+        
+        if not new_password:
+            return jsonify({"error": "Necesita una contraseña"}), 400
+
+        user = User.query.filter_by(email=user_token_email).first()
+
+        if user is None:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        hashed_password = generate_password_hash(new_password + salt)
+
+        user.salt = salt
+        user.password = hashed_password
+
+        try:
+            db.session.commit()
+            return jsonify({"message": "Contraseña actualizada exitosamente"}), 200
+        except Exception as error:
+            db.session.rollback()
+            return jsonify({"error": "Error de servidor"}), 500
+    except Exception as e:
+        return jsonify({"error": "Error al actualizar la contraseña"}), 500        

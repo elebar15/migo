@@ -23,7 +23,8 @@ export const Chatbot = () => {
 
       const data = await res.json();
       if (data.response) {
-        setResponse(data.response);
+        const cleanedResponse = data.response.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+        setResponse(cleanedResponse);
       } else {
         setResponse("Error : " + data.error);
       }

@@ -59,7 +59,7 @@ def send_email(subject, to, body):
     smtp_address = os.getenv("SMTP")
     smtp_port = 465
     email_address = os.getenv("SENDFROM")
-    email_password = os.getenv("PASSSF")
+    email_password = os.getenv("PASS_SENDFROM")
 
 
     message = MIMEMultipart("alternative")
