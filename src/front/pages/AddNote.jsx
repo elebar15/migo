@@ -149,7 +149,7 @@ export const AddNote = () => {
         <div className="col-12 col-ms-6">
           <form className="rounded m-2 p-4" onSubmit={handleSubmit}>
             <h3 className="text-center mb-1">Añadir una nota</h3>
-            <h4 className="text-center text-secondary fw-semibold mb-4">{petName}</h4>
+            <h4 className="text-center text-secondary fw-semibold mb-4">para</h4>
 
 
             {message && (
