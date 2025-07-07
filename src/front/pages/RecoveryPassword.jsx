@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from '../assets/img/logo-migo-claro.png';
 import { Link } from "react-router-dom";
 
 export const RecoveryPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null); 
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 4000); 
+      return () => clearTimeout(timer); 
+    }
+  }, [message]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,7 +26,8 @@ export const RecoveryPassword = () => {
     const url = import.meta.env.VITE_BACKEND_URL;
 
     try {
-      setLoading(true);
+      setLoading(true); 
+
       const response = await fetch(`${url}/reset-password`, {
         method: "POST",
         headers: {
@@ -31,15 +40,15 @@ export const RecoveryPassword = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Un link de restauración de la contraseña fue mandado correctamente a su correo.");
+        setMessage({ type: "success", text: "Un link de restauración de la contraseña fue mandado correctamente a su correo." });
       } else {
-        alert(`Hubo un error: ${data.message || 'Error desconocido'}`);
+        setMessage({ type: "danger", text: data.message || "Error en la solicitud. Por favor, intente nuevamente." });
       }
+
     } catch (error) {
-      console.error("Error al hacer la solicitud:", error);
-      alert("Error en la solicitud. Por favor, intente nuevamente.");
+      setMessage({ type: "danger", text: "Error en la solicitud. Por favor, intente nuevamente." });
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -52,6 +61,12 @@ export const RecoveryPassword = () => {
       <div className="d-flex justify-content-center">
         <div className="p-4 bg-yellow rounded shadow aut-form">
           <h3 className="text-center mb-4">Recuperar contraseña</h3>
+          
+          {message && (
+            <div className={`alert alert-${message.type}`} role="alert">
+              {message.text}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
@@ -85,5 +100,4 @@ export const RecoveryPassword = () => {
       </div>
     </div>
   );
-
 };
