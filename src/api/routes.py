@@ -285,7 +285,6 @@ def update_pet(pet_id):
     pet.name = data.get("name", pet.name)
     pet.breed = data.get("breed", pet.breed)
     
-    # Handle birthdate conversion if it's provided
     birthdate = data.get("birthdate")
     if birthdate:
         try:

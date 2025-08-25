@@ -41,13 +41,13 @@ class User(db.Model):
         }
 
 
-class Pet(db.Model):  # Inherit directly from db.Model, no need for 'Base'
+class Pet(db.Model):  
     __tablename__ = 'pet'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(80), nullable=False)
     breed: Mapped[str] = mapped_column(String(80), nullable=True)
-    birthdate: Mapped[date] = mapped_column(Date, nullable=True)  # Store as Date type in DB (SQLite/PostgreSQL)
+    birthdate: Mapped[date] = mapped_column(Date, nullable=True)  
     wheight: Mapped[float] = mapped_column(Float, nullable=True)
     image: Mapped[str] = mapped_column(String(255), nullable=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
@@ -59,40 +59,39 @@ class Pet(db.Model):  # Inherit directly from db.Model, no need for 'Base'
         cascade="all, delete-orphan"
     )
 
-    # Method to serialize pet to a dictionary (used for API response)
+    
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
             'breed': self.breed,
-            'birthdate': self.birthdate,  # No conversion here
+            'birthdate': self.birthdate,  
             'wheight': self.wheight,
             'image': self.image,
             'owner_id': self.owner_id
         }
 
-    # Static method to handle the creation or updating of a Pet with date conversion logic
     @staticmethod
     def add_or_update_pet(session, name, breed, birthdate, wheight, image, pet_id=None):
-        # Check if the database is SQLite
-        engine = session.get_bind()  # Get the current database engine
-        if "sqlite" in str(engine.url).lower():  # SQLite detection
-            # Convert birthdate from string to date object for SQLite
+    
+        engine = session.get_bind()  
+        if "sqlite" in str(engine.url).lower():  
+           
             if isinstance(birthdate, str):
                 birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
 
-        if pet_id:  # Update an existing pet
+        if pet_id: 
             pet = session.query(Pet).get(pet_id)
             pet.name = name
             pet.breed = breed
             pet.birthdate = birthdate
             pet.wheight = wheight
             pet.image = image
-        else:  # Create a new pet
+        else:  
             pet = Pet(name=name, breed=breed, birthdate=birthdate, wheight=wheight, image=image)
             session.add(pet)
 
-        session.commit()  # Commit to the database
+        session.commit()  
 
 
 class ClinHistory(db.Model):
