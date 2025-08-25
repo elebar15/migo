@@ -3,9 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 const initialStatePet = {
   name: "",
-  species: "",
   breed: "",
-  age: "",
+  birthdate: "",
   wheight: "",
 };
 
@@ -74,7 +73,6 @@ export const AddPet = () => {
         },
         body: JSON.stringify({
           ...pet,
-          age: parseInt(pet.age),
           wheight: parseFloat(pet.wheight),
           image: imageUrl
         }),
@@ -128,19 +126,6 @@ export const AddPet = () => {
             <input
               type="text"
               className="form-control"
-              id="speciesInput"
-              name="species"
-              placeholder="Especie"
-              onChange={handleChange}
-              value={pet.species}
-            />
-            <label htmlFor="speciesInput">Especie</label>
-          </div>
-
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              className="form-control"
               id="breedInput"
               name="breed"
               placeholder="Raza"
@@ -152,15 +137,15 @@ export const AddPet = () => {
 
           <div className="form-floating mb-3">
             <input
-              type="number"
+              type="date"
               className="form-control"
-              id="ageInput"
-              name="age"
-              placeholder="Edad"
+              id="birthdateInput"
+              name="birthdate"
+              placeholder="Fecha de nacimiento"
               onChange={handleChange}
-              value={pet.age}
+              value={pet.birthdate}
             />
-            <label htmlFor="ageInput">Edad</label>
+            <label htmlFor="birthdateInput">Fecha de nacimiento</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -174,7 +159,7 @@ export const AddPet = () => {
               onChange={handleChange}
               value={pet.wheight}
             />
-            <label htmlFor="wheightInput">Peso</label>
+            <label htmlFor="wheightInput">Peso (kg)</label>
           </div>
 
           <div className="mb-3">

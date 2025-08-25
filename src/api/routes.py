@@ -188,22 +188,29 @@ def delete_user():
     return jsonify({"message": "Usuario y todos sus datos fueron eliminados con éxito"}), 200
 
 
-
 @api.route('/pet', methods=['POST'])
 @jwt_required()
 def add_pet():
     owner_id = get_jwt_identity()
     user = User.query.get(owner_id)
+
     if not user:
         return jsonify({"message": "Dueño no encontrado"}), 404
 
     data = request.get_json()
+
     name = data.get('name')
-    species = data.get('species')
     breed = data.get('breed')
-    age = data.get('age')
+    birthdate_str = data.get('birthdate')  
     wheight = data.get('wheight')
     image = data.get('image', "")
+
+    birthdate = None
+    if birthdate_str:
+        try:
+            birthdate = datetime.strptime(birthdate_str, "%Y-%m-%d").date()
+        except ValueError:
+            return jsonify({"error": "Formato de fecha inválido. Se espera YYYY-MM-DD"}), 400
 
     if not name:
         return jsonify({"message": "Necesita al menos el nombre de la mascota"}), 400
@@ -213,9 +220,8 @@ def add_pet():
 
     pet = Pet(
         name=name,
-        species=species,
         breed=breed,
-        age=int(age) if age else None,
+        birthdate=birthdate,  
         wheight=float(wheight) if wheight else None,
         image=image,
         owner_id=owner_id
@@ -228,6 +234,7 @@ def add_pet():
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
+
     
 
 @api.route('/upload', methods=['POST'])
@@ -274,13 +281,20 @@ def update_pet(pet_id):
         return jsonify({"message": "No autorizado"}), 403
 
     data = request.get_json()
+    
     pet.name = data.get("name", pet.name)
-    pet.species = data.get("species", pet.species)
     pet.breed = data.get("breed", pet.breed)
-    pet.age = data.get("age", pet.age)
+    
+    # Handle birthdate conversion if it's provided
+    birthdate = data.get("birthdate")
+    if birthdate:
+        try:
+            pet.birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
+        except ValueError:
+            return jsonify({"message": "Fecha de nacimiento en formato incorrecto. Use YYYY-MM-DD"}), 400
+    
     pet.wheight = data.get("wheight", pet.wheight)
 
-    
     if "image" in data:
         pet.image = data["image"]
 
@@ -290,8 +304,6 @@ def update_pet(pet_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-
-
 
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
 @jwt_required()
