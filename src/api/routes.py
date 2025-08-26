@@ -202,7 +202,7 @@ def add_pet():
     name = data.get('name')
     breed = data.get('breed')
     birthdate_str = data.get('birthdate')  
-    wheight = data.get('wheight')
+    weight = data.get('weight')
     image = data.get('image', "")
 
     birthdate = None
@@ -222,7 +222,7 @@ def add_pet():
         name=name,
         breed=breed,
         birthdate=birthdate,  
-        wheight=float(wheight) if wheight else None,
+        weight=float(weight) if weight else None,
         image=image,
         owner_id=owner_id
     )
@@ -292,7 +292,7 @@ def update_pet(pet_id):
         except ValueError:
             return jsonify({"message": "Fecha de nacimiento en formato incorrecto. Use YYYY-MM-DD"}), 400
     
-    pet.wheight = data.get("wheight", pet.wheight)
+    pet.weight = data.get("weight", pet.weight)
 
     if "image" in data:
         pet.image = data["image"]

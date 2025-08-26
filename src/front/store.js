@@ -16,11 +16,11 @@ export default function storeReducer(store, action = {}) {
       
     case 'add_pet':
 
-      const { id,  name, species, breed, age, wheight } = action.payload
+      const { id,  name, species, breed, age, weight } = action.payload
 
       return {
         ...store,
-        pets: store.pets.map((pet) => (pet.id === id ? { ...pet, name: name, species:species, breed:breed, age:age, wheight:wheight } : pet))
+        pets: store.pets.map((pet) => (pet.id === id ? { ...pet, name: name, species:species, breed:breed, age:age, weight:weight } : pet))
       };
 
     case 'SET_PETS':

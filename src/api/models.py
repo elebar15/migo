@@ -48,7 +48,7 @@ class Pet(db.Model):
     name: Mapped[str] = mapped_column(String(80), nullable=False)
     breed: Mapped[str] = mapped_column(String(80), nullable=True)
     birthdate: Mapped[date] = mapped_column(Date, nullable=True)  
-    wheight: Mapped[float] = mapped_column(Float, nullable=True)
+    weight: Mapped[float] = mapped_column(Float, nullable=True)
     image: Mapped[str] = mapped_column(String(255), nullable=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
 
@@ -66,13 +66,13 @@ class Pet(db.Model):
             'name': self.name,
             'breed': self.breed,
             'birthdate': self.birthdate,  
-            'wheight': self.wheight,
+            'weight': self.weight,
             'image': self.image,
             'owner_id': self.owner_id
         }
 
     @staticmethod
-    def add_or_update_pet(session, name, breed, birthdate, wheight, image, pet_id=None):
+    def add_or_update_pet(session, name, breed, birthdate, weight, image, pet_id=None):
     
         engine = session.get_bind()  
         if "sqlite" in str(engine.url).lower():  
@@ -85,10 +85,10 @@ class Pet(db.Model):
             pet.name = name
             pet.breed = breed
             pet.birthdate = birthdate
-            pet.wheight = wheight
+            pet.weight = weight
             pet.image = image
         else:  
-            pet = Pet(name=name, breed=breed, birthdate=birthdate, wheight=wheight, image=image)
+            pet = Pet(name=name, breed=breed, birthdate=birthdate, weight=weight, image=image)
             session.add(pet)
 
         session.commit()  

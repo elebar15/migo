@@ -105,10 +105,9 @@ export function PetDetail() {
 
                 <div className="col-md-8">
                     <ul className="list-group list-group-flush mb-3">
-                        <li className="list-group-item fs-5 bg-yellow"><strong>Especie</strong> {pet.species}</li>
                         <li className="list-group-item fs-5 bg-yellow"><strong>Raza</strong> {pet.breed}</li>
                         <li className="list-group-item fs-5 bg-yellow"><strong>Edad</strong> {calculateAge(pet.birthdate)} {calculateAge(pet.birthdate) === 1 ? 'año' : 'años'}</li>
-                        <li className="list-group-item fs-5 bg-yellow"><strong>Peso</strong> {pet.wheight} kg</li>
+                        <li className="list-group-item fs-5 bg-yellow"><strong>Peso</strong> {pet.weight} kg</li>
                     </ul>
                     <PetMedicalRecord petId={theId} />
                 </div>

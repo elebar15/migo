@@ -9,7 +9,7 @@ export function EditPet() {
     const [name, setName] = useState("");
     const [breed, setBreed] = useState("");
     const [birthdate, setBirthdate] = useState("");
-    const [wheight, setWheight] = useState("");
+    const [weight, setWeight] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [currentImage, setCurrentImage] = useState("");
     const [message, setMessage] = useState(null);
@@ -50,7 +50,7 @@ export function EditPet() {
                     setName(data.name || "");
                     setBreed(data.breed || "");
                     setBirthdate(formatDate(data.birthdate) || ""); 
-                    setWheight(data.wheight || "");
+                    setWeight(data.weight || "");
                     setCurrentImage(data.image || "");
                 } else {
                     setMessage({ type: "danger", text: "No se pudo cargar la mascota" });
@@ -102,7 +102,7 @@ export function EditPet() {
             name,
             breed,
             birthdate,
-            wheight: parseFloat(wheight),
+            weight: parseFloat(weight),
             image: imageUrl
         };
 
@@ -186,12 +186,12 @@ export function EditPet() {
                             type="number"
                             step="0.1"
                             className="form-control"
-                            id="wheightEdit"
+                            id="weightEdit"
                             placeholder="Peso"
-                            value={wheight}
-                            onChange={(e) => setWheight(e.target.value)}
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
                         />
-                        <label htmlFor="wheightEdit">Peso (kg)</label>
+                        <label htmlFor="weightEdit">Peso (kg)</label>
                     </div>
 
                     {currentImage && (

@@ -5,7 +5,7 @@ const initialStatePet = {
   name: "",
   breed: "",
   birthdate: "",
-  wheight: "",
+  weight: "",
 };
 
 export const AddPet = () => {
@@ -73,7 +73,7 @@ export const AddPet = () => {
         },
         body: JSON.stringify({
           ...pet,
-          wheight: parseFloat(pet.wheight),
+          weight: parseFloat(pet.weight),
           image: imageUrl
         }),
       });
@@ -153,13 +153,13 @@ export const AddPet = () => {
               type="number"
               step="0.1"
               className="form-control"
-              id="wheightInput"
-              name="wheight"
+              id="weightInput"
+              name="weight"
               placeholder="Peso"
               onChange={handleChange}
-              value={pet.wheight}
+              value={pet.weight}
             />
-            <label htmlFor="wheightInput">Peso (kg)</label>
+            <label htmlFor="weightInput">Peso (kg)</label>
           </div>
 
           <div className="mb-3">
