@@ -7,15 +7,19 @@ export function EditPet() {
     const [pet, setPet] = useState(null);
 
     const [name, setName] = useState("");
-    const [species, setSpecies] = useState("");
     const [breed, setBreed] = useState("");
-    const [age, setAge] = useState("");
-    const [wheight, setWheight] = useState("");
+    const [birthdate, setBirthdate] = useState("");
+    const [weight, setWeight] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [currentImage, setCurrentImage] = useState("");
     const [message, setMessage] = useState(null);
 
     const DEFAULT_IMAGE = "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg";
+
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0]; 
+    };
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -36,10 +40,9 @@ export function EditPet() {
                 if (response.ok) {
                     setPet(data);
                     setName(data.name || "");
-                    setSpecies(data.species || "");
                     setBreed(data.breed || "");
-                    setAge(data.age || "");
-                    setWheight(data.wheight || "");
+                    setBirthdate(formatDate(data.birthdate) || ""); 
+                    setWeight(data.weight || "");
                     setCurrentImage(data.image || "");
                 } else {
                     setMessage({ type: "danger", text: "No se pudo cargar la mascota" });
@@ -89,10 +92,9 @@ export function EditPet() {
 
         const updatedPet = {
             name,
-            species,
             breed,
-            age: parseInt(age),
-            wheight: parseFloat(wheight),
+            birthdate,
+            weight: parseFloat(weight),
             image: imageUrl
         };
 
@@ -151,18 +153,6 @@ export function EditPet() {
                         <input
                             type="text"
                             className="form-control"
-                            id="speciesEdit"
-                            placeholder="Especie"
-                            value={species}
-                            onChange={(e) => setSpecies(e.target.value)}
-                        />
-                        <label htmlFor="speciesEdit">Especie</label>
-                    </div>
-
-                    <div className="form-floating mb-3">
-                        <input
-                            type="text"
-                            className="form-control"
                             id="breedEdit"
                             placeholder="Raza"
                             value={breed}
@@ -173,14 +163,14 @@ export function EditPet() {
 
                     <div className="form-floating mb-3">
                         <input
-                            type="number"
+                            type="date"
                             className="form-control"
-                            id="ageEdit"
-                            placeholder="Edad"
-                            value={age}
-                            onChange={(e) => setAge(e.target.value)}
+                            id="birthdateEdit"
+                            placeholder="Fecha de nacimiento"
+                            value={birthdate}  
+                            onChange={(e) => setBirthdate(e.target.value)}
                         />
-                        <label htmlFor="ageEdit">Edad</label>
+                        <label htmlFor="birthdateEdit">Fecha de nacimiento</label>
                     </div>
 
                     <div className="form-floating mb-3">
@@ -188,12 +178,12 @@ export function EditPet() {
                             type="number"
                             step="0.1"
                             className="form-control"
-                            id="wheightEdit"
+                            id="weightEdit"
                             placeholder="Peso"
-                            value={wheight}
-                            onChange={(e) => setWheight(e.target.value)}
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
                         />
-                        <label htmlFor="wheightEdit">Peso (kg)</label>
+                        <label htmlFor="weightEdit">Peso (kg)</label>
                     </div>
 
                     {currentImage && (

@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Enum as SQLAEnum, Integer, Float, ForeignKey, DateTime, func, Text
+from sqlalchemy import String, Enum as SQLAEnum, Integer, Float, ForeignKey, DateTime, func, Text, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
-from datetime import datetime
+from datetime import datetime, date
 
 db = SQLAlchemy()
 
@@ -25,8 +25,7 @@ class User(db.Model):
     country: Mapped[str] = mapped_column(String(100), nullable=True)
     city: Mapped[str] = mapped_column(String(100), nullable=True)
     avatar: Mapped[str] = mapped_column(String(180), nullable=True)
-    role: Mapped[RoleEnum] = mapped_column(
-        SQLAEnum(RoleEnum), nullable=False, default=RoleEnum.general)
+    role: Mapped[RoleEnum] = mapped_column(SQLAEnum(RoleEnum), nullable=False, default=RoleEnum.general)
 
     pets: Mapped[list["Pet"]] = relationship("Pet", back_populates="owner")
 
@@ -42,18 +41,16 @@ class User(db.Model):
         }
 
 
-class Pet(db.Model):
+class Pet(db.Model):  
     __tablename__ = 'pet'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(80), nullable=False)
-    species: Mapped[str] = mapped_column(String(80), nullable=True)
     breed: Mapped[str] = mapped_column(String(80), nullable=True)
-    age: Mapped[int] = mapped_column(Integer, nullable=True)
-    wheight: Mapped[float] = mapped_column(Float(2), nullable=True)
+    birthdate: Mapped[date] = mapped_column(Date, nullable=True)  
+    weight: Mapped[float] = mapped_column(Float, nullable=True)
     image: Mapped[str] = mapped_column(String(255), nullable=True)
-    owner_id: Mapped[int] = mapped_column(
-        ForeignKey('user.id'), nullable=False)
+    owner_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
 
     owner: Mapped["User"] = relationship("User", back_populates="pets")
     clin_historys: Mapped[list["ClinHistory"]] = relationship(
@@ -62,17 +59,39 @@ class Pet(db.Model):
         cascade="all, delete-orphan"
     )
 
+    
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
-            'species': self.species,
             'breed': self.breed,
-            'age': self.age,
-            'wheight': self.wheight,
+            'birthdate': self.birthdate,  
+            'weight': self.weight,
             'image': self.image,
             'owner_id': self.owner_id
         }
+
+    @staticmethod
+    def add_or_update_pet(session, name, breed, birthdate, weight, image, pet_id=None):
+    
+        engine = session.get_bind()  
+        if "sqlite" in str(engine.url).lower():  
+           
+            if isinstance(birthdate, str):
+                birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
+
+        if pet_id: 
+            pet = session.query(Pet).get(pet_id)
+            pet.name = name
+            pet.breed = breed
+            pet.birthdate = birthdate
+            pet.weight = weight
+            pet.image = image
+        else:  
+            pet = Pet(name=name, breed=breed, birthdate=birthdate, weight=weight, image=image)
+            session.add(pet)
+
+        session.commit()  
 
 
 class ClinHistory(db.Model):

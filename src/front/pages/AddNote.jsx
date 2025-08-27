@@ -11,11 +11,12 @@ const initialStateNote = {
 
 function getTodayDate() {
   const today = new Date();
-  const day = String(today.getDate()).padStart(2, '0');
-  const month = String(today.getMonth() + 1).padStart(2, '0');
   const year = today.getFullYear();
-  return `${day}/${month}/${year}`;
+  const month = String(today.getMonth() + 1).padStart(2, '0'); 
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`; 
 }
+
 
 export const AddNote = () => {
   const [note, setNote] = useState(initialStateNote);
@@ -81,25 +82,10 @@ export const AddNote = () => {
     }));
   }
 
-  const convertDateToISO = (dateStr) => {
-    const [day, month, year] = dateStr.split('/');
-    return `${year}-${month}-${day}`;
-  };
-
-  const isValidDateFormat = (dateStr) => {
-    const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4}$/;
-    return regex.test(dateStr);
-  };
-
   async function handleSubmit(event) {
     event.preventDefault();
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token");
-
-    if (!isValidDateFormat(note.event_date)) {
-      setMessage({ type: "danger", text: "El formato de la fecha debe ser dd/mm/aaaa" });
-      return;
-    }
 
     try {
       const response = await fetch(`${url}/note`, {
@@ -110,7 +96,7 @@ export const AddNote = () => {
         },
         body: JSON.stringify({
           ...note,
-          event_date: convertDateToISO(note.event_date),
+          event_date: note.event_date,
           pet_id: note.pet_id
         }),
       });
@@ -208,7 +194,7 @@ export const AddNote = () => {
 
             <div className="form-floating mb-3">
               <input
-                type="text"
+                type="date"
                 className="form-control"
                 id="event_dateInput"
                 name="event_date"
