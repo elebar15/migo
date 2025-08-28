@@ -1,7 +1,7 @@
 # Migo, your best friend, always with you
 
 ## Description
-- This web app is aimed at helping pet's owners to keep records of medical or events about their pet.
+- This web app is aimed at helping pet's owners to keep medical records or events about their pet.
 - The name Migo comes from the pun made from amigo and conmigo which means friend and with me in spanish.
   It started as a bootcamp final project between 3 students and I choose to pursue the development.  
 - At the moment, you can create any pet profile you want with one image and basic details (date of birth weight, breed) and create event records.
