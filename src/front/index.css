@@ -136,3 +136,42 @@ body {
   margin-right: 10px;
   font-size: 1.2rem;
 }
+
+.editable-wrapper {
+    position: relative;
+}
+
+.hover-buttons {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.editable-wrapper:hover .hover-buttons {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.collapsed-record .record-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapsed-record:hover .record-content {
+    max-height: 500px; 
+}
+
+.text-wrap {
+  width: 16rem;
+}
+
+@media only screen and (max-width: 768px){
+.text-wrap {
+  width: 6rem;
+}
+
+.editable-wrapper:hover .record-date {
+  display: none;
+}
+}

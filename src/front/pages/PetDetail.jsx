@@ -74,6 +74,7 @@ export function PetDetail() {
 
             <div className="row">
                 <div className="col-md-4 mb-3 mr-3">
+                    <Link to={`/edit-pet/${theId}`} >
                     <img
                         src={
                             pet.image?.trim()
@@ -84,31 +85,37 @@ export function PetDetail() {
                         className="img-fluid rounded-4 shadow object-fit-cover mb-3"
                         style={{ width: "100%", aspectRatio: "1 / 1" }}
                     />
+                    </Link>
 
-                    <div className="row align-items-center mb-3">
-                        <div className="col-10">
-                            <h2 className="mb-0 fs-1 fw-bold">{pet.name}</h2>
-                        </div>
-                        <div className="col-2 d-flex justify-content-end">
-                            <Link to={`/edit-pet/${theId}`} className="btn btn-sm">
+                    <div className="editable-wrapper position-relative">
+                        <h2 className="mb-0 fs-1 fw-bold text-center">{pet.name}</h2>
+
+                        <div className="hover-buttons position-absolute top-0 end-0">
+                            <Link to={`/edit-pet/${theId}`} className="btn btn-sm btn-light">
                                 <i className="fa-solid fa-pen me-1"></i>
                             </Link>
                             <button
-                                className="btn btn-sm"
+                                className="btn btn-sm btn-light"
                                 onClick={() => setShowModal(true)}
                             >
                                 <i className="fa-solid fa-trash me-1"></i>
                             </button>
                         </div>
+                    
+
+
+                    <div className="row align-items-center mb-3 hover-buttons position-absolute ">
+                        <div>
+                            <ul className="list-group list-group-flush mb-3 ">
+                                <li className="list-group-item fs-5 bg-yellow"><strong>Edad</strong> {calculateAge(pet.birthdate)} {calculateAge(pet.birthdate) === 1 ? 'año' : 'años'}</li>
+                                <li className="list-group-item fs-5 bg-yellow"><strong>Peso</strong> {pet.weight} kg</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-
+                </div>
                 <div className="col-md-8">
-                    <ul className="list-group list-group-flush mb-3">
-                        <li className="list-group-item fs-5 bg-yellow"><strong>Raza</strong> {pet.breed}</li>
-                        <li className="list-group-item fs-5 bg-yellow"><strong>Edad</strong> {calculateAge(pet.birthdate)} {calculateAge(pet.birthdate) === 1 ? 'año' : 'años'}</li>
-                        <li className="list-group-item fs-5 bg-yellow"><strong>Peso</strong> {pet.weight} kg</li>
-                    </ul>
+
                     <PetMedicalRecord petId={theId} />
                 </div>
             </div>

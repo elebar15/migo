@@ -14,6 +14,10 @@ export function PetMedicalRecord({ petId }) {
         setLoading(false);
     }
 
+    const sortedRecords = [...records].sort((a, b) => {
+        return new Date(b.event_date) - new Date(a.event_date);
+        });
+
     useEffect(() => {
         fetchRecords();
     }, [petId]);
@@ -29,8 +33,8 @@ export function PetMedicalRecord({ petId }) {
         <div className="container p-3 pr-3 border rounded mb-4">
             <div className="row d-flex justify-content-between align-items-center pb-3">
                 <div className="col">
-                    <h3 className="fw-bold green fs-3">
-                        Historial médico
+                    <h3 className="fw-bold green fs-3 text-center">
+                        Historial
                     </h3>
                 </div>
                 <div className="col-auto">
@@ -68,10 +72,11 @@ export function PetMedicalRecord({ petId }) {
                 <p>No hay registros clínicos aún.</p>
             ) : (
                 <ul className="list-group">
-                    {records.map(record => (
+                    {sortedRecords.map((record, index) => (
                         <SingleRecord
                             key={record.id}
                             record={record}
+                            index={index}
                             onDeleteSuccess={() => {
                                 setMessage({ type: "success", text: "Nota eliminada correctamente" });
                                 fetchRecords();

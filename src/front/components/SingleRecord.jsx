@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { deleteMedicalRecord } from "../services/api";
 
-export function SingleRecord({ record, onDeleteSuccess, onDeleteError }) {
+export function SingleRecord({ record, onDeleteSuccess, onDeleteError, index }) {
     const [showModal, setShowModal] = useState(false);
 
     const handleDelete = async () => {
@@ -23,10 +23,13 @@ const formatDateDDMMYYYY = (isoDate) => {
     return (
         <li className="list-group-item border-0 bg-yellow">
             <div className="card border-0 shadow-sm">
-                <div className="card-body rounded-3 green-light text-dark">
-                    <div className="d-flex justify-content-between mb-2">
-                        <h5 className="card-title mb-0 fw-bold">{record.event_name}</h5>
-                        <div className="d-flex">
+                <div className={`card-body rounded-3 green-light text-dark ${index !== 0 ? "collapsed-record" : ""}`}>
+                    <div className="d-flex justify-content-between mb-2 editable-wrapper position-relative">
+                        <h5 className="card-title mb-0 fw-bold text-wrap">{record.event_name}</h5> 
+                        <p className="record-date position-absolute top-0 start-50">
+                            {formatDateDDMMYYYY(record.event_date)}
+                        </p>
+                        <div className="d-flex hover-buttons position-absolute top-0 end-0">
                             <Link to={`/edit-note/${record.id}`} className="btn btn-sm">
                                 <i className="fas fa-pen" role="button" title="Editar"></i>
                             </Link>
@@ -36,11 +39,11 @@ const formatDateDDMMYYYY = (isoDate) => {
                         </div>
                     </div>
 
-                    <p className="card-text mb-1"><strong>Lugar</strong> {record.place}</p>
-                    <p className="card-text mb-1"><strong>Fecha</strong> {formatDateDDMMYYYY(record.event_date)}</p>
-                    <p className="card-text mb-1"><strong>Nota</strong> {record.note}</p>
+                    <div className="record-content">
+                        <p className="card-text mb-1"><strong>Lugar</strong> {record.place}</p>
+                        <p className="card-text mb-1"><strong>Nota</strong> {record.note}</p>
+                    </div>
                 </div>
-
                 {showModal && (
                     <div className="modal d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
                         <div className="modal-dialog" role="document">
