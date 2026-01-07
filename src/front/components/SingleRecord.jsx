@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { deleteMedicalRecord } from "../services/api";
+import { translations } from "../services/translations";
 
 export function SingleRecord({ record, onDeleteSuccess, onDeleteError, index }) {
     const [showModal, setShowModal] = useState(false);
+    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+    const t = translations[language];
 
     const handleDelete = async () => {
         try {
@@ -31,7 +34,7 @@ const formatDateDDMMYYYY = (isoDate) => {
                         </p>
                         <div className="d-flex hover-buttons position-absolute top-0 end-0">
                             <Link to={`/edit-note/${record.id}`} className="btn btn-sm">
-                                <i className="fas fa-pen" role="button" title="Editar"></i>
+                                <i className="fas fa-pen" role="button" title={ t.edit }></i>
                             </Link>
                             <button className="btn btn-sm" onClick={() => setShowModal(true)}>
                                 <i className="fa-solid fa-trash me-1"></i>
@@ -40,8 +43,8 @@ const formatDateDDMMYYYY = (isoDate) => {
                     </div>
 
                     <div className="record-content">
-                        <p className="card-text mb-1"><strong>Lugar</strong> {record.place}</p>
-                        <p className="card-text mb-1"><strong>Nota</strong> {record.note}</p>
+                       {record.place && ( <p className="card-text mb-1"><strong>{t.place}</strong> {record.place}</p>)}
+                       {record.note && ( <p className="card-text mb-1"><strong>{t.note}</strong> {record.note}</p>)}
                     </div>
                 </div>
                 {showModal && (
@@ -49,20 +52,20 @@ const formatDateDDMMYYYY = (isoDate) => {
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title">¿Estás segura/o?</h5>
+                                    <h5 className="modal-title">{ t.sure_}</h5>
                                     <button type="button" className="close btn" onClick={() => setShowModal(false)}>
                                         <span>&times;</span>
                                     </button>
                                 </div>
                                 <div className="modal-body">
-                                    <p>¿Deseas eliminar este registro?</p>
+                                    <p>{ t.elim_reg }</p>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>{ t.cancel }</button>
                                     <button type="button" className="btn btn-danger" onClick={() => {
                                         setShowModal(false);
                                         handleDelete();
-                                    }}>Eliminar</button>
+                                    }}>{ t.eliminate }</button>
                                 </div>
                             </div>
                         </div>

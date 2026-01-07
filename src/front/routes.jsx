@@ -1,9 +1,6 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { useNavigate, useParams, createBrowserRouter, createRoutesFromElements, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+
 
 import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";

@@ -1,10 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PetCard } from "../components/PetCard";
 import { getAllPets } from "../services/api";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { translations } from "../services/translations";
 
 export const Home = () => {
+    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+    const t = translations[language];
     const { store, dispatch } = useGlobalReducer();
     const location = useLocation();
 
@@ -32,7 +35,7 @@ export const Home = () => {
                     </div>
                 ) : (
                     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "30vh" }}>
-                        <p className="text-center text-muted fs-5">No tienes mascotas registradas.</p>
+                        <p className="text-center text-muted fs-5">{t.no_pet}</p>
                     </div>
                 )}
 

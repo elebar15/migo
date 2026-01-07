@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { translations } from "../services/translations";
 
 const initialStateNote = {
   event_date: getTodayDate(),
@@ -24,7 +25,8 @@ export const AddNote = () => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const { petId } = useParams();
-
+  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+  const t = translations[language];
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -42,7 +44,7 @@ export const AddNote = () => {
           setPets(data);
         }
       } catch {
-        setMessage({ type: "danger", text: "Error al cargar mascotas" });
+        setMessage({ type: "danger", text: t.pet_load_err });
       }
     }
 
@@ -102,15 +104,15 @@ export const AddNote = () => {
       });
 
       if (response.status === 201) {
-        setMessage({ type: "success", text: "Nota añadida correctamente" });
+        setMessage({ type: "success", text: t.note_added });
         setTimeout(() => {
           navigate(`/pet-detail/${note.pet_id}`);
         }, 1500);
       } else {
-        setMessage({ type: "danger", text: "Error al registrar la nota" });
+        setMessage({ type: "danger", text: t.note_add_err });
       }
     } catch {
-      setMessage({ type: "danger", text: "Ocurrió un error al registrar la nota" });
+      setMessage({ type: "danger", text: t.note_add_err });
     }
   }
 
@@ -134,8 +136,8 @@ export const AddNote = () => {
       <div className="green-light rounded shadow p-4 back-login w-100">
         <div className="col-12 col-ms-6">
           <form className="rounded m-2 p-4" onSubmit={handleSubmit}>
-            <h3 className="text-center mb-1">Añadir una nota</h3>
-            <h4 className="text-center text-secondary fw-semibold mb-4">para</h4>
+            <h3 className="text-center text-secondary mb-1">{ t.add_note_title }</h3>
+            <h4 className="text-center text-secondary fw-semibold mb-4 fs-1">{petName}</h4>
 
 
             {message && (
@@ -154,14 +156,14 @@ export const AddNote = () => {
                   value={note.pet_id}
                   required
                 >
-                  <option value="">¿Para quién?</option>
+                  <option value="">{ t.who }</option>
                   {pets.map((pet) => (
                     <option key={pet.id} value={pet.id}>
                       {pet.name}
                     </option>
                   ))}
                 </select>
-                <label htmlFor="petSelect">Mascota</label>
+                <label htmlFor="petSelect">{ t.pet }</label>
               </div>
             )}
 
@@ -171,12 +173,12 @@ export const AddNote = () => {
                 className="form-control"
                 id="event_nameInput"
                 name="event_name"
-                placeholder="Nombre del evento"
+                placeholder={ t.event }
                 onChange={handleChange}
                 required
                 value={note.event_name}
               />
-              <label htmlFor="event_nameInput">Nombre del evento</label>
+              <label htmlFor="event_nameInput">{ t.event }</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -185,11 +187,11 @@ export const AddNote = () => {
                 className="form-control"
                 id="placeInput"
                 name="place"
-                placeholder="Lugar"
+                placeholder={ t.place}
                 onChange={handleChange}
                 value={note.place}
               />
-              <label htmlFor="placeInput">Lugar del evento</label>
+              <label htmlFor="placeInput">{ t.place }</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -198,11 +200,11 @@ export const AddNote = () => {
                 className="form-control"
                 id="event_dateInput"
                 name="event_date"
-                placeholder="dd/mm/aaaa"
+                placeholder={ t.date_format }
                 onChange={handleChange}
                 value={note.event_date}
               />
-              <label htmlFor="event_dateInput">Fecha</label>
+              <label htmlFor="event_dateInput">{ t.date }</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -210,22 +212,22 @@ export const AddNote = () => {
                 className="form-control"
                 id="noteInput"
                 name="note"
-                placeholder="Notas"
+                placeholder={ t.notes }
                 onChange={handleChange}
                 value={note.note}
                 rows="10"
                 onInput={handleResize}
                 style={{ resize: "none" }}
               />
-              <label htmlFor="noteInput">Notas</label>
+              <label htmlFor="noteInput">{ t.notes}</label>
             </div>
 
-            <button className="btn btn-secondary w-100">Añadir</button>
+            <button className="btn btn-secondary w-100">{ t.add }</button>
           </form>
 
           <div className="d-flex justify-content-center mt-3 small">
             <button className="btn btn-link text-dark text-decoration-none" onClick={handleGoBack}>
-              Regresar
+              { t.back }
             </button>
           </div>
         </div>

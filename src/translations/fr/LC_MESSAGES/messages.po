@@ -1,0 +1,185 @@
+# French translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-01-06 18:05-0500\n"
+"PO-Revision-Date: 2026-01-06 18:42-0500\n"
+"Last-Translator: \n"
+"Language-Team: fr <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: Babel 2.17.0\n"
+"X-Generator: Poedit 3.6\n"
+
+#: src/api/routes.py:39
+msgid "You need an email, a name, a lastname and a password"
+msgstr "Un courriel, un nom et un mot de passe sont nécessaires."
+
+#: src/api/routes.py:42
+msgid "Email already registered"
+msgstr "Courriel déjà enregistré."
+
+#: src/api/routes.py:50
+msgid "User created"
+msgstr "Utilisateur créé."
+
+#: src/api/routes.py:63
+msgid "Faltan datos"
+msgstr "Il manque des informations."
+
+#: src/api/routes.py:67 src/api/routes.py:133 src/api/routes.py:150
+#: src/api/routes.py:173 src/api/routes.py:493
+msgid "Usuario no encontrado"
+msgstr "Utilisateur non trouvé."
+
+#: src/api/routes.py:70
+msgid "Contraseña incorrecta"
+msgstr "Mot de passe ou nom d'utilisateur erroné."
+
+#: src/api/routes.py:94
+msgid "user not found"
+msgstr "Utilisateur non trouvé."
+
+#: src/api/routes.py:111
+msgid "Recuperación de contraseña"
+msgstr "Récupération de mot de passe."
+
+#: src/api/routes.py:120
+msgid "Mensaje correctamente enviado"
+msgstr "Message correctement envoyé."
+
+#: src/api/routes.py:123
+msgid "Error en el envío del correo"
+msgstr "Erreur d'envoi du courriel."
+
+#: src/api/routes.py:160
+msgid "Usuario actualizado correctamente"
+msgstr "Utilisateur correctement actualisé."
+
+#: src/api/routes.py:189
+msgid "Usuario y todos sus datos fueron eliminados con éxito"
+msgstr ""
+"L'utilisateur et toutes ses données ont correctement été supprimés."
+
+#: src/api/routes.py:199
+msgid "Dueño no encontrado"
+msgstr "Propriétaire non trouvé."
+
+#: src/api/routes.py:214 src/api/routes.py:428
+msgid "Formato de fecha inválido. Se espera YYYY-MM-DD"
+msgstr "Format de date non valide. Utiliser AAAA-MM-JJ."
+
+#: src/api/routes.py:217
+msgid "Necesita al menos el nombre de la mascota"
+msgstr "Un nom de mascotte est nécessaire."
+
+#: src/api/routes.py:220
+msgid "Ya registraste una mascota con este nombre"
+msgstr "Vous avez déjà enregistré une mascotte à ce nom."
+
+#: src/api/routes.py:234
+msgid "Mascota añadida"
+msgstr "Mascotte ajoutée."
+
+#: src/api/routes.py:245
+msgid "No se proporcionó ninguna imagen"
+msgstr "Pas d'image ajoutée."
+
+#: src/api/routes.py:249
+msgid "Nombre de archivo vacío"
+msgstr "Nom de fichier vide."
+
+#: src/api/routes.py:268 src/api/routes.py:280 src/api/routes.py:313
+#: src/api/routes.py:349 src/api/routes.py:371
+msgid "Mascota no encontrada"
+msgstr "Mascotte non trouvée."
+
+#: src/api/routes.py:270 src/api/routes.py:282
+msgid "No autorizado"
+msgstr "Non autorisé."
+
+#: src/api/routes.py:294
+msgid "Fecha de nacimiento en formato incorrecto. Use YYYY-MM-DD"
+msgstr "Date de naissance au mauvais format. Utiliser AAAA-MM-JJ."
+
+#: src/api/routes.py:303
+msgid "Mascota actualizada correctamente"
+msgstr "Mascotte correctement actualisée."
+
+#: src/api/routes.py:318
+msgid "Mascota eliminada"
+msgstr "Mascotte supprimée."
+
+#: src/api/routes.py:322
+msgid "Error interno al eliminar la mascota"
+msgstr "Erreur interne au moment d'éliminer la mascotte."
+
+#: src/api/routes.py:345
+msgid "Faltan datos obligatorios"
+msgstr "Il manque des données obligatoires."
+
+#: src/api/routes.py:361
+msgid "Nota añadida"
+msgstr "Note ajoutée."
+
+#: src/api/routes.py:385
+msgid "Registro clínico no encontrado"
+msgstr "Note non trouvée."
+
+#: src/api/routes.py:390
+msgid "Registro clínico eliminado exitosamente"
+msgstr "Note correctement éliminée."
+
+#: src/api/routes.py:393
+msgid "Error al eliminar el registro"
+msgstr "Erreur de suppression de la donnée."
+
+#: src/api/routes.py:401 src/api/routes.py:419
+msgid "Nota no encontrada"
+msgstr "Note non trouvée."
+
+#: src/api/routes.py:437
+msgid "Nota actualizada"
+msgstr "Note actualisée."
+
+#: src/api/routes.py:454
+msgid "Pregunta vacia"
+msgstr "Question vide."
+
+#: src/api/routes.py:464
+msgid ""
+"Eres un veterinario experto. Tu tarea es responder con consejos fiables "
+"y claros en menos de 50 palabras. No quiero tu pensamiento, solo la "
+"respuesta.\n"
+"\n"
+"Respuesta:"
+msgstr ""
+"Tu es un vétérinaire expérimenté. Ta mission est de donner des conseils "
+"fiables et précis en moins de 50 mots. N'indique pas tes pensées, "
+"seulement ta réponse.\n"
+"\n"
+"Réponse :"
+
+#: src/api/routes.py:488
+msgid "Necesita una contraseña"
+msgstr "Un mot de passe est nécessaire."
+
+#: src/api/routes.py:503
+msgid "Contraseña actualizada exitosamente"
+msgstr "Mot de passe correctement actualisé."
+
+#: src/api/routes.py:506
+msgid "Error de servidor"
+msgstr "Erreur du serveur."
+
+#: src/api/routes.py:508
+msgid "Error al actualizar la contraseña"
+msgstr "Erreur d'actualisation du mot de passe."

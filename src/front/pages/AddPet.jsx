@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { translations } from "../services/translations";
+import petPlaceholder from "../assets/img/pet_placeholder.avif"
 
 const initialStatePet = {
   name: "",
@@ -13,6 +15,8 @@ export const AddPet = () => {
   const [imageFile, setImageFile] = useState(null);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
+  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+  const t = translations[language];
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -43,7 +47,7 @@ export const AddPet = () => {
     const url = import.meta.env.VITE_BACKEND_URL;
     const token = localStorage.getItem("token");
 
-    let imageUrl = "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg";
+    let imageUrl = petPlaceholder;
 
     if (imageFile) {
       const formData = new FormData();
@@ -59,7 +63,7 @@ export const AddPet = () => {
         const data = await res.json();
         imageUrl = data.secure_url;
       } catch {
-        setMessage({ type: "danger", text: "Error al subir imagen" });
+        setMessage({ type: "danger", text: t.img_error });
         return;
       }
     }
@@ -81,17 +85,17 @@ export const AddPet = () => {
       if (response.status === 201) {
         setPet(initialStatePet);
         setImageFile(null);
-        setMessage({ type: "success", text: "Mascota registrada correctamente" });
+        setMessage({ type: "success", text: t.pet_registred });
         setTimeout(() => {
           navigate("/home");
         }, 1500);
       } else if (response.status === 400) {
-        setMessage({ type: "danger", text: "La mascota ya existe" });
+        setMessage({ type: "danger", text: t.pet_exists });
       } else {
-        setMessage({ type: "danger", text: "Error al registrar la mascota" });
+        setMessage({ type: "danger", text: t.pet_register_error });
       }
     } catch {
-      setMessage({ type: "danger", text: "Ha ocurrido un error al registrar la mascota" });
+      setMessage({ type: "danger", text: t.pet_register_error });
     }
   }
 
@@ -99,7 +103,7 @@ export const AddPet = () => {
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100">
-        <h2 className="text-center mb-4">Añadir una mascota</h2>
+        <h2 className="text-center mb-4">{ t.add_pet }</h2>
 
         {message && (
           <div className={`alert alert-${message.type}`} role="alert">
@@ -114,12 +118,12 @@ export const AddPet = () => {
               className="form-control"
               id="nameInput"
               name="name"
-              placeholder="Nombre"
+              placeholder={ t.name }
               onChange={handleChange}
               required
               value={pet.name}
             />
-            <label htmlFor="nameInput">Nombre</label>
+            <label htmlFor="nameInput">{ t.name }</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -128,11 +132,11 @@ export const AddPet = () => {
               className="form-control"
               id="breedInput"
               name="breed"
-              placeholder="Raza"
+              placeholder={ t.breed }
               onChange={handleChange}
               value={pet.breed}
             />
-            <label htmlFor="breedInput">Raza</label>
+            <label htmlFor="breedInput">{ t.breed }</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -141,11 +145,11 @@ export const AddPet = () => {
               className="form-control"
               id="birthdateInput"
               name="birthdate"
-              placeholder="Fecha de nacimiento"
+              placeholder={ t.birthdate }
               onChange={handleChange}
               value={pet.birthdate}
             />
-            <label htmlFor="birthdateInput">Fecha de nacimiento</label>
+            <label htmlFor="birthdateInput">{ t.birthdate }</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -155,15 +159,15 @@ export const AddPet = () => {
               className="form-control"
               id="weightInput"
               name="weight"
-              placeholder="Peso"
+              placeholder={ t.weight }
               onChange={handleChange}
               value={pet.weight}
             />
-            <label htmlFor="weightInput">Peso (kg)</label>
+            <label htmlFor="weightInput">{ t.weight } (kg)</label>
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Foto de la mascota (opcional)</label>
+            <label className="form-label">{ t.pic }</label>
             <input
               type="file"
               className="form-control"
@@ -173,13 +177,13 @@ export const AddPet = () => {
           </div>
 
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-            Añadir
+            { t.add }
           </button>
         </form>
 
         <div className="d-flex justify-content-center mt-3 small">
           <Link to="/home" className="text-dark text-decoration-none">
-            Regresar
+            { t.back }
           </Link>
         </div>
       </div>

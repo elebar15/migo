@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { translations } from "../services/translations";
+import petPlaceholder from "../assets/img/pet_placeholder.avif"
 
 export function EditPet() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [pet, setPet] = useState(null);
+    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+    const t = translations[language];
 
     const [name, setName] = useState("");
     const [breed, setBreed] = useState("");
@@ -14,7 +18,7 @@ export function EditPet() {
     const [currentImage, setCurrentImage] = useState("");
     const [message, setMessage] = useState(null);
 
-    const DEFAULT_IMAGE = "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg";
+    const DEFAULT_IMAGE = petPlaceholder;
 
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
@@ -45,10 +49,10 @@ export function EditPet() {
                     setWeight(data.weight || "");
                     setCurrentImage(data.image || "");
                 } else {
-                    setMessage({ type: "danger", text: "No se pudo cargar la mascota" });
+                    setMessage({ type: "danger", text: t.pet_load_err });
                 }
             } catch {
-                setMessage({ type: "danger", text: "Ocurrió un error al cargar la mascota" });
+                setMessage({ type: "danger", text: t.pet_load_err });
             }
         };
 
@@ -81,7 +85,7 @@ export function EditPet() {
                 const data = await res.json();
                 imageUrl = data.secure_url;
             } catch {
-                setMessage({ type: "danger", text: "Error al subir imagen" });
+                setMessage({ type: "danger", text: t.img_error });
                 return;
             }
         }
@@ -110,14 +114,14 @@ export function EditPet() {
 
             if (!response.ok) {
                 const responseBody = await response.text();
-                setMessage({ type: "danger", text: "No se pudo actualizar la mascota" });
+                setMessage({ type: "danger", text: t.pet_update_err });
                 return;
             }
 
-            setMessage({ type: "success", text: "Mascota actualizada correctamente" });
+            setMessage({ type: "success", text: t.pet_updated });
             setTimeout(() => navigate(`/pet-detail/${id}`), 1500);
         } catch {
-            setMessage({ type: "danger", text: "Error de red al actualizar la mascota" });
+            setMessage({ type: "danger", text: t.netw_err });
         }
     };
 
@@ -129,7 +133,7 @@ export function EditPet() {
     return (
         <div className="d-flex justify-content-center align-items-center py-5">
             <div className="green-light rounded shadow p-4 back-login w-100">
-                <h2 className="text-center mb-4">Editar Mascota</h2>
+                <h2 className="text-center mb-4">{ t.edit_pet}</h2>
 
                 {message && (
                     <div className={`alert alert-${message.type}`} role="alert">
@@ -142,11 +146,11 @@ export function EditPet() {
                             type="text"
                             className="form-control"
                             id="nameEdit"
-                            placeholder="Nombre"
+                            placeholder={ t.name }
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                        <label htmlFor="nameEdit">Nombre</label>
+                        <label htmlFor="nameEdit">{ t.name }</label>
                     </div>
 
                     <div className="form-floating mb-3">
@@ -154,11 +158,11 @@ export function EditPet() {
                             type="text"
                             className="form-control"
                             id="breedEdit"
-                            placeholder="Raza"
+                            placeholder={ t.breed }
                             value={breed}
                             onChange={(e) => setBreed(e.target.value)}
                         />
-                        <label htmlFor="breedEdit">Raza</label>
+                        <label htmlFor="breedEdit">{ t.breed }</label>
                     </div>
 
                     <div className="form-floating mb-3">
@@ -166,11 +170,11 @@ export function EditPet() {
                             type="date"
                             className="form-control"
                             id="birthdateEdit"
-                            placeholder="Fecha de nacimiento"
+                            placeholder={ t.birthdate }
                             value={birthdate}  
                             onChange={(e) => setBirthdate(e.target.value)}
                         />
-                        <label htmlFor="birthdateEdit">Fecha de nacimiento</label>
+                        <label htmlFor="birthdateEdit">{ t.birthdate }</label>
                     </div>
 
                     <div className="form-floating mb-3">
@@ -179,20 +183,20 @@ export function EditPet() {
                             step="0.1"
                             className="form-control"
                             id="weightEdit"
-                            placeholder="Peso"
+                            placeholder={ t.weight }
                             value={weight}
                             onChange={(e) => setWeight(e.target.value)}
                         />
-                        <label htmlFor="weightEdit">Peso (kg)</label>
+                        <label htmlFor="weightEdit">{ t.weight } (kg)</label>
                     </div>
 
                     {currentImage && (
                         <div className="mb-3 text-center">
-                            <label className="form-label">Foto actual</label>
+                            <label className="form-label">{ t.actual_pic }</label>
                             <div>
                                 <img
                                     src={currentImage}
-                                    alt="Foto actual"
+                                    alt={ t.actual_pic }
                                     className="img-fluid rounded"
                                     style={{ maxWidth: "150px" }}
                                 />
@@ -202,23 +206,40 @@ export function EditPet() {
                                 className="btn btn-outline-danger mt-2"
                                 onClick={handleDeleteImage}
                             >
-                                Eliminar foto actual
+                                { t.elim_pic }
                             </button>
                         </div>
                     )}
 
                     <div className="mb-3">
-                        <label className="form-label">Cambiar foto actual (opcional)</label>
+                    <label className="form-label">{ t.pic_change }</label>
+                    <div className="input-group">
                         <input
-                            type="file"
-                            className="form-control"
-                            accept="image/*"
-                            onChange={(e) => setImageFile(e.target.files[0])}
+                        type="text"
+                        className="form-control"
+                        placeholder={imageFile ? imageFile.name : t.pic} // translated placeholder
+                        readOnly
+                        />
+                        <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => document.getElementById('hiddenFileInput').click()}
+                        >
+                        { t.add } {/* translated button */}
+                        </button>
+                        <input
+                        type="file"
+                        id="hiddenFileInput"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => setImageFile(e.target.files[0])}
                         />
                     </div>
+                    </div>
+
 
                     <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-                        Guardar Cambios
+                        { t.keep }
                     </button>
                 </form>
             </div>

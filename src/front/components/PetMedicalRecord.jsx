@@ -2,11 +2,14 @@ import { Link } from "react-router-dom";
 import { SingleRecord } from "../components/SingleRecord";
 import { useEffect, useState } from "react";
 import { getMedicalRecords } from "../services/api";
+import { translations } from "../services/translations";
 
 export function PetMedicalRecord({ petId }) {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState(null);
+    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+    const t = translations[language];
 
     async function fetchRecords() {
         const data = await getMedicalRecords(petId);
@@ -34,7 +37,7 @@ export function PetMedicalRecord({ petId }) {
             <div className="row d-flex justify-content-between align-items-center pb-3">
                 <div className="col">
                     <h3 className="fw-bold green fs-3 text-center">
-                        Historial
+                        { t.history }
                     </h3>
                 </div>
                 <div className="col-auto">
@@ -67,9 +70,9 @@ export function PetMedicalRecord({ petId }) {
             )}
 
             {loading ? (
-                <p>Cargando registros médicos...</p>
+                <p>{ t.load_hist }</p>
             ) : records.length === 0 ? (
-                <p>No hay registros clínicos aún.</p>
+                <p>{ t.no_hist }</p>
             ) : (
                 <ul className="list-group">
                     {sortedRecords.map((record, index) => (
@@ -78,11 +81,11 @@ export function PetMedicalRecord({ petId }) {
                             record={record}
                             index={index}
                             onDeleteSuccess={() => {
-                                setMessage({ type: "success", text: "Nota eliminada correctamente" });
+                                setMessage({ type: "success", text: t.note_erased });
                                 fetchRecords();
                             }}
                             onDeleteError={() => {
-                                setMessage({ type: "danger", text: "Error al eliminar la nota" });
+                                setMessage({ type: "danger", text: t.note_erase_error });
                             }}
                         />
                     ))}

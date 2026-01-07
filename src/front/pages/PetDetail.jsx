@@ -2,6 +2,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { getPetById, deletePetById } from "../services/api";
 import { useState, useEffect } from "react";
 import { PetMedicalRecord } from "../components/PetMedicalRecord";
+import { translations } from "../services/translations";
+import petPlaceholder from "../assets/img/pet_placeholder.avif"
 
 export function PetDetail() {
     const { theId } = useParams();
@@ -10,6 +12,8 @@ export function PetDetail() {
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [message, setMessage] = useState(null);
+    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+    const t = translations[language];
 
     useEffect(() => {
         async function fetchPet() {
@@ -36,33 +40,39 @@ export function PetDetail() {
         }
     }, [message]);
 
-    function calculateAge(birthdateStr) {
-        const birthdate = new Date(birthdateStr);
-        const today = new Date();
-        let age = today.getFullYear() - birthdate.getFullYear();
-        const m = today.getMonth() - birthdate.getMonth();
+    function calculateAge(pet) {
+    if (!pet?.birthdate) return null;
 
-        if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-            age--;
-        }
+    const birthdate = new Date(pet.birthdate);
+    if (isNaN(birthdate.getTime())) return null;
 
-        return age;
-        }
+    const today = new Date();
+    let age = today.getFullYear() - birthdate.getFullYear();
+    const m = today.getMonth() - birthdate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+        age--;
+    }
+
+    return age;
+    }
 
 
     const handleDelete = async () => {
         try {
             await deletePetById(theId);
             setShowModal(false);
-            setMessage({ type: "success", text: "Mascota eliminada con éxito" });
+            setMessage({ type: "success", text: t.pet_erased });
         } catch (error) {
             setShowModal(false);
-            setMessage({ type: "danger", text: "Error al eliminar la mascota" });
+            setMessage({ type: "danger", text: t.pet_erase_error });
         }
     };
 
     if (isLoading) return null;
-    if (!pet) return <p>Mascota no encontrada</p>;
+    if (!pet) return <p>{ t.pet_not_found }</p>;
+
+    const age = calculateAge(pet);
 
     return (
         <div className="container padding-top-d">
@@ -79,7 +89,7 @@ export function PetDetail() {
                         src={
                             pet.image?.trim()
                                 ? pet.image
-                                : "https://img.freepik.com/vector-gratis/concepto-mascotas-diferentes_52683-37549.jpg"
+                                : petPlaceholder 
                         }
                         alt={pet.name}
                         className="img-fluid rounded-4 shadow object-fit-cover mb-3"
@@ -107,8 +117,15 @@ export function PetDetail() {
                     <div className="row align-items-center mb-3 hover-buttons position-absolute ">
                         <div>
                             <ul className="list-group list-group-flush mb-3 ">
-                                <li className="list-group-item fs-5 bg-yellow"><strong>Edad</strong> {calculateAge(pet.birthdate)} {calculateAge(pet.birthdate) === 1 ? 'año' : 'años'}</li>
-                                <li className="list-group-item fs-5 bg-yellow"><strong>Peso</strong> {pet.weight} kg</li>
+                               <li className="list-group-item fs-5 bg-yellow">
+                                    <strong>{t.age}</strong>{" "}
+                                    {age !== null
+                                        ? `${age} ${age === 1 ? t.yearo : t.yearso}`
+                                        : ""}
+                                    </li>
+
+
+                                <li className="list-group-item fs-5 bg-yellow"><strong>{ t.weight }</strong> {pet.weight} kg</li>
                             </ul>
                         </div>
                     </div>
@@ -125,17 +142,17 @@ export function PetDetail() {
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">¿Estás segura/o?</h5>
+                                <h5 className="modal-title">{ t.sure }</h5>
                                 <button type="button" className="close btn" onClick={() => setShowModal(false)}>
                                     <span>&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <p>¿Deseas eliminar el perfil de {pet.name}?</p>
+                                <p>{ t.eliminate_ } {pet.name}?</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-                                <button type="button" className="btn btn-danger" onClick={handleDelete}>Eliminar</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>{ t.cancel }</button>
+                                <button type="button" className="btn btn-danger" onClick={handleDelete}>{ t.eliminate }</button>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { translations } from "../services/translations";
 
 const UserProfileForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ const UserProfileForm = () => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+  const t = translations[language];
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/user`, {
@@ -24,11 +27,11 @@ const UserProfileForm = () => {
     })
       .then(async res => {
         const contentType = res.headers.get("content-type");
-        if (!res.ok) throw new Error("Respuesta no válida: " + res.status);
+        if (!res.ok) throw new Error("Invalid response: " + res.status);
         if (!contentType.includes("application/json")) {
           const text = await res.text();
-          console.error("Respuesta inesperada:", text);
-          throw new Error("Respuesta no es JSON");
+          console.error("Unexpected response:", text);
+          throw new Error("Response is not JSON");
         }
         return res.json();
       })
@@ -42,10 +45,10 @@ const UserProfileForm = () => {
         });
       })
       .catch(err => {
-        console.error("Error al cargar datos:", err);
-        setMessage({ text: "Error al cargar datos de usuario", type: "danger" });
+        console.error("Error loading user data:", err);
+        setMessage({ text: t.user_data_load_err, type: "danger" });
       });
-  }, []);
+  }, [token, t]);
 
   useEffect(() => {
     if (message) {
@@ -74,22 +77,27 @@ const UserProfileForm = () => {
         body: JSON.stringify(formData)
       });
 
-      if (!res.ok) throw new Error("Error al actualizar los datos");
-      setMessage({ text: "Datos actualizados correctamente", type: "success" });
+      if (!res.ok) throw new Error("Error updating data");
+      setMessage({ text: t.user_data_updated, type: "success" });
 
       setTimeout(() => {
         navigate("/profile");
       }, 1500);
     } catch (err) {
       console.error(err);
-      setMessage({ text: "Error al actualizar", type: "danger" });
+      setMessage({ text: t.user_data_update_err, type: "danger" });
     }
+  };
+
+  const changeLanguage = (lang) => {
+    setLanguage(lang);
+    sessionStorage.setItem("lang", lang);
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100" style={{ maxWidth: "500px" }}>
-        <h3 className="text-center mb-4">Editar mis datos</h3>
+        <h3 className="text-center mb-4">{t.edit_user_profile}</h3>
 
         {message && (
           <div className={`alert alert-${message.type}`} role="alert">
@@ -103,12 +111,13 @@ const UserProfileForm = () => {
               type="text"
               className="form-control"
               id="nameInput"
-              name="name"
-              placeholder="Nombre"
+              name="name"                 
+              placeholder={t.first_name_label}
               value={formData.name}
               onChange={handleChange}
+              required
             />
-            <label htmlFor="nameInput">Nombre</label>
+            <label htmlFor="nameInput">{t.first_name_label}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -117,11 +126,12 @@ const UserProfileForm = () => {
               className="form-control"
               id="lastnameInput"
               name="lastname"
-              placeholder="Apellido"
+              placeholder={t.last_name_label}
               value={formData.lastname}
               onChange={handleChange}
+              required
             />
-            <label htmlFor="lastnameInput">Apellido</label>
+            <label htmlFor="lastnameInput">{t.last_name_label}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -130,11 +140,11 @@ const UserProfileForm = () => {
               className="form-control"
               id="emailInput"
               name="email"
-              placeholder="Correo"
+              placeholder={t.email_label}
               value={formData.email}
               disabled
             />
-            <label htmlFor="emailInput">Correo electrónico</label>
+            <label htmlFor="emailInput">{t.email_label}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -143,11 +153,11 @@ const UserProfileForm = () => {
               className="form-control"
               id="countryInput"
               name="country"
-              placeholder="País"
+              placeholder={t.country_label}
               value={formData.country}
               onChange={handleChange}
             />
-            <label htmlFor="countryInput">País</label>
+            <label htmlFor="countryInput">{t.country_label}</label>
           </div>
 
           <div className="form-floating mb-4">
@@ -156,21 +166,21 @@ const UserProfileForm = () => {
               className="form-control"
               id="cityInput"
               name="city"
-              placeholder="Ciudad"
+              placeholder={t.city_label}
               value={formData.city}
               onChange={handleChange}
             />
-            <label htmlFor="cityInput">Ciudad</label>
+            <label htmlFor="cityInput">{ t.city_label }</label>
           </div>
 
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-            Actualizar
+            { t.save_changes }
           </button>
         </form>
 
-        <div className="d-flex justify-content-center my-3 justify-content-evenly">
+        <div className="d-flex justify-content-center my-3">
           <button onClick={() => navigate("/profile")} className="btn btn-link text-dark text-decoration-none">
-            Regresar
+            { t.back }
           </button>
         </div>
       </div>

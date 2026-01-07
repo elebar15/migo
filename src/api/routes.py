@@ -11,6 +11,7 @@ from clarifai.client.model import Model
 import asyncio
 from werkzeug.security import generate_password_hash
 from flask import current_app
+from flask_babel import Babel, gettext as _
 
 api = Blueprint('api', __name__)
 CORS(api)
@@ -35,10 +36,10 @@ def add_user():
     role = RoleEnum.admin if email == 'valen2004vega@gmail.com' else RoleEnum.general
 
     if not all([email, name, lastname, password]):
-        return jsonify('You need an email, a name, a lastname and a password'), 400
+        return jsonify(_('You need an email, a name, a lastname and a password')), 400
 
     if User.query.filter_by(email=email).first():
-        return jsonify({"message": "Email already registered"}), 409
+        return jsonify({"message": _("Email already registered")}), 409
 
     user = User(email=email, name=name, lastname=lastname,
                 password=set_password(password, salt), salt=salt, role=role)
@@ -46,7 +47,7 @@ def add_user():
 
     try:
         db.session.commit()
-        return jsonify('User created'), 201
+        return jsonify(_('User created')), 201
     except Exception as error:
         db.session.rollback()
         return jsonify(f'Error: {error.args}'), 500
@@ -59,14 +60,14 @@ def login():
     password = data.get("password")
 
     if not email or not password:
-        return jsonify({"msg": "Faltan datos"}), 400
+        return jsonify({"msg": _("Faltan datos")}), 400
 
     user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({"msg": "Usuario no encontrado"}), 404
+        return jsonify({"msg": _("Usuario no encontrado")}), 404
 
     if not check_password(user.password, password, user.salt):
-        return jsonify({"msg": "Contraseña incorrecta"}), 401
+        return jsonify({"msg": _("Contraseña incorrecta")}), 401
 
     token = create_access_token(identity=str(user.id))
     return jsonify({"token": token, "user_id": user.id}), 200
@@ -76,7 +77,7 @@ def login():
 @jwt_required()
 def protected():
     current_user_id = get_jwt_identity()
-    return jsonify({"message": f"Bienvenido, tu ID es {current_user_id}"}), 200
+    return jsonify({"message": _(f"Bienvenido, tu ID es {current_user_id}")}), 200
 
 
 @api.route("/reset-password", methods=["POST"])
@@ -90,12 +91,12 @@ def reset_password():
     migo_url = os.getenv("VITE_FRONTEND_URL")
     
     if user is None:
-        return jsonify("user not found"), 404
+        return jsonify(_("user not found")), 404
 
     access_token = create_access_token(
         identity=user.email, expires_delta=expires_delta)
 
-    message = f"""
+    message = _(f"""
         <p>Hola {user.name},</p>
 
         <p>Con este link, podrás <a href="{migo_url}/password-update?token={access_token}">recuperar tu contraseña</a>.</p>
@@ -104,10 +105,10 @@ def reset_password():
 
         <p>El equipo Migo</p>
         <p><a href="{migo_url}">Migo.com</a></p>
-    """
+    """)
 
     data = {
-        "subject": "Recuperación de contraseña",
+        "subject": _("Recuperación de contraseña"),
         "to": email,
         "message": message
     }
@@ -116,10 +117,10 @@ def reset_password():
         data.get("subject"), data.get("to"), data.get("message"))
 
     if sended_email:
-        return jsonify("Mensaje correctamente enviado"), 200
+        return jsonify(_("Mensaje correctamente enviado")), 200
     else:
-        current_app.logger.error(f"Error al enviar el correo a {email}")
-        return jsonify("Error en el envío del correo"), 500
+        current_app.logger.error(_(f"Error al enviar el correo a {email}"))
+        return jsonify(_("Error en el envío del correo")), 500
 
 
 @api.route('/user', methods=['GET'])
@@ -129,7 +130,7 @@ def get_user():
     user = User.query.get(current_user_id)
 
     if not user:
-        return jsonify({"message": "Usuario no encontrado"}), 404
+        return jsonify({"message": _("Usuario no encontrado")}), 404
 
     return jsonify({
         "name": user.name,
@@ -146,7 +147,7 @@ def update_user():
     user = User.query.get(current_user_id)
 
     if not user:
-        return jsonify({"message": "Usuario no encontrado"}), 404
+        return jsonify({"message": _("Usuario no encontrado")}), 404
 
     data = request.get_json()
     user.name = data.get("name", user.name)
@@ -156,7 +157,7 @@ def update_user():
 
     try:
         db.session.commit()
-        return jsonify({"message": "Usuario actualizado correctamente"}), 200
+        return jsonify({"message": _("Usuario actualizado correctamente")}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
@@ -169,7 +170,7 @@ def delete_user():
     user = User.query.get(user_id)
 
     if not user:
-        return jsonify({"message": "Usuario no encontrado"}), 404
+        return jsonify({"message": _("Usuario no encontrado")}), 404
 
 
     pets = Pet.query.filter_by(owner_id=user_id).all()
@@ -185,7 +186,7 @@ def delete_user():
     db.session.delete(user)
     db.session.commit()
 
-    return jsonify({"message": "Usuario y todos sus datos fueron eliminados con éxito"}), 200
+    return jsonify({"message": _("Usuario y todos sus datos fueron eliminados con éxito")}), 200
 
 
 @api.route('/pet', methods=['POST'])
@@ -195,7 +196,7 @@ def add_pet():
     user = User.query.get(owner_id)
 
     if not user:
-        return jsonify({"message": "Dueño no encontrado"}), 404
+        return jsonify({"message": _("Dueño no encontrado")}), 404
 
     data = request.get_json()
 
@@ -210,13 +211,13 @@ def add_pet():
         try:
             birthdate = datetime.strptime(birthdate_str, "%Y-%m-%d").date()
         except ValueError:
-            return jsonify({"error": "Formato de fecha inválido. Se espera YYYY-MM-DD"}), 400
+            return jsonify({"error": _("Formato de fecha inválido. Se espera YYYY-MM-DD")}), 400
 
     if not name:
-        return jsonify({"message": "Necesita al menos el nombre de la mascota"}), 400
+        return jsonify({"message": _("Necesita al menos el nombre de la mascota")}), 400
 
     if Pet.query.filter_by(name=name, owner_id=owner_id).first():
-        return jsonify({"message": "Ya registraste una mascota con este nombre"}), 409
+        return jsonify({"message": _("Ya registraste una mascota con este nombre")}), 409
 
     pet = Pet(
         name=name,
@@ -230,7 +231,7 @@ def add_pet():
     db.session.add(pet)
     try:
         db.session.commit()
-        return jsonify({"message": "Mascota añadida"}), 201
+        return jsonify({"message": _("Mascota añadida")}), 201
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
@@ -241,11 +242,11 @@ def add_pet():
 @jwt_required()
 def upload_image():
     if 'image' not in request.files:
-        return jsonify({"msg": "No se proporcionó ninguna imagen"}), 400
+        return jsonify({"msg": _("No se proporcionó ninguna imagen")}), 400
 
     image = request.files['image']
     if image.filename == '':
-        return jsonify({"msg": "Nombre de archivo vacío"}), 400
+        return jsonify({"msg": _("Nombre de archivo vacío")}), 400
 
     try:
         result = cloudinary.uploader.upload(image)
@@ -254,7 +255,7 @@ def upload_image():
             "public_id": result.get("public_id")
         }), 200
     except Exception as e:
-        return jsonify({"error": f"Error al subir imagen: {str(e)}"}), 500
+        return jsonify({"error": _(f"Error al subir imagen: {str(e)}")}), 500
 
 
 
@@ -264,9 +265,9 @@ def get_pet_by_id_route(pet_id):
     user_id = get_jwt_identity()
     pet = Pet.query.get(pet_id)
     if not pet:
-        return jsonify({"message": "Mascota no encontrada"}), 404
+        return jsonify({"message": _("Mascota no encontrada")}), 404
     if pet.owner_id != int(user_id):
-        return jsonify({"message": "No autorizado"}), 403
+        return jsonify({"message": _("No autorizado")}), 403
     return jsonify(pet.serialize()), 200
 
 
@@ -276,9 +277,9 @@ def update_pet(pet_id):
     user_id = get_jwt_identity()
     pet = Pet.query.get(pet_id)
     if not pet:
-        return jsonify({"message": "Mascota no encontrada"}), 404
+        return jsonify({"message": _("Mascota no encontrada")}), 404
     if pet.owner_id != int(user_id):
-        return jsonify({"message": "No autorizado"}), 403
+        return jsonify({"message": _("No autorizado")}), 403
 
     data = request.get_json()
     
@@ -290,7 +291,7 @@ def update_pet(pet_id):
         try:
             pet.birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
         except ValueError:
-            return jsonify({"message": "Fecha de nacimiento en formato incorrecto. Use YYYY-MM-DD"}), 400
+            return jsonify({"message": _("Fecha de nacimiento en formato incorrecto. Use YYYY-MM-DD")}), 400
     
     pet.weight = data.get("weight", pet.weight)
 
@@ -299,7 +300,7 @@ def update_pet(pet_id):
 
     try:
         db.session.commit()
-        return jsonify({"message": "Mascota actualizada correctamente"}), 200
+        return jsonify({"message": _("Mascota actualizada correctamente")}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
@@ -309,16 +310,16 @@ def update_pet(pet_id):
 def delete_pet(pet_id):
     pet = Pet.query.get(pet_id)
     if pet is None:
-        return jsonify({"error": "Mascota no encontrada"}), 404
+        return jsonify({"error": _("Mascota no encontrada")}), 404
 
     try:
         db.session.delete(pet)
         db.session.commit()
-        return jsonify({"message": "Mascota eliminada"}), 200
+        return jsonify({"message": _("Mascota eliminada")}), 200
     except Exception as e:
         db.session.rollback()
-        print(f"Error al eliminar mascota: {e}")
-        return jsonify({"error": "Error interno al eliminar la mascota"}), 500
+        print(_(f"Error al eliminar mascota: {e}"))
+        return jsonify({"error": _("Error interno al eliminar la mascota")}), 500
 
 
 
@@ -341,11 +342,11 @@ def add_note():
     pet_id = data.get('pet_id')
 
     if not event_name or not pet_id:
-        return jsonify({"message": "Faltan datos obligatorios"}), 400
+        return jsonify({"message": _("Faltan datos obligatorios")}), 400
 
     pet = Pet.query.get(pet_id)
     if not pet:
-        return jsonify({"message": "Mascota no encontrada"}), 400
+        return jsonify({"message": _("Mascota no encontrada")}), 400
 
     try:
         if event_date:
@@ -357,7 +358,7 @@ def add_note():
                                place=place, note=note, pet_id=pet_id)
         db.session.add(new_note)
         db.session.commit()
-        return jsonify({"message": "Nota añadida"}), 201
+        return jsonify({"message": _("Nota añadida")}), 201
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
@@ -367,7 +368,7 @@ def add_note():
 def get_clin_history_by_pet(pet_id):
     pet = Pet.query.get(pet_id)
     if not pet:
-        return jsonify({"error": "Mascota no encontrada"}), 404
+        return jsonify({"error": _("Mascota no encontrada")}), 404
 
     records = db.session.execute(
         select(ClinHistory).where(ClinHistory.pet_id == pet_id)
@@ -381,15 +382,15 @@ def get_clin_history_by_pet(pet_id):
 def delete_clin_history(note_id):
     note = ClinHistory.query.get(note_id)
     if not note:
-        return jsonify({"error": "Registro clínico no encontrado"}), 404
+        return jsonify({"error": _("Registro clínico no encontrado")}), 404
 
     try:
         db.session.delete(note)
         db.session.commit()
-        return jsonify({"message": "Registro clínico eliminado exitosamente"}), 200
+        return jsonify({"message": _("Registro clínico eliminado exitosamente")}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "Error al eliminar el registro"}), 500
+        return jsonify({"error": _("Error al eliminar el registro")}), 500
 
 
 @api.route('/note/<int:id>', methods=['GET'])
@@ -397,7 +398,7 @@ def delete_clin_history(note_id):
 def get_note(id):
     note = ClinHistory.query.get(id)
     if not note:
-        return jsonify({"message": "Nota no encontrada"}), 404
+        return jsonify({"message": _("Nota no encontrada")}), 404
 
     return jsonify({
         "id": note.id,
@@ -415,7 +416,7 @@ def get_note(id):
 def update_note(id):
     note = ClinHistory.query.get(id)
     if not note:
-        return jsonify({"message": "Nota no encontrada"}), 404
+        return jsonify({"message": _("Nota no encontrada")}), 404
 
     data = request.get_json()
 
@@ -424,7 +425,7 @@ def update_note(id):
         try:
             note.event_date = datetime.fromisoformat(event_date_str)
         except ValueError:
-            return jsonify({"message": "Formato de fecha inválido. Se espera YYYY-MM-DD"}), 400
+            return jsonify({"message": _("Formato de fecha inválido. Se espera YYYY-MM-DD")}), 400
 
     note.event_name = data.get('event_name', note.event_name)
     note.place = data.get('place', note.place)
@@ -433,7 +434,7 @@ def update_note(id):
 
     try:
         db.session.commit()
-        return jsonify({"message": "Nota actualizada"}), 200
+        return jsonify({"message": _("Nota actualizada")}), 200
     except Exception as error:
         db.session.rollback()
         return jsonify({"error": str(error)}), 500
@@ -447,10 +448,10 @@ def ask_vet():
     apikey = os.getenv("Clarifai_API_KEY")
 
     if not isinstance(question, str):
-        return jsonify({"error": f"Tipo invalido : {type(question)}"}), 400
+        return jsonify({"error": _(f"Tipo invalido : {type(question)}")}), 400
 
     if not question.strip():
-        return jsonify({"error": "Pregunta vacia"}), 400
+        return jsonify({"error": _("Pregunta vacia")}), 400
 
     try:
         try:
@@ -460,10 +461,10 @@ def ask_vet():
             asyncio.set_event_loop(loop)
 
         prompt = (
-            "Eres un veterinario experto. Tu tarea es responder con consejos fiables "
+            _("Eres un veterinario experto. Tu tarea es responder con consejos fiables "
             "y claros en menos de 50 palabras. No quiero tu pensamiento, solo la respuesta.\n\n"
             f"Pregunta del usuario: \"{question}\"\n"
-            "Respuesta:"
+            "Respuesta:")
         )
         model_url = "https://clarifai.com/deepseek-ai/deepseek-chat/models/DeepSeek-R1-0528-Qwen3-8B"
 
@@ -484,12 +485,12 @@ def update_password():
         new_password = request.json.get("password")
         
         if not new_password:
-            return jsonify({"error": "Necesita una contraseña"}), 400
+            return jsonify({"error": _("Necesita una contraseña")}), 400
 
         user = User.query.filter_by(email=user_token_email).first()
 
         if user is None:
-            return jsonify({"error": "Usuario no encontrado"}), 404
+            return jsonify({"error": _("Usuario no encontrado")}), 404
 
         salt = b64encode(os.urandom(32)).decode("utf-8")
         hashed_password = generate_password_hash(new_password + salt)
@@ -499,9 +500,9 @@ def update_password():
 
         try:
             db.session.commit()
-            return jsonify({"message": "Contraseña actualizada exitosamente"}), 200
+            return jsonify({"message": _("Contraseña actualizada exitosamente")}), 200
         except Exception as error:
             db.session.rollback()
-            return jsonify({"error": "Error de servidor"}), 500
+            return jsonify({"error": _("Error de servidor")}), 500
     except Exception as e:
-        return jsonify({"error": "Error al actualizar la contraseña"}), 500        
+        return jsonify({"error": _("Error al actualizar la contraseña")}), 500        
