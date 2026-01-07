@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import logo from '../assets/img/logo-migo-claro.png';
+import { translations } from "../services/translations";
 
 export const PasswordUpdate = () => {
     const [newPassword, setNewPassword] = useState("");
     const [message, setMessage] = useState(null); 
     const [searchParams, _] = useSearchParams();
     const navigate = useNavigate();
+    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
+    const t = translations[language];
 
     useEffect(() => {
         if (message) {
@@ -32,18 +35,18 @@ export const PasswordUpdate = () => {
             });
 
             if (response.ok) {
-                setMessage({ type: "success", text: "Contraseña actualizada" });
+                setMessage({ type: "success", text: t.pwd_updated });
                     setTimeout(() => {
                     navigate("/"); 
                 }, 2000); 
 
             } else if (!passwordToSend) {
-                setMessage({ type: "danger", text: "Necesita una contraseña" });
+                setMessage({ type: "danger", text: t.need_pwd });
             } else {
-                setMessage({ type: "danger", text: "Error al cambiar la contraseña" });
+                setMessage({ type: "danger", text: t.pwd_chg_err });
             }
         } catch {
-            setMessage({ type: "danger", text: "Ha ocurrido un error al cambiar la contraseña" });
+            setMessage({ type: "danger", text: t.pwd_chg_err });
         }
     };
 
@@ -55,7 +58,7 @@ export const PasswordUpdate = () => {
                 </div>
 
                 <div className="col-4 p-4 bg-yellow rounded">
-                    <h3 className="text-center mb-4">Actualizar contraseña</h3>
+                    <h3 className="text-center mb-4">{ t.pwd_update }</h3>
 
                     {message && (
                         <div className={`alert alert-${message.type}`} role="alert">
@@ -73,7 +76,7 @@ export const PasswordUpdate = () => {
                                 className="form-control"
                                 id="btnPassword"
                                 name="newPassword"
-                                placeholder="Nueva contraseña"
+                                placeholder={ t.new_pwd }
                                 onChange={(event) => setNewPassword(event.target.value)}
                                 value={newPassword}
                             />
@@ -81,7 +84,7 @@ export const PasswordUpdate = () => {
 
                         <button
                             className="btn w-100 text-white fw-bold bg-secondary"
-                        >Actualizar contraseña</button>
+                        >{ t.pwd_update }</button>
                     </form>
                 </div>
             </div>

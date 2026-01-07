@@ -6,6 +6,7 @@ import {
   FaQuestionCircle,
   FaSignOutAlt,
   FaTrash,
+  FaLock,
 } from "react-icons/fa";
 import { translations } from "../services/translations";
 
@@ -32,6 +33,10 @@ export const Profile = () => {
           <li className="list-group-item d-flex align-items-center option-item" onClick={() => handleNavigate("/profile-form")}>
             <FaUserEdit className="icon" />
             { t.data }
+          </li>
+          <li className="list-group-item d-flex align-items-center option-item" onClick={() => handleNavigate("/password-update")}>
+            <FaLock className="icon" />
+            { t.pwd_update }
           </li>
           {/* <li className="list-group-item d-flex align-items-center option-item" onClick={() => handleNavigate("/siempre-conmigo")}>
             <FaHeart className="icon" />

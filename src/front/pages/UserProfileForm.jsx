@@ -97,7 +97,7 @@ const UserProfileForm = () => {
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100" style={{ maxWidth: "500px" }}>
-        <h3 className="text-center mb-4">{t.edit_user_profile}</h3>
+        <h3 className="text-center mb-4">{ t.edit_profile_title }</h3>
 
         {message && (
           <div className={`alert alert-${message.type}`} role="alert">
@@ -140,11 +140,11 @@ const UserProfileForm = () => {
               className="form-control"
               id="emailInput"
               name="email"
-              placeholder={t.email_label}
+              placeholder={t.email}
               value={formData.email}
               disabled
             />
-            <label htmlFor="emailInput">{t.email_label}</label>
+            <label htmlFor="emailInput">{t.email}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -153,11 +153,11 @@ const UserProfileForm = () => {
               className="form-control"
               id="countryInput"
               name="country"
-              placeholder={t.country_label}
+              placeholder={t.country}
               value={formData.country}
               onChange={handleChange}
             />
-            <label htmlFor="countryInput">{t.country_label}</label>
+            <label htmlFor="countryInput">{t.country}</label>
           </div>
 
           <div className="form-floating mb-4">
@@ -166,11 +166,11 @@ const UserProfileForm = () => {
               className="form-control"
               id="cityInput"
               name="city"
-              placeholder={t.city_label}
+              placeholder={t.city}
               value={formData.city}
               onChange={handleChange}
             />
-            <label htmlFor="cityInput">{ t.city_label }</label>
+            <label htmlFor="cityInput">{ t.city }</label>
           </div>
 
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
