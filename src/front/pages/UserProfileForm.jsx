@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 const UserProfileForm = () => {
   const [formData, setFormData] = useState({
@@ -14,8 +15,8 @@ const UserProfileForm = () => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
-  const t = translations[language];
+  const { lang } = useLanguage();
+  const t = translations[lang] || translations.es;
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/user`, {
@@ -77,7 +78,7 @@ const UserProfileForm = () => {
         body: JSON.stringify(formData)
       });
 
-      if (!res.ok) throw new Error("Error updating data");
+      if (!res.ok) throw new Error(t.update_data_err);
       setMessage({ text: t.user_data_updated, type: "success" });
 
       setTimeout(() => {
@@ -89,15 +90,10 @@ const UserProfileForm = () => {
     }
   };
 
-  const changeLanguage = (lang) => {
-    setLanguage(lang);
-    sessionStorage.setItem("lang", lang);
-  };
-
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100" style={{ maxWidth: "500px" }}>
-        <h3 className="text-center mb-4">{ t.edit_profile_title }</h3>
+        <h3 className="text-center mb-4">{t.edit_profile_title}</h3>
 
         {message && (
           <div className={`alert alert-${message.type}`} role="alert">
@@ -111,7 +107,7 @@ const UserProfileForm = () => {
               type="text"
               className="form-control"
               id="nameInput"
-              name="name"                 
+              name="name"
               placeholder={t.first_name_label}
               value={formData.name}
               onChange={handleChange}
@@ -170,17 +166,17 @@ const UserProfileForm = () => {
               value={formData.city}
               onChange={handleChange}
             />
-            <label htmlFor="cityInput">{ t.city }</label>
+            <label htmlFor="cityInput">{t.city}</label>
           </div>
 
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-            { t.save_changes }
+            {t.save_changes}
           </button>
         </form>
 
         <div className="d-flex justify-content-center my-3">
           <button onClick={() => navigate("/profile")} className="btn btn-link text-dark text-decoration-none">
-            { t.back }
+            {t.back}
           </button>
         </div>
       </div>

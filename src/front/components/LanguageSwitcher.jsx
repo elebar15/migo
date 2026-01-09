@@ -1,23 +1,18 @@
-import React from "react";
+import { useLanguage } from "../context/LanguageContext";
 
-const supportedLanguages = ["en", "es", "fr"];
-
-const LanguageSwitcher = ({ language, setLanguage }) => {
-  const handleChange = (e) => {
-    const lang = e.target.value;
-    setLanguage(lang);
-    sessionStorage.setItem("lang", lang); // persist choice
-  };
+const LanguageSwitcher = () => {
+  const { lang, setLang } = useLanguage();
 
   return (
-    <select value={language} onChange={handleChange} className="form-select" style={{width: "5em"}}>
-      {supportedLanguages.map((l) => (
-        <option key={l} value={l}>
-          {l.toUpperCase()}
-        </option>
-      ))}
+    <select
+      value={lang}
+      onChange={(e) => setLang(e.target.value)}
+    >
+      <option value="en">En</option>
+      <option value="es">Es</option>
+      <option value="fr">Fr</option>
     </select>
   );
-};
+}
 
 export default LanguageSwitcher;

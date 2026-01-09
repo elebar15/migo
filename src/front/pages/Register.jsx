@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import logo from '../assets/img/logo-migo-claro.png';
+import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 const initialStateUser = {
     name: "",
@@ -12,6 +14,9 @@ const initialStateUser = {
 export function Register() {
     const [user, setUser] = useState(initialStateUser)
     const navigate = useNavigate()
+
+    const { lang } = useLanguage();
+    const t = translations[lang] || translations.es;
 
     function handleChange({ target }) {
         setUser({
@@ -39,11 +44,12 @@ export function Register() {
                 navigate('/')
             }, 1000)
         } else if (response.status === 400) {
-            alert('El usuario ya existe')
+            alert(t.user_exists)
         } else {
-            alert('Error al registrar el usuario')
+            alert(t.uregister_err)
         }
     }
+
 
     return (
         <div className="login-body">
@@ -55,7 +61,7 @@ export function Register() {
 
             <div className="d-flex justify-content-center">
                 <div className="p-4 bg-yellow rounded shadow aut-form">
-                    <h3 className="text-center mb-4">Regístrate</h3>
+                    <h3 className="text-center mb-4">{t.register_t}</h3>
 
                     <form onSubmit={handleSubmit}>
                         <div className="form-floating mb-3">
@@ -64,12 +70,12 @@ export function Register() {
                                 className="form-control"
                                 id="nameInput"
                                 name="name"
-                                placeholder="Nombre"
+                                placeholder={t.name}
                                 value={user.name}
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="nameInput">Nombre</label>
+                            <label htmlFor="nameInput">{t.first_name_label}</label>
                         </div>
 
                         <div className="form-floating mb-3">
@@ -78,12 +84,12 @@ export function Register() {
                                 className="form-control"
                                 id="lastnameInput"
                                 name="lastname"
-                                placeholder="Apellido"
+                                placeholder={t.last_name_label}
                                 value={user.lastname}
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="lastnameInput">Apellido</label>
+                            <label htmlFor="lastnameInput">{t.last_name_label}</label>
                         </div>
 
                         <div className="form-floating mb-3">
@@ -92,12 +98,12 @@ export function Register() {
                                 className="form-control"
                                 id="emailInput"
                                 name="email"
-                                placeholder="Correo"
+                                placeholder={t.email}
                                 value={user.email}
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="emailInput">Correo electrónico</label>
+                            <label htmlFor="emailInput">{t.email}</label>
                         </div>
 
                         <div className="form-floating mb-3">
@@ -106,22 +112,22 @@ export function Register() {
                                 className="form-control"
                                 id="passwordInput"
                                 name="password"
-                                placeholder="Contraseña"
+                                placeholder={t.pwd}
                                 value={user.password}
                                 onChange={handleChange}
                                 required
                             />
-                            <label htmlFor="passwordInput">Contraseña</label>
+                            <label htmlFor="passwordInput">{t.pwd}</label>
                         </div>
 
                         <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-                            Registrarme
+                            {t.register}
                         </button>
                     </form>
 
                     <div className="d-flex justify-content-center mt-3 small">
                         <Link to="/" className="text-dark text-decoration-none">
-                            Ya tengo una cuenta
+                            {t.back}
                         </Link>
                     </div>
                 </div>

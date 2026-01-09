@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 import petPlaceholder from "../assets/img/pet_placeholder.avif"
 
 const initialStatePet = {
@@ -15,8 +16,8 @@ export const AddPet = () => {
   const [imageFile, setImageFile] = useState(null);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
-  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
-  const t = translations[language];
+  const { lang } = useLanguage();
+  const t = translations[lang] || translations.es;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -103,7 +104,7 @@ export const AddPet = () => {
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100">
-        <h2 className="text-center mb-4">{ t.add_pet }</h2>
+        <h2 className="text-center mb-4">{t.add_pet}</h2>
 
         {message && (
           <div className={`alert alert-${message.type}`} role="alert">
@@ -118,12 +119,12 @@ export const AddPet = () => {
               className="form-control"
               id="nameInput"
               name="name"
-              placeholder={ t.name }
+              placeholder={t.name}
               onChange={handleChange}
               required
               value={pet.name}
             />
-            <label htmlFor="nameInput">{ t.name }</label>
+            <label htmlFor="nameInput">{t.name}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -132,11 +133,11 @@ export const AddPet = () => {
               className="form-control"
               id="breedInput"
               name="breed"
-              placeholder={ t.breed }
+              placeholder={t.breed}
               onChange={handleChange}
               value={pet.breed}
             />
-            <label htmlFor="breedInput">{ t.breed }</label>
+            <label htmlFor="breedInput">{t.breed}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -145,11 +146,11 @@ export const AddPet = () => {
               className="form-control"
               id="birthdateInput"
               name="birthdate"
-              placeholder={ t.birthdate }
+              placeholder={t.birthdate}
               onChange={handleChange}
               value={pet.birthdate}
             />
-            <label htmlFor="birthdateInput">{ t.birthdate }</label>
+            <label htmlFor="birthdateInput">{t.birthdate}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -159,15 +160,15 @@ export const AddPet = () => {
               className="form-control"
               id="weightInput"
               name="weight"
-              placeholder={ t.weight }
+              placeholder={t.weight}
               onChange={handleChange}
               value={pet.weight}
             />
-            <label htmlFor="weightInput">{ t.weight } (kg)</label>
+            <label htmlFor="weightInput">{t.weight} (kg)</label>
           </div>
 
           <div className="mb-3">
-            <label className="form-label">{ t.pic }</label>
+            <label className="form-label">{t.pic}</label>
             <input
               type="file"
               className="form-control"
@@ -177,13 +178,13 @@ export const AddPet = () => {
           </div>
 
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-            { t.add }
+            {t.add}
           </button>
         </form>
 
         <div className="d-flex justify-content-center mt-3 small">
           <Link to="/home" className="text-dark text-decoration-none">
-            { t.back }
+            {t.back}
           </Link>
         </div>
       </div>

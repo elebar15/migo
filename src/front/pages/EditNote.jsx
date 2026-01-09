@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 const initialStateNote = {
   event_date: getTodayDate(),
@@ -28,6 +30,8 @@ export const EditNote = () => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { lang } = useLanguage();
+  const t = translations[lang] || translations.es;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -48,10 +52,10 @@ export const EditNote = () => {
             ...data,
           });
         } else {
-          setMessage({ type: "danger", text: "Error al cargar la nota" });
+          setMessage({ type: "danger", text: t.load_note_err });
         }
       } catch {
-        setMessage({ type: "danger", text: "Error al cargar la nota" });
+        setMessage({ type: "danger", text: t.load_note_err });
       }
     }
 
@@ -92,7 +96,7 @@ export const EditNote = () => {
       });
 
       if (response.status === 200) {
-        setMessage({ type: "success", text: "Nota actualizada exitosamente" });
+        setMessage({ type: "success", text: t.note_updated });
         setTimeout(() => {
           if (note.pet_id) {
             navigate(`/pet-detail/${note.pet_id}`);
@@ -101,17 +105,17 @@ export const EditNote = () => {
           }
         }, 1500);
       } else {
-        setMessage({ type: "danger", text: "Error al actualizar la nota" });
+        setMessage({ type: "danger", text: t.note_update_err });
       }
     } catch {
-      setMessage({ type: "danger", text: "Error al actualizar la nota" });
+      setMessage({ type: "danger", text: t.note_update_err });
     }
   }
 
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       <div className="green-light rounded shadow p-4 back-login w-100">
-        <h3 className="text-center mb-4">Actualizar nota</h3>
+        <h3 className="text-center mb-4">{t.note_update}</h3>
 
         <form onSubmit={handleSubmit}>
           <div className="form-floating mb-3">
@@ -120,11 +124,11 @@ export const EditNote = () => {
               className="form-control"
               id="event_nameInput"
               name="event_name"
-              placeholder="Nombre del evento"
+              placeholder={t.event}
               onChange={handleChange}
-              value={note.event_name} 
+              value={note.event_name}
             />
-            <label htmlFor="event_nameInput">Nombre del evento</label>
+            <label htmlFor="event_nameInput">{t.event}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -133,11 +137,11 @@ export const EditNote = () => {
               className="form-control"
               id="placeInput"
               name="place"
-              placeholder="Lugar"
+              placeholder={t.place}
               onChange={handleChange}
               value={note.place}
             />
-            <label htmlFor="placeInput">Lugar del evento</label>
+            <label htmlFor="placeInput">{t.place}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -146,11 +150,11 @@ export const EditNote = () => {
               className="form-control"
               id="event_dateInput"
               name="event_date"
-              placeholder="dd/mm/aaaa"
+              placeholder={t.date_format}
               onChange={handleChange}
               value={note.event_date}
             />
-            <label htmlFor="event_dateInput">Fecha</label>
+            <label htmlFor="event_dateInput">{t.date}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -158,14 +162,14 @@ export const EditNote = () => {
               className="form-control"
               id="noteInput"
               name="note"
-              placeholder="Notas"
+              placeholder={t.notes}
               onChange={handleChange}
               value={note.note}
             />
-            <label htmlFor="noteInput">Notas</label>
+            <label htmlFor="noteInput">{t.notes}</label>
           </div>
           <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
-            Actualizar
+            {t.save_changes}
           </button>
         </form>
 
@@ -174,7 +178,7 @@ export const EditNote = () => {
             onClick={() => navigate(`/pet-detail/${note.pet_id}`)}
             className="btn btn-link text-dark text-decoration-none"
           >
-            Regresar
+            {t.back}
           </button>
         </div>
       </div>

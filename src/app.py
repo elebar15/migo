@@ -17,9 +17,18 @@ static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../
 
 # Initialize Flask app
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
 
-# Enable CORS for API endpoints
-CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "*"}})
+CORS(
+    app,
+    supports_credentials=True,
+    resources={r"/api/*": {"origins": "*"}},
+    allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Accept-Language"
+    ]
+)
 
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
@@ -70,33 +79,11 @@ def serve_any_other_file(path):
     return response
 
 # Add localization
-app.config['BABEL_DEFAULT_LOCALE'] = 'es'  # Default language is Spanish
-def get_locale():
-    if 'lang' in session:
-        return session['lang']
-    user = getattr(g, 'user', None)
-    if user is not None:
-        return user.locale
-    return request.accept_languages.best_match(['es', 'fr', 'en'])
+def select_locale():
+    return request.headers.get("Accept-Language", "en")
 
-babel = Babel(app)
-babel.init_app(app, locale_selector=get_locale)
-
-@app.route('/change_language/<language>')
-def change_language(language):
-    supported_languages = ['en', 'fr', 'es']
-
-    if language in supported_languages:
-        session['lang'] = language
-    else:
-        session['lang'] = 'en'
-
-    referrer = request.referrer
-    if referrer:
-        # Add a small fragment to force a page reload on the client side
-        return redirect(referrer + "#reload")  # Or just append any fragment
-    else:
-        return redirect(url_for('login'))
+babel = Babel(app, locale_selector=select_locale)
+#babel = Babel(app, locale_selector=lambda: "es")
 
 # This will only run if `$ python src/app.py` is executed
 if __name__ == '__main__':

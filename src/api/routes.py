@@ -96,22 +96,36 @@ def reset_password():
     access_token = create_access_token(
         identity=user.email, expires_delta=expires_delta)
 
-    message = _(f"""
-        <p>Hola {user.name},</p>
+    message = _(
+        """
+        <p>%(greeting)s %(name)s,</p>
 
-        <p>Con este link, podrás <a href="{migo_url}/password-update?token={access_token}">recuperar tu contraseña</a>.</p>
+        <p>
+        %(instruction)s
+        <a href="%(url)s">%(link_text)s</a>.
+        </p>
 
-        <p>Un saludo</p>
+        <p>%(closing)s</p>
 
-        <p>El equipo Migo</p>
-        <p><a href="{migo_url}">Migo.com</a></p>
-    """)
+        <p>%(team)s</p>
+        <p><a href="%(site)s">Migo.com</a></p>
+        """,
+        greeting=_("Hello"),
+        name=user.name,
+        instruction=_("With this link, you can"),
+        link_text=_("reset your password"),
+        closing=_("Best regards"),
+        team=_("The Migo Team"),
+        url=f"{migo_url}/password-update?token={access_token}",
+        site=migo_url
+    )
 
     data = {
-        "subject": _("Recuperación de contraseña"),
+        "subject": _("Password recovery"),
         "to": email,
         "message": message
     }
+
 
     sended_email = send_email(
         data.get("subject"), data.get("to"), data.get("message"))

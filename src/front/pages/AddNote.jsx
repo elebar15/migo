@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 const initialStateNote = {
   event_date: getTodayDate(),
@@ -13,9 +14,9 @@ const initialStateNote = {
 function getTodayDate() {
   const today = new Date();
   const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); 
+  const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`; 
+  return `${year}-${month}-${day}`;
 }
 
 
@@ -25,8 +26,8 @@ export const AddNote = () => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const { petId } = useParams();
-  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
-  const t = translations[language];
+  const { lang } = useLanguage();
+  const t = translations[lang] || translations.es;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -136,7 +137,7 @@ export const AddNote = () => {
       <div className="green-light rounded shadow p-4 back-login w-100">
         <div className="col-12 col-ms-6">
           <form className="rounded m-2 p-4" onSubmit={handleSubmit}>
-            <h3 className="text-center text-secondary mb-1">{ t.add_note_title }</h3>
+            <h3 className="text-center text-secondary mb-1">{t.add_note_title}</h3>
             <h4 className="text-center text-secondary fw-semibold mb-4 fs-1">{petName}</h4>
 
 
@@ -156,14 +157,14 @@ export const AddNote = () => {
                   value={note.pet_id}
                   required
                 >
-                  <option value="">{ t.who }</option>
+                  <option value="">{t.who}</option>
                   {pets.map((pet) => (
                     <option key={pet.id} value={pet.id}>
                       {pet.name}
                     </option>
                   ))}
                 </select>
-                <label htmlFor="petSelect">{ t.pet }</label>
+                <label htmlFor="petSelect">{t.pet}</label>
               </div>
             )}
 
@@ -173,12 +174,12 @@ export const AddNote = () => {
                 className="form-control"
                 id="event_nameInput"
                 name="event_name"
-                placeholder={ t.event }
+                placeholder={t.event}
                 onChange={handleChange}
                 required
                 value={note.event_name}
               />
-              <label htmlFor="event_nameInput">{ t.event }</label>
+              <label htmlFor="event_nameInput">{t.event}</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -187,11 +188,11 @@ export const AddNote = () => {
                 className="form-control"
                 id="placeInput"
                 name="place"
-                placeholder={ t.place}
+                placeholder={t.place}
                 onChange={handleChange}
                 value={note.place}
               />
-              <label htmlFor="placeInput">{ t.place }</label>
+              <label htmlFor="placeInput">{t.place}</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -200,11 +201,11 @@ export const AddNote = () => {
                 className="form-control"
                 id="event_dateInput"
                 name="event_date"
-                placeholder={ t.date_format }
+                placeholder={t.date_format}
                 onChange={handleChange}
                 value={note.event_date}
               />
-              <label htmlFor="event_dateInput">{ t.date }</label>
+              <label htmlFor="event_dateInput">{t.date}</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -212,22 +213,22 @@ export const AddNote = () => {
                 className="form-control"
                 id="noteInput"
                 name="note"
-                placeholder={ t.notes }
+                placeholder={t.notes}
                 onChange={handleChange}
                 value={note.note}
                 rows="10"
                 onInput={handleResize}
                 style={{ resize: "none" }}
               />
-              <label htmlFor="noteInput">{ t.notes}</label>
+              <label htmlFor="noteInput">{t.notes}</label>
             </div>
 
-            <button className="btn btn-secondary w-100">{ t.add }</button>
+            <button className="btn btn-secondary w-100">{t.add}</button>
           </form>
 
           <div className="d-flex justify-content-center mt-3 small">
             <button className="btn btn-link text-dark text-decoration-none" onClick={handleGoBack}>
-              { t.back }
+              {t.back}
             </button>
           </div>
         </div>

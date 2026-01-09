@@ -3,13 +3,14 @@ import { SingleRecord } from "../components/SingleRecord";
 import { useEffect, useState } from "react";
 import { getMedicalRecords } from "../services/api";
 import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 export function PetMedicalRecord({ petId }) {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState(null);
-    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
-    const t = translations[language];
+    const { lang } = useLanguage();
+    const t = translations[lang] || translations.es;
 
     async function fetchRecords() {
         const data = await getMedicalRecords(petId);
@@ -19,7 +20,7 @@ export function PetMedicalRecord({ petId }) {
 
     const sortedRecords = [...records].sort((a, b) => {
         return new Date(b.event_date) - new Date(a.event_date);
-        });
+    });
 
     useEffect(() => {
         fetchRecords();
@@ -37,7 +38,7 @@ export function PetMedicalRecord({ petId }) {
             <div className="row d-flex justify-content-between align-items-center pb-3">
                 <div className="col">
                     <h3 className="fw-bold green fs-3 text-center">
-                        { t.history }
+                        {t.history}
                     </h3>
                 </div>
                 <div className="col-auto">
@@ -70,9 +71,9 @@ export function PetMedicalRecord({ petId }) {
             )}
 
             {loading ? (
-                <p>{ t.load_hist }</p>
+                <p>{t.load_hist}</p>
             ) : records.length === 0 ? (
-                <p>{ t.no_hist }</p>
+                <p>{t.no_hist}</p>
             ) : (
                 <ul className="list-group">
                     {sortedRecords.map((record, index) => (

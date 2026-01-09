@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
 import logo from '../assets/img/logo-migo-claro.png';
 import { Link } from "react-router-dom";
+import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 export const RecoveryPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null); 
+  const [message, setMessage] = useState(null);
+  const { lang } = useLanguage();
+  const t = translations[lang] || translations.es;
 
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => setMessage(null), 4000); 
-      return () => clearTimeout(timer); 
+      const timer = setTimeout(() => setMessage(null), 4000);
+      return () => clearTimeout(timer);
     }
   }, [message]);
 
@@ -19,14 +23,14 @@ export const RecoveryPassword = () => {
 
     const isValidEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email);
     if (!isValidEmail) {
-      alert("Por favor ingrese un correo electrónico válido");
+      alert(t.missing.email);
       return;
     }
 
     const url = import.meta.env.VITE_BACKEND_URL;
 
     try {
-      setLoading(true); 
+      setLoading(true);
 
       const response = await fetch(`${url}/reset-password`, {
         method: "POST",
@@ -40,15 +44,15 @@ export const RecoveryPassword = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: "success", text: "Un link de restauración de la contraseña fue mandado correctamente a su correo." });
+        setMessage({ type: "success", text: t.recovery_link_m });
       } else {
-        setMessage({ type: "danger", text: data.message || "Error en la solicitud. Por favor, intente nuevamente." });
+        setMessage({ type: "danger", text: data.message || t.recovery_err });
       }
 
     } catch (error) {
-      setMessage({ type: "danger", text: "Error en la solicitud. Por favor, intente nuevamente." });
+      setMessage({ type: "danger", text: t.recovery_err });
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -60,8 +64,8 @@ export const RecoveryPassword = () => {
 
       <div className="d-flex justify-content-center">
         <div className="p-4 bg-yellow rounded shadow aut-form">
-          <h3 className="text-center mb-4">Recuperar contraseña</h3>
-          
+          <h3 className="text-center mb-4">{t.recover}</h3>
+
           {message && (
             <div className={`alert alert-${message.type}`} role="alert">
               {message.text}
@@ -72,7 +76,7 @@ export const RecoveryPassword = () => {
             <div className="form-floating mb-3">
               <input
                 type="email"
-                placeholder="Tu correo electrónico"
+                placeholder={t.email}
                 className="form-control"
                 id="btnEmail"
                 name="email"
@@ -80,20 +84,20 @@ export const RecoveryPassword = () => {
                 value={email}
                 required
               />
-              <label htmlFor="btnEmail">Correo electrónico</label>
+              <label htmlFor="btnEmail">{t.email}</label>
             </div>
 
             <button
               className="btn w-100 text-white fw-bold bg-secondary"
               disabled={loading}
             >
-              {loading ? "Enviando..." : "Enviar link de recuperación"}
+              {loading ? t.sending : t.send_link}
             </button>
           </form>
 
           <div className="d-flex justify-content-center mt-3 small">
             <Link to="/" className="text-dark text-decoration-none">
-              Volver al inicio
+              {t.back}
             </Link>
           </div>
         </div>

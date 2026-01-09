@@ -4,12 +4,13 @@ import { PetCard } from "../components/PetCard";
 import { getAllPets } from "../services/api";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 
 export const Home = () => {
-    const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
-    const t = translations[language];
     const { store, dispatch } = useGlobalReducer();
     const location = useLocation();
+    const { lang } = useLanguage();
+    const t = translations[lang] || translations.es;
 
     async function fetchPets() {
         const data = await getAllPets();

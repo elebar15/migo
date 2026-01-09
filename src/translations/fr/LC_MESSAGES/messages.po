@@ -183,3 +183,21 @@ msgstr "Erreur du serveur."
 #: src/api/routes.py:508
 msgid "Error al actualizar la contraseña"
 msgstr "Erreur d'actualisation du mot de passe."
+
+msgid "Password recovery"
+msgstr "Récupération du mot de passe"
+
+msgid "Hello"
+msgstr "Bonjour"
+
+msgid "With this link, you can"
+msgstr "Avec ce lien, vous pouvez"
+
+msgid "reset your password"
+msgstr "réinitialiser votre mot de passe"
+
+msgid "Best regards"
+msgstr "Cordialement"
+
+msgid "The Migo Team"
+msgstr "L’équipe Migo"

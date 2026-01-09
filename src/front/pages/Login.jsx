@@ -1,32 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { translations } from "../services/translations";
+import { useLanguage } from "../context/LanguageContext";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import logo from "../assets/img/logo-migo-claro.png";
 
 const Login = () => {
-  const [language, setLanguage] = useState(sessionStorage.getItem("lang") || "es");
-  const t = translations[language];
+  const { lang, setLang } = useLanguage();
+  const t = translations[lang];
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) navigate("/home");
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user_id", data.user_id);
+
         navigate("/home");
       } else {
         alert(data.msg || t.login_error);
@@ -72,7 +85,10 @@ const Login = () => {
               <label>{t.password}</label>
             </div>
 
-            <button type="submit" className="btn w-100 text-white fw-bold bg-secondary">
+            <button
+              type="submit"
+              className="btn w-100 text-white fw-bold bg-secondary"
+            >
               {t.login_button}
             </button>
           </form>
@@ -81,8 +97,10 @@ const Login = () => {
             <Link to="/register">{t.no_account}</Link>
             <Link to="/recovery-password">{t.forgot_password}</Link>
           </div>
-            <div className="d-flex justify-content-center"><LanguageSwitcher language={language} setLanguage={setLanguage} /></div>
-          
+
+          <div className="d-flex justify-content-center mt-3">
+            <LanguageSwitcher language={lang} setLanguage={setLang} />
+          </div>
         </div>
       </div>
     </div>

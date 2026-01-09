@@ -110,3 +110,16 @@ export {
     deleteMedicalRecord,
     deletePetById
 };
+
+export function apiFetch(url, options = {}) {
+    const lang = localStorage.getItem("lang") || "es";
+
+    return fetch(url, {
+        ...options,
+        headers: {
+            ...(options.headers || {}),
+            "Content-Type": "application/json",
+            "Accept-Language": lang
+        }
+    });
+}
